@@ -196,3 +196,34 @@ window.addEventListener('load', async function () {
     });
 
 });
+
+// Open modal
+document.getElementById("open-subform").addEventListener("click", () => {
+    document.getElementById("modal-subform").classList.add("is-active");
+});
+ 
+// Close modal (X button)
+document.getElementById("modal-subform-close").addEventListener("click", () => {
+    document.getElementById("modal-subform").classList.remove("is-active");
+});
+ 
+// Close modal (Cancel button)
+document.getElementById("modal-subform-close-lower").addEventListener("click", () => {
+    document.getElementById("modal-subform").classList.remove("is-active");
+});
+ 
+// Handle Save button
+document.getElementById("modal-subform-save").addEventListener("click", () => {
+ 
+    let field1 = document.getElementById("sf-field1").value;
+    let field2 = document.getElementById("sf-field2").value;
+    let field3 = document.getElementById("sf-field3").value;
+    let field4 = document.getElementById("sf-field4").value;
+ 
+    console.log("SUBFORM DATA:", { field1, field2, field3, field4 });
+ 
+    // TODO: call backend or update DOM
+    // fetch("/save-subform", { method:"POST", body:JSON.stringify({ field1, field2 ... }) })
+ 
+    document.getElementById("modal-subform").classList.remove("is-active");
+});
