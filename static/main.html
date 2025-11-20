@@ -314,7 +314,7 @@
 
   <!-- SUBFORM POPUP MODAL -->
 
-  <div id="modal-subform" class="modal">
+  <!-- <div id="modal-subform" class="modal">
     <div class="modal-background"></div>
     <div class="modal-card" style="width:40%;">
       <header class="modal-card-head">
@@ -349,7 +349,101 @@
         <button id="modal-subform-close-lower" class="button">Cancel</button>
       </footer>
     </div>
+  </div> -->
+
+  <div id="modal-subform" class="modal">
+    <div class="modal-background"></div>
+
+    <div class="modal-card" style="width: 50%; max-width: 700px;">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Add Call Log</p>
+        <button id="modal-subform-close" class="delete"></button>
+      </header>
+
+      <section class="modal-card-body">
+
+        <!-- Company Details -->
+        <div class="box" style="margin-bottom: 25px;">
+          <h2 class="title is-5">Company Details</h2>
+          <div class="field">
+            <label class="label">Company Name</label>
+            <input id="companyName" class="input" type="text" value="CCA UK Test Bespoke A" disabled>
+          </div>
+        </div>
+
+        <!-- Add Call Log -->
+        <h2 class="title is-5">Add Call Log</h2>
+
+        <div class="columns is-multiline">
+
+          <div class="column is-half">
+            <div class="field">
+              <label class="label">Call Type *</label>
+              <div class="select is-fullwidth">
+                <select id="callType">
+                  <option value="">Select...</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="column is-half">
+            <div class="field">
+              <label class="label">Callback Number</label>
+              <input id="callbackNumber" class="input" type="text">
+            </div>
+          </div>
+
+          <div class="column is-half">
+            <div class="field">
+              <label class="label">Company Contact</label>
+              <div class="select is-fullwidth">
+                <select id="companyContact">
+                  <option value="">Select...</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="column is-half">
+            <div class="field">
+              <label class="label">Caller Name</label>
+              <input id="callerName" class="input" type="text">
+            </div>
+          </div>
+
+          <div class="column is-half">
+            <div class="field">
+              <label class="label">Reason for Call</label>
+              <textarea id="reasonForCall" class="textarea"></textarea>
+            </div>
+          </div>
+
+          <div class="column is-half">
+            <div class="field">
+              <label class="label">Caller Company</label>
+              <input id="callerCompany" class="input" type="text">
+            </div>
+
+            <div class="field" style="margin-top: 15px;">
+              <label class="label">Caller Email</label>
+              <input id="callerEmail" class="input" type="email">
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <footer class="modal-card-foot" style="justify-content: flex-start;">
+        <button id="modal-subform-save" class="button" style="background:#cc0000; color:white;">
+          Submit
+        </button>
+        <button id="modal-subform-close-lower" class="button">Cancel</button>
+      </footer>
+    </div>
   </div>
+
 </body>
 <script crossorigin src="https://unpkg.com/webex@^3/umd/webex.min.js"></script>
 <script crossorigin src="https://cdn.jsdelivr.net/npm/webex@3.7.0/umd/webex.min.js"></script>
