@@ -159,7 +159,6 @@ async function saveSettings(){
             newEntry.actions.push(action);
         }
     }
-    //will have to add call log saving here???
     if(currentEntry){
         newEntry["_id"] = currentEntry["_id"];
     }
@@ -181,6 +180,42 @@ async function saveSettings(){
             currentEntry = {"_id": json._id, "company":newEntry.company};
             $('#modal-settings-delete').show();
         }
+        $("#modal-settings-error").addClass("has-text-success");
+        $("#modal-settings-error").removeClass("has-text-danger");
+        $("#modal-settings-error").text("Save successful");
+    }
+}
+
+async function saveCallLog(){
+    $("#modal-settings-error").empty();   //using this error div from the admin modal only(footer)
+    //create the data to be sent
+    let callLog = {
+            queue_id: currentEntry._id,   // IMPORTANT: link to queue
+            timestamp: new Date(),
+            call_type:  $('#callType').val().trim(),
+            callback_number: $('#callbackNumber').val().trim() || null,
+            company_contact: $('#companyContact').val().trim() || null,
+            caller_name: $('#callerName').val().trim() || null,
+            reason_for_call: $('#reasonForCall').val().trim() || null,
+            caller_company: $('#callerCompany').val().trim() || null,
+            caller_email: $('#callerEmail').val().trim() || null,
+    };
+    //post the data to the backend
+    let response = await fetch('/call_logs',{
+        method: "POST",
+        headers:customHeaders,
+        body: JSON.stringify(callLog)
+    });
+
+    //getting json from response
+    let json = await response.json();
+    $('#modal-subform-save').removeClass('is-loading');
+    customLog("calllog created:", json);
+    if(json.error){
+        $("#modal-settings-error").addClass("has-text-danger");
+        $("#modal-settings-error").removeClass("has-text-success");
+        $("#modal-settings-error").text(json.error);
+    }else{
         $("#modal-settings-error").addClass("has-text-success");
         $("#modal-settings-error").removeClass("has-text-danger");
         $("#modal-settings-error").text("Save successful");
@@ -573,6 +608,11 @@ function initializeDOMListeners(){
     openModal("#modal-subform");
     //there might have to be a different function like openCallLogModal (similar to openSettings) that fills data first (data that may be needed for dropdowns) then call openModal()
     // when this modal opens there will be a save button in that modal , this button should call a function called saveCallLogs() which will post to backend
+    })
+    $('#modal-subform-save').on('click', async function(e){
+    console.log('#modal-subform-save save call log');
+    $('#modal-subform-save').addClass('is-loading');
+    await saveCallLog();
     })
 }
 
