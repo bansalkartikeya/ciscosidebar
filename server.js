@@ -17,6 +17,7 @@ import mainRoutes from './routes/main.js';
 import databaseRoutes from './routes/database.js';
 import adminRoutes from './routes/admin.js';
 import webhookRoutes from './routes/webhook.js';
+import callLogRoutes from './routes/call_logs.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -49,6 +50,7 @@ app.use('/', mainRoutes);
 app.use('/', databaseRoutes);
 app.use('/', adminRoutes);
 app.use('/', webhookRoutes);
+app.use('/', callLogRoutes);
 
 // Initialize application
 async function startServer() {
