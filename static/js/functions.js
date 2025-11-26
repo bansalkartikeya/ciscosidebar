@@ -220,6 +220,7 @@ async function saveCallLog(){
         $("#modal-settings-error").removeClass("has-text-danger");
         $("#modal-settings-error").text("Save successful");
     }
+    closeModal("#modal-subform");
 }
 
 
@@ -511,6 +512,15 @@ function initializeDOMListeners(){
                 let companyData = await response.json();
                 console.log(companyData);
                 for(let entry of companyData){
+                    //get all call logs for specific entry
+                    let logsResponse=await fetch(`/call_logs?queue_id=${entry._id}`,{
+                    method: "GET",
+                    headers:customHeaders
+                    });
+                    let callLogs = await logsResponse.json();
+                    console.log(callLogs)
+                    //append to each entry
+                    entry.call_logs=callLogs
                     $('#settings-menu-content').append(
                         $(`<a id="${entry._id}" href="#" class="dropdown-item"><span>${entry.company}</span></a>`).on('click', async function(e){
                             openSettings(entry);
