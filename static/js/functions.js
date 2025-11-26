@@ -517,6 +517,7 @@ function initializeDOMListeners(){
                     method: "GET",
                     headers:customHeaders
                     });
+                    console.log("this is the log response ")
                     console.log(logsResponse)
                     let callLogs = await logsResponse.json();
                     console.log(callLogs)
