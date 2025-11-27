@@ -78,9 +78,16 @@ if(mercuryMode){
                                 let json = await response.json();
                                 console.log(json);
                                 if(json?.queue){
+                                    //get all call logs for specific queue
+                                    let logsResponse=await fetch(`/call_logs?queue_id=${entry._id}`,{
+                                    method: "GET",
+                                    headers:customHeaders
+                                    });
+                                    let callLogs = await logsResponse.json();
                                     $('#caller-info').hide();
                                     buildCompany(remoteNumber, remoteName, json.queue);
                                     buildContacts(remoteNumber, remoteName, json.queue?.actions);
+                                    buildCallLogs(callLogs);
                                     $('#main-content').show();
                                 } else {
                                     $('#caller-info').show();

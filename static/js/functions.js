@@ -378,6 +378,31 @@ function buildContacts(callerId, callerName, actionData){
     }
 }
 
+function buildCallLogs(callLogs){
+    try{
+        $('#call-logs').empty();
+        for(let call_log of callLogs){
+            let row = $('<tr>')
+            row.append(
+                $('<td class="custom-cell">').text(call_log.call_type),
+                $('<td class="custom-cell">').text(call_log.callback_number),
+                $('<td class="custom-cell">').text(call_log.company_contact),
+                $('<td class="custom-cell">').text(call_log.caller_name),
+                $('<td class="custom-cell">').text(call_log.reason_for_call),
+                $('<td class="custom-cell">').text(call_log.caller_company),
+                $('<td class="custom-cell">').text(call_log.caller_email),
+                $('<td class="custom-cell">').text(call_log.timestamp),
+            );
+            $('#call-logs').append(row)
+        }
+      
+    }
+    catch(e){
+        customLog("buildCallLogs Error:");
+        customLog(e);
+    }
+}
+
 function buildButton(text, key, callerId, callerName, voicemail, warm){
     let button;
     if(warm){
