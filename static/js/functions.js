@@ -65,7 +65,7 @@ function addCallLogRow(call_log){
         $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(callerEmailInput),
         $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(timestampInput),
     );
-    $('#call-log-settings').append(row)
+    $('#call-log-settings').prepend(row)
     // #call-log-settings is the table body that exists in the html, the rows and row data is done dynamivally
 
 }
@@ -167,6 +167,53 @@ function openSettings(entry){
     $('#settings-menu').hide();
 }
 
+function clearCallLogModal(){
+    $('#callType').val('');
+    $('#callbackNumber').val('');
+    $('#companyContact').empty().append(`<option value="">Select</option>`);
+    $('#callerName').val('');
+    $('#callerCompany').val('');
+    $('#callerEmail').val('');
+
+    // Reset Quill editor + hidden field
+    if (window.quillEditor) {
+        window.quillEditor.setText('');
+        $('#reasonForCall').val('');
+    }
+
+    // Company name label
+    $('#companyName').val('');
+}
+
+function openCallLogModal(currentEntry){
+    //clear current entries
+    clearCallLogModal();
+
+    // if existing company
+    if (currentEntry) {
+        // fill company name
+        $('#companyName').val(currentEntry.company);
+
+        // fill contacts dropdown
+        $('#companyContact').empty().append(`<option value="">Select</option>`);
+        if (currentEntry.actions && currentEntry.actions.length) {
+            currentEntry.actions.forEach(a => {
+                $('#companyContact').append(
+                    `<option value="${a.name}">${a.name}</option>`
+                );
+            });
+        }
+    }
+    // if it's new company (currentEntry == undefined)
+    else {
+        $('#companyName').val('');
+        $('#companyContact').empty().append(`<option value="">Select</option>`);
+    }
+
+    // finally open modal
+    openModal('#modal-subform');
+
+}
 
 async function saveSettings(){
     console.log('saveSettings currentEntry', currentEntry);
@@ -683,6 +730,16 @@ function initializeDOMListeners(){
     $('#modal-subform-save').addClass('is-loading');
     await saveCallLog();
     })
+
+    //admin call log
+    $('#open-subform').on('click', function(e){
+    console.log('#open-subform was clicked');
+    //there might have to be a different function like openCallLogModal (similar to openSettings) that fills data first (data that may be needed for dropdowns) then call openModal()
+    openCallLogModal();
+    // when this modal opens there will be a save button in that modal , this button should call a function called saveCallLogs() which will post to backend
+    })
+
+
 }
 
 
