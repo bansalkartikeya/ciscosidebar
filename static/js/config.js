@@ -67,14 +67,14 @@ const firstColumn = [
     {id:"center", name:"Center ID"},
     {id:"center-number", name:"Center Number"},
     {id:"email", name:"Center Email"},
-    {id:"voicemail", name:"Voicemail"},
-    {id:"website", name:"Website"},
+    {id:"voicemail", name:"Voicemail"}
 ]
 
 const secondColumn = [
     {id:"instructions", name:"Instructions"},
     {id:"hours", name:"Hours"},
     {id:"info", name:"Info"},
+    {id:"website", name:"Website"}
 ]
 
 const allInputs = firstColumn.concat(secondColumn).concat([{id:"script"}]);
