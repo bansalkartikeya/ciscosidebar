@@ -352,6 +352,9 @@ function buildCustomer(json){
     }
 }
 
+function unescapeHTML(str) {
+    return $('<textarea/>').html(str).text();
+}
 
 function buildCompany(callerId, callerName, data){
     customLog('buildCompany data:');
@@ -378,7 +381,9 @@ function buildCompany(callerId, callerName, data){
             );
         } else if(["actions"].indexOf(key) < 0){
             try{
-                $(`#${useKey}`).html(data[key]);
+
+                let value = unescapeHTML(data[key]);
+                $(`#${useKey}`).html(value);
             } catch(e){
                 customLog('buildCompany key error:');
                 customLog(e);
