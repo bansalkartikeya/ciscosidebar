@@ -66,15 +66,15 @@ const firstColumn = [
     {id:"titan", name:"Titan ID"},
     {id:"center", name:"Center ID"},
     {id:"center-number", name:"Center Number"},
-    {id:"email", name:"Center Email"}
+    {id:"email", name:"Center Email"},
+    {id:"voicemail", name:"Voicemail"},
+    {id:"website", name:"Website"},
 ]
 
 const secondColumn = [
     {id:"instructions", name:"Instructions"},
     {id:"hours", name:"Hours"},
-    {id:"website", name:"Website"},
     {id:"info", name:"Info"},
-    {id:"voicemail", name:"Voicemail"}
 ]
 
 const allInputs = firstColumn.concat(secondColumn).concat([{id:"script"}]);
