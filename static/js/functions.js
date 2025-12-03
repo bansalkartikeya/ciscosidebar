@@ -121,7 +121,12 @@ function fillSettings(data){
                 if(itemKey === "script"){
                     rows = 2;
                 }
-                inputItem = $(`<textarea id="${itemKey}-input" class="textarea admin-input" rows="${rows}">`);
+                inputItem = $(`<textarea id="${itemKey}-input" class="textarea admin-input" contenteditable="true" rows="${rows}">`);
+
+                if(value){
+                    inputItem.html(value); // Render raw HTML
+                }
+                
             } else {
                 inputItem = $(`<input id="${itemKey}-input" class="input admin-input" type="text">`);
             }
