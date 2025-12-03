@@ -736,7 +736,7 @@ function initializeDOMListeners(){
     $('#open-subform').on('click', function(e){
     console.log('#open-subform was clicked');
     //there might have to be a different function like openCallLogModal (similar to openSettings) that fills data first (data that may be needed for dropdowns) then call openModal()
-    openCallLogModal();
+    openCallLogModal(currentEntry);
     // when this modal opens there will be a save button in that modal , this button should call a function called saveCallLogs() which will post to backend
     })
 
