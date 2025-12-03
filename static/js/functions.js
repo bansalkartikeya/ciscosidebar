@@ -186,6 +186,7 @@ function clearCallLogModal(){
 }
 
 function openCallLogModal(currentEntry){
+    console.log(currentEntry)
     //clear current entries
     clearCallLogModal();
 
@@ -738,6 +739,14 @@ function initializeDOMListeners(){
     openCallLogModal();
     // when this modal opens there will be a save button in that modal , this button should call a function called saveCallLogs() which will post to backend
     })
+
+    //close admin call log modal
+    $('#modal-subform-close').on('click', function(e){
+        closeModal('#modal-subform')
+    });
+    $('#modal-subform-close-lower').on('click', function(e){
+        closeModal('#modal-subform')
+    });
 
 
 }
