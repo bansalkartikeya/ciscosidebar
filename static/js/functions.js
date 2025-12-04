@@ -121,19 +121,12 @@ function fillSettings(data) {
 
             // Check if the field should render as HTML (non-editable fields)
             if (["instructions", "script", "website", "info"].indexOf(itemKey) >= 0) {
-                // Render HTML for fields with HTML content
-                $(`#${itemKey}-settings`).html(value || ''); // Render the HTML tags correctly
+                // Render HTML for fields with HTML content (when these fields are non-editable)
+                let inputItem = $(`<textarea id="${itemKey}-input" class="textarea admin-input" rows="3">${value || ''}</textarea>`);
+                $(`#${itemKey}-settings`).append(inputItem);
             } else {
                 let inputItem;
-                if (["script", "instructions", "website", "info"].indexOf(itemKey) >= 0) {
-                    let rows = 3;
-                    if (itemKey === "script") {
-                        rows = 2;
-                    }
-                    inputItem = $(`<textarea id="${itemKey}-input" class="textarea admin-input" rows="${rows}">`);
-                } else {
-                    inputItem = $(`<input id="${itemKey}-input" class="input admin-input" type="text">`);
-                }
+                inputItem = $(`<input id="${itemKey}-input" class="input admin-input" type="text">`);
                 if (value) {
                     inputItem.val(value);
                 }
@@ -143,7 +136,7 @@ function fillSettings(data) {
             customLog('fillSettings key error:');
             customLog(e);
         }
-    } // Closing brace for the 'for' loop here
+    }
 
     // Create inputs for actions and call logs
     $('#contacts-settings').empty();
@@ -161,7 +154,9 @@ function fillSettings(data) {
             addCallLogRow(call_log);
         }
     }
-} 
+}
+
+
 
 function openSettings(entry){
     fillSettings(entry);
