@@ -101,7 +101,6 @@ function addActionRow(action){
     // #contacts-settings is the table body that exists in the html, the rows and row data is done dynamivally
 }
 
-
 function fillSettings(data) {
     customLog('fillSettings data:');
     customLog(data);
@@ -119,12 +118,13 @@ function fillSettings(data) {
         try {
             $(`#${itemKey}-settings`).empty();
 
-            // Check if the field should render as HTML (non-editable fields)
+            // Check if the field should render as HTML (editable fields that allow HTML content)
             if (["instructions", "script", "website", "info"].indexOf(itemKey) >= 0) {
-                // Render HTML for fields with HTML content (when these fields are non-editable)
-                let inputItem = $(`<textarea id="${itemKey}-input" class="textarea admin-input" rows="3">${value || ''}</textarea>`);
+                // Use contenteditable for editable HTML content
+                let inputItem = $(`<div id="${itemKey}-input" class="textarea admin-input" contenteditable="true">${value || ''}</div>`);
                 $(`#${itemKey}-settings`).append(inputItem);
             } else {
+                // For normal input fields (like company, number, etc.)
                 let inputItem;
                 inputItem = $(`<input id="${itemKey}-input" class="input admin-input" type="text">`);
                 if (value) {
@@ -155,7 +155,6 @@ function fillSettings(data) {
         }
     }
 }
-
 
 
 function openSettings(entry){
