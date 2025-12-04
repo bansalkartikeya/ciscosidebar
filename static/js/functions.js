@@ -102,56 +102,66 @@ function addActionRow(action){
 }
 
 
-function fillSettings(data){
+function fillSettings(data) {
     customLog('fillSettings data:');
     customLog(data);
     $("#modal-settings-error").empty();
-    for(let item of allInputs){
+
+    // Loop through the `allInputs` array (which combines `firstColumn` and `secondColumn`)
+    for (let item of allInputs) {
         let itemKey = item.id;
         let value;
-        if(data){
-            let dataKey = itemKey.replaceAll("-","_");
+        if (data) {
+            let dataKey = itemKey.replaceAll("-", "_");
             value = data[dataKey];
         }
-        try{
+
+        try {
             $(`#${itemKey}-settings`).empty();
-            let inputItem;
-            if(["script", "instructions", "website", "info"].indexOf(itemKey) >= 0){
-                let rows = 3;
-                if(itemKey === "script"){
-                    rows = 2;
-                }
-                inputItem = $(`<textarea id="${itemKey}-input" class="textarea admin-input" rows="${rows}">`);
+
+            // Check if the field should render as HTML (non-editable fields)
+            if (["instructions", "script", "website", "info"].indexOf(itemKey) >= 0) {
+                // Render HTML for fields with HTML content
+                $(`#${itemKey}-settings`).html(value || ''); // Render the HTML tags correctly
             } else {
-                inputItem = $(`<input id="${itemKey}-input" class="input admin-input" type="text">`);
+                let inputItem;
+                if (["script", "instructions", "website", "info"].indexOf(itemKey) >= 0) {
+                    let rows = 3;
+                    if (itemKey === "script") {
+                        rows = 2;
+                    }
+                    inputItem = $(`<textarea id="${itemKey}-input" class="textarea admin-input" rows="${rows}">`);
+                } else {
+                    inputItem = $(`<input id="${itemKey}-input" class="input admin-input" type="text">`);
+                }
+                if (value) {
+                    inputItem.val(value);
+                }
+                $(`#${itemKey}-settings`).append(inputItem);
             }
-            if(value){
-                inputItem.val(value);
-            }
-            $(`#${itemKey}-settings`).append(inputItem);
-        } catch(e){
+        } catch (e) {
             customLog('fillSettings key error:');
             customLog(e);
         }
-    }
-    // for each field a input is created(textarea,input) and appended to a created div for the input eg company-input is a input element and will go into a div call company-settings
-    // this all goes into two columns that are defined in the html first-column-settings and second-column-settings
+    } // Closing brace for the 'for' loop here
+
+    // Create inputs for actions and call logs
     $('#contacts-settings').empty();
-    if(data){
-        for(let action of data["actions"]){
+    if (data) {
+        for (let action of data["actions"]) {
             customLog('fillSettings action:', action);
             addActionRow(action);
         }
     }
+
     $('#call-log-settings').empty();
-    if(data){
-        for(let call_log of data["call_logs"]){
+    if (data) {
+        for (let call_log of data["call_logs"]) {
             customLog('fillSettings calllogs:', call_log);
             addCallLogRow(call_log);
         }
     }
-}
-
+} 
 
 function openSettings(entry){
     fillSettings(entry);
