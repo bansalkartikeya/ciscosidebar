@@ -101,51 +101,55 @@ function addActionRow(action){
     // #contacts-settings is the table body that exists in the html, the rows and row data is done dynamivally
 }
 
-
-function fillSettings(data){
+function fillSettings(data) {
     customLog('fillSettings data:');
     customLog(data);
     $("#modal-settings-error").empty();
-    for(let item of allInputs){
+
+    // Loop through the `allInputs` array (which combines `firstColumn` and `secondColumn`)
+    for (let item of allInputs) {
         let itemKey = item.id;
         let value;
-        if(data){
-            let dataKey = itemKey.replaceAll("-","_");
+        if (data) {
+            let dataKey = itemKey.replaceAll("-", "_");
             value = data[dataKey];
         }
-        try{
+
+        try {
             $(`#${itemKey}-settings`).empty();
-            let inputItem;
-            if(["script", "instructions", "website", "info"].indexOf(itemKey) >= 0){
-                let rows = 3;
-                if(itemKey === "script"){
-                    rows = 2;
-                }
-                inputItem = $(`<textarea id="${itemKey}-input" class="textarea admin-input" rows="${rows}">`);
+
+            // Check if the field should render as HTML (editable fields that allow HTML content)
+            if (["instructions", "script", "website", "info"].indexOf(itemKey) >= 0) {
+                // Use contenteditable for editable HTML content
+                let inputItem = $(`<div id="${itemKey}-input" class="textarea admin-input" contenteditable="true">${value || ''}</div>`);
+                $(`#${itemKey}-settings`).append(inputItem);
             } else {
+                // For normal input fields (like company, number, etc.)
+                let inputItem;
                 inputItem = $(`<input id="${itemKey}-input" class="input admin-input" type="text">`);
+                if (value) {
+                    inputItem.val(value);
+                }
+                $(`#${itemKey}-settings`).append(inputItem);
             }
-            if(value){
-                inputItem.val(value);
-            }
-            $(`#${itemKey}-settings`).append(inputItem);
-        } catch(e){
+        } catch (e) {
             customLog('fillSettings key error:');
             customLog(e);
         }
     }
-    // for each field a input is created(textarea,input) and appended to a created div for the input eg company-input is a input element and will go into a div call company-settings
-    // this all goes into two columns that are defined in the html first-column-settings and second-column-settings
+
+    // Create inputs for actions and call logs
     $('#contacts-settings').empty();
-    if(data){
-        for(let action of data["actions"]){
+    if (data) {
+        for (let action of data["actions"]) {
             customLog('fillSettings action:', action);
             addActionRow(action);
         }
     }
+
     $('#call-log-settings').empty();
-    if(data){
-        for(let call_log of data["call_logs"]){
+    if (data) {
+        for (let call_log of data["call_logs"]) {
             customLog('fillSettings calllogs:', call_log);
             addCallLogRow(call_log);
         }
@@ -352,7 +356,6 @@ function buildCustomer(json){
         $('#api-info-div').show();
     }
 }
-
 
 function buildCompany(callerId, callerName, data){
     customLog('buildCompany data:');
