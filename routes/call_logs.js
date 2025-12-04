@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { requireAuth } from '../lib/auth.js';
 import { insertCallLog, getCallLogs, updateCallLog, deleteCallLog } from '../lib/database.js';
+import { getPerson } from './webexService.js';
 
 const router = express.Router();
 
@@ -10,6 +11,9 @@ const router = express.Router();
 // Create a call log
 router.post('/call_logs', requireAuth, async (req, res) => {
   try {
+    const accessToken = req.headers.accesstoken; //get access token from custom headers sent from frontend
+    const person = await getPerson(accessToken); //get person
+    console.log(person)
     const insert = await insertCallLog(req.body);
     res.json({ insertedId: insert.insertedId });
   } catch (error) {

@@ -748,7 +748,7 @@ function initializeDOMListeners(){
     $('#modal-subform-close-lower').on('click', function(e){
         closeModal('#modal-subform')
     });
-
+    
     // saving call logs for admin
     $('#modal-subform-save').on('click', async function(e){
     console.log('#modal-subform-save save call log');
