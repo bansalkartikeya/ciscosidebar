@@ -14,7 +14,7 @@ function closeAllModals() {
 }
 
 function addCallLogRow(call_log){
-    let callTypeInput = $(`<input name="call-log-field1" class="input" type="text" placeholder="Call Type">`);
+    let callTypeInput = $(`<input name="call-log-field1" class="input" type="text" placeholder="Call Type" readonly>`);
     let callbackNumberInput = $(`<input name="call-log-field2" class="input" type="text" placeholder="Callback Number">`);
     let companyContactInput = $(`<input name="call-log-field3" class="input" type="text" placeholder="Company Contact">`);
     let callerNameInput = $(`<input name="call-log-field4" class="input" type="text" placeholder="Caller Name">`);
@@ -278,6 +278,7 @@ async function saveCallLog(){
             reason_for_call: $('#reasonForCall').val().trim() || null,
             caller_company: $('#callerCompany').val().trim() || null,
             caller_email: $('#callerEmail').val().trim() || null,
+            //how do u get the agent or admin thats logged in
     };
     //post the data to the backend
     let response = await fetch('/call_logs',{
@@ -726,11 +727,11 @@ function initializeDOMListeners(){
     //there might have to be a different function like openCallLogModal (similar to openSettings) that fills data first (data that may be needed for dropdowns) then call openModal()
     // when this modal opens there will be a save button in that modal , this button should call a function called saveCallLogs() which will post to backend
     })
-    $('#modal-subform-save').on('click', async function(e){
-    console.log('#modal-subform-save save call log');
-    $('#modal-subform-save').addClass('is-loading');
-    await saveCallLog();
-    })
+    // $('#modal-subform-save').on('click', async function(e){
+    // console.log('#modal-subform-save save call log');
+    // $('#modal-subform-save').addClass('is-loading');
+    // await saveCallLog();
+    // })
 
     //admin call log
     $('#open-subform').on('click', function(e){
@@ -747,6 +748,13 @@ function initializeDOMListeners(){
     $('#modal-subform-close-lower').on('click', function(e){
         closeModal('#modal-subform')
     });
+
+    // saving call logs for admin
+    $('#modal-subform-save').on('click', async function(e){
+    console.log('#modal-subform-save save call log');
+    $('#modal-subform-save').addClass('is-loading');
+    await saveCallLog();
+    })
 
 
 }

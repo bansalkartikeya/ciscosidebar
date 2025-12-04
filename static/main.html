@@ -322,15 +322,16 @@
             <table class="table is-striped is-hoverable is-fullwidth">
               <thead>
                 <tr>
-                  <th> </th>
+                  <th>Timestamp</th>
+                  <th>Agent</th>
                   <th>Call Type</th>
-                  <th>Company Contact</th>
+                  <th>Recipient</th>
                   <th>Reason For Call</th>
-                  <th>Call Back Number</th>
                   <th>Caller name</th>
                   <th>Caller Company</th>
+                  <th>Call Back Number</th>
                   <th>Caller Email</th>
-                  <th>Timestamp</th>
+                  <th>Details</th>
                 </tr>
               </thead>
 
@@ -415,10 +416,8 @@
             <div class="field">
               <label class="label">Company Contact</label>
               <div class="select is-fullwidth">
-                <select id="companyContact">
+                <select id="companyContact" multiple>
                   <option value="">Select</option>
-                  <!-- <option value="Christopher Porter">Christopher Porter</option>
-                  <option value="Jacqui Hamson">Jacqui Hamson</option> -->
                 </select>
               </div>
             </div>
