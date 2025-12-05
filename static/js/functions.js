@@ -34,8 +34,8 @@ function addCallLogRow(call_log){
         if(call_log.call_type){
             callTypeInput.val(call_log.call_type);
         }
-        if(call_log.company_contact){
-            companyContactInput.val(call_log.company_contact);
+        if (call_log.company_contacts && Array.isArray(call_log.company_contacts)) {
+            companyContactInput.val(call_log.company_contacts.join(", "));
         }
         if(call_log.reason_for_call){
             reasonForCallInput.val(call_log.reason_for_call);
@@ -195,11 +195,28 @@ function clearCallLogModal(){
     // Company name label
     $('#companyName').val('');
 }
+let companyContactSelect = null;
+
+function initCompanyContactSelect() {
+  if (companyContactSelect) return; // prevent re-initializing
+
+  companyContactSelect = new TomSelect("#companyContact", {
+    persist: false,
+    maxItems: null,   // allow unlimited selections
+    plugins: ['remove_button'],
+  });
+}
+
 
 function openCallLogModal(currentEntry){
     console.log(currentEntry)
     //clear current entries
     clearCallLogModal();
+    initCompanyContactSelect();  // initialize multi-select
+    const select = companyContactSelect;
+    // Clear existing options + items
+    select.clear();
+    select.clearOptions();
 
     // if existing company
     if (currentEntry) {
@@ -210,16 +227,14 @@ function openCallLogModal(currentEntry){
         $('#companyContact').empty().append(`<option value="">Select</option>`);
         if (currentEntry.actions && currentEntry.actions.length) {
             currentEntry.actions.forEach(a => {
-                $('#companyContact').append(
-                    `<option value="${a.name}">${a.name}</option>`
-                );
+               select.addOption({ value: a.name, text: a.name });
             });
         }
     }
     // if it's new company (currentEntry == undefined)
     else {
         $('#companyName').val('');
-        $('#companyContact').empty().append(`<option value="">Select</option>`);
+        // $('#companyContact').empty().append(`<option value="">Select</option>`);
     }
 
     // finally open modal
@@ -285,7 +300,8 @@ async function saveCallLog(){
             timestamp: new Date(),
             call_type:  $('#callType').val().trim(),
             callback_number: $('#callbackNumber').val().trim() || null,
-            company_contact: $('#companyContact').val().trim() || null,
+            // company_contact: $('#companyContact').val().trim() || null,
+            company_contacts: companyContactSelect.getValue(),
             caller_name: $('#callerName').val().trim() || null,
             reason_for_call: $('#reasonForCall').val().trim() || null,
             caller_company: $('#callerCompany').val().trim() || null,
