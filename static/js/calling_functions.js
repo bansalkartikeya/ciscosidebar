@@ -66,3 +66,25 @@ async function divert(payload){
     customLog(`divert divertResponse.status:${divertResponse.status}`);
     return divertResponse;
 }
+
+
+async function getCurrentUser(){
+    try {
+        const response = await fetch('https://webexapis.com/v1/people/me', {
+          method: "GET",
+          headers: webexHeaders,
+        });
+        
+        const person = await response.json();
+        console.log('getPerson response status:', response.status);
+        
+        if (response.status === 429) {
+          person.retry = response.headers.get('Retry-After');
+        }
+        
+        return person;
+    } catch (error) {
+        console.error('Error getting person:', error);
+        throw error;
+    }
+}

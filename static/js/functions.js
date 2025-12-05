@@ -14,56 +14,56 @@ function closeAllModals() {
 }
 
 function addCallLogRow(call_log){
+    let timestampInput = $(`<input name="call-log-field8" class="input" type="text" placeholder="Timestamp" readonly>`);
+    let agentInput = $(`<input name="call-log-field9" class="input" type="text" placeholder="Agent" readonly>`);
     let callTypeInput = $(`<input name="call-log-field1" class="input" type="text" placeholder="Call Type" readonly>`);
-    let callbackNumberInput = $(`<input name="call-log-field2" class="input" type="text" placeholder="Callback Number">`);
-    let companyContactInput = $(`<input name="call-log-field3" class="input" type="text" placeholder="Company Contact">`);
-    let callerNameInput = $(`<input name="call-log-field4" class="input" type="text" placeholder="Caller Name">`);
-    let reasonForCallInput = $(`<input name="call-log-field5" class="input" type="text" placeholder="Reason For Call">`);
-    let callerCompanyInput = $(`<input name="call-log-field6" class="input" type="text" placeholder="Caller Company">`);
-    let callerEmailInput = $(`<input name="call-log-field7" class="input" type="text" placeholder="Caller Email">`);
-    let timestampInput = $(`<input name="call-log-field8" class="input" type="text" placeholder="Timestamp">`);
+    let companyContactInput = $(`<input name="call-log-field3" class="input" type="text" placeholder="Company Contact" readonly>`);
+    let reasonForCallInput = $(`<input name="call-log-field5" class="input" type="text" placeholder="Reason For Call" readonly>`);
+    let callerNameInput = $(`<input name="call-log-field4" class="input" type="text" placeholder="Caller Name" readonly>`);
+    let callerCompanyInput = $(`<input name="call-log-field6" class="input" type="text" placeholder="Caller Company" readonly>`);
+    let callbackNumberInput = $(`<input name="call-log-field2" class="input" type="text" placeholder="Callback Number" readonly>`);
+    let callerEmailInput = $(`<input name="call-log-field7" class="input" type="text" placeholder="Caller Email" readonly>`);
 
     if(call_log){
+        if(call_log.timestamp){
+            timestampInput.val(call_log.timestamp);
+        }
+        if(call_log.agent){
+            agentInput.val(call_log.agent);
+        }
         if(call_log.call_type){
             callTypeInput.val(call_log.call_type);
-        }
-        if(call_log.callback_number){
-            callbackNumberInput.val(call_log.callback_number);
         }
         if(call_log.company_contact){
             companyContactInput.val(call_log.company_contact);
         }
-        if(call_log.caller_name){
-            callerNameInput.val(call_log.caller_name);
-        }
         if(call_log.reason_for_call){
             reasonForCallInput.val(call_log.reason_for_call);
+        }
+        if(call_log.caller_name){
+            callerNameInput.val(call_log.caller_name);
         }
         if(call_log.caller_company){
             callerCompanyInput.val(call_log.caller_company);
         }
+        if(call_log.callback_number){
+            callbackNumberInput.val(call_log.callback_number);
+        }
         if(call_log.caller_email){
             callerEmailInput.val(call_log.caller_email);
-        }
-        if(call_log.timestamp){
-            timestampInput.val(call_log.timestamp);
         }
     }
     let row = $('<tr class="call-log-row">');
     row.append(
-        $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append($(`<button name="call-log-delete" class="button">`).append(
-            $(`<span class="icon"><i class="fas fa-trash" aria-hidden="true"></i></span>`)
-        ).on('click', function(e){
-            $(e.currentTarget.parentNode.parentNode).remove();
-        })),
-        $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(callTypeInput),
-        $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(callbackNumberInput),
-        $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(companyContactInput),
-        $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(callerNameInput),
-        $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(reasonForCallInput),
-        $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(callerCompanyInput),
-        $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(callerEmailInput),
         $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(timestampInput),
+        $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(agentInput),
+        $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(callTypeInput),
+        $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(companyContactInput),
+        $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(reasonForCallInput),
+        $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(callerNameInput),
+        $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(callerCompanyInput),
+        $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(callbackNumberInput),
+        $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(callerEmailInput),
     );
     $('#call-log-settings').prepend(row)
     // #call-log-settings is the table body that exists in the html, the rows and row data is done dynamivally
@@ -272,6 +272,7 @@ async function saveSettings(){
 async function saveCallLog(){
     $("#modal-settings-error").empty();   //using this error div from the admin modal only(footer)
     //create the data to be sent
+    const currentUser = await getCurrentUser(); //get current user
     let callLog = {
             queue_id: currentEntry._id,   // IMPORTANT: link to queue
             timestamp: new Date(),
@@ -282,7 +283,7 @@ async function saveCallLog(){
             reason_for_call: $('#reasonForCall').val().trim() || null,
             caller_company: $('#callerCompany').val().trim() || null,
             caller_email: $('#callerEmail').val().trim() || null,
-            //how do u get the agent or admin thats logged in
+            agent: currentUser.displayName
     };
     //post the data to the backend
     let response = await fetch('/call_logs',{

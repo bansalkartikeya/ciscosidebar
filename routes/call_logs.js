@@ -11,10 +11,6 @@ const router = express.Router();
 // Create a call log
 router.post('/call_logs', requireAuth, async (req, res) => {
   try {
-    const accessToken = req.headers.accesstoken; //get access token from custom headers sent from frontend
-    const person = await getPerson(accessToken); //get person
-    console.error('logging the person');
-    console.log(person)
     const insert = await insertCallLog(req.body);
     res.json({ insertedId: insert.insertedId });
   } catch (error) {
