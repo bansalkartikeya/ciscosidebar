@@ -118,15 +118,21 @@ function fillSettings(data) {
         try {
             $(`#${itemKey}-settings`).empty();
 
-            // Check if the field should render as HTML (editable fields that allow HTML content)
+            // Check if the field should render as HTML (non-editable fields)
             if (["instructions", "script", "website", "info"].indexOf(itemKey) >= 0) {
-                // Use contenteditable for editable HTML content
-                let inputItem = $(`<div id="${itemKey}-input" class="textarea admin-input" contenteditable="true">${value || ''}</div>`);
-                $(`#${itemKey}-settings`).append(inputItem);
+                // Render HTML for fields with HTML content
+                $(`#${itemKey}-settings`).html(value || ''); // Render the HTML tags correctly
             } else {
-                // For normal input fields (like company, number, etc.)
                 let inputItem;
-                inputItem = $(`<input id="${itemKey}-input" class="input admin-input" type="text">`);
+                if (["script", "instructions", "website", "info"].indexOf(itemKey) >= 0) {
+                    let rows = 3;
+                    if (itemKey === "script") {
+                        rows = 2;
+                    }
+                    inputItem = $(`<textarea id="${itemKey}-input" class="textarea admin-input" rows="${rows}">`);
+                } else {
+                    inputItem = $(`<input id="${itemKey}-input" class="input admin-input" type="text">`);
+                }
                 if (value) {
                     inputItem.val(value);
                 }
@@ -136,8 +142,9 @@ function fillSettings(data) {
             customLog('fillSettings key error:');
             customLog(e);
         }
-    }
-
+    } // Closing brace for the 'for' loop here
+    // for each field a input is created(textarea,input) and appended to a created div for the input eg company-input is a input element and will go into a div call company-settings
+    // this all goes into two columns that are defined in the html first-column-settings and second-column-settings
     // Create inputs for actions and call logs
     $('#contacts-settings').empty();
     if (data) {
