@@ -360,6 +360,106 @@
     </div>
   </div>
 
+  <!-- add contact modal -->
+  <div id="add-contact-modal" class="modal">
+    <div class="modal-background"></div>
+
+    <div class="modal-card" style="width: 70%;">
+      <!-- HEADER -->
+      <header class="modal-card-head">
+        <p class="modal-card-title">Add company contact</p>
+        <button class="delete" aria-label="close" id="close-contact-modal"></button>
+      </header>
+
+      <!-- BODY -->
+      <section class="modal-card-body">
+        <div class="columns">
+
+          <!-- LEFT SIDE -->
+          <div class="column">
+            <div class="field">
+              <label class="label">First Name</label>
+              <input class="input" type="text" placeholder="First Name">
+            </div>
+
+            <div class="field">
+              <label class="label">Last Name</label>
+              <input class="input" type="text" placeholder="Last Name">
+            </div>
+
+            <div class="field">
+              <label class="label">Department</label>
+              <input class="input" type="text" placeholder="Department">
+            </div>
+
+            <div class="field">
+              <label class="label">Answering Mode</label>
+              <div class="select is-fullwidth">
+                <select>
+                  <option>Select mode</option>
+                  <option>Auto</option>
+                  <option>Manual</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Transfer Phone</label>
+              <div class="select is-fullwidth">
+                <select>
+                  <option>Select number</option>
+                  <option>Number 1</option>
+                  <option>Number 2</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Custom Instructions</label>
+              <textarea class="textarea" placeholder="Write instructions..."></textarea>
+            </div>
+          </div>
+
+          <!-- RIGHT SIDE -->
+          <div class="column">
+            <div class="field">
+              <label class="label">Email</label>
+              <input class="input" type="email" placeholder="Email">
+            </div>
+
+            <div class="field">
+              <label class="label">Office Phone</label>
+              <input class="input" type="text" placeholder="Office Phone">
+            </div>
+
+            <div class="field">
+              <label class="label">Cell Phone</label>
+              <input class="input" type="text" placeholder="Cell Phone">
+            </div>
+
+            <div class="field">
+              <label class="label">Home Phone</label>
+              <input class="input" type="text" placeholder="Home Phone">
+            </div>
+
+            <div class="field">
+              <label class="label">Other Phone</label>
+              <input class="input" type="text" placeholder="Other Phone">
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="modal-card-foot" style="justify-content: flex-start;">
+        <button class="button is-primary">Add Contact</button>
+      </footer>
+
+    </div>
+  </div>
+
+
   <!--- SUBFORM POPUP MODAL --->
 
   <div id="modal-subform" class="modal">
