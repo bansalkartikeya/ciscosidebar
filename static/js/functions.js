@@ -679,7 +679,7 @@ function initializeDOMListeners(){
 
     $('#action-add').on('click', function(e){
         console.log('#action-add add a row');
-        openModal(add-contact-modal)
+        openModal("#add-contact-modal")
         addActionRow();
     })
     // this button action-add is defined at the end of company contact in the modal in html
