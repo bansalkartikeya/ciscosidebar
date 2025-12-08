@@ -101,6 +101,36 @@ function addCallLogRow(call_log){
 //     // #contacts-settings is the table body that exists in the html, the rows and row data is done dynamivally
 // }
 
+function viewContact(data) {
+    if (!data) return;
+
+    // Fill modal fields
+    $('#contact-name').val(data.name || '');
+    $('#contact-dept').val(data.department || '');
+    $('#contact-answer-mode').val(data.answering_mode || '');
+    $('#contact-transfer-phone').val(data.transfer_phone || '');
+    $('#contact-instructions').val(data.instructions || '');
+
+    $('#contact-email').val(data.email || '');
+    $('#contact-office').val(data.office_phone || '');
+    $('#contact-cell').val(data.cell_phone || '');
+    $('#contact-home').val(data.home_phone || '');
+    $('#contact-other').val(data.other_phone || '');
+
+    // Make all fields read-only
+    $('#add-contact-modal input, #add-contact-modal select, #add-contact-modal textarea')
+        .prop('disabled', true);
+
+    // Hide Add/Save button
+    $('#save-contact-button').hide();
+
+    // Show only Close button
+    $('#close-contact-modal').show();
+
+    // Open modal
+    $('#add-contact-modal').addClass('is-active');
+}
+
 function addActionRow(action) {
     // Determine transfer number
     let transferNumber = '';
@@ -134,7 +164,9 @@ function addActionRow(action) {
             <td class="custom-cell"><span class="action-dept">${agentInstruction}</span></td>
             <td class="custom-cell"><span class="action-answering">${transferNumber}</span></td>
             <td class="custom-cell"><span class="action-transfer">${agentVoicemail}</span></td>
-            <td class="custom-cell"><span class="action-instructions">View</span></td>
+            <td class="custom-cell">
+                <button class="button is-small action-view"><i class="fas fa-eye"></i></button>
+            </td>
             <td class="custom-cell"><span class="action-instructions">Edit</span></td>
         </tr>
     `);
@@ -146,6 +178,12 @@ function addActionRow(action) {
     row.find('.action-delete').on('click', function() {
         row.remove();
     });
+
+    //view the data
+    row.find('.action-view').on('click', function() {
+        viewContact(row.data('action-data'));
+    });
+
 
     $('#contacts-settings').append(row);
 }
@@ -741,6 +779,7 @@ function initializeDOMListeners(){
         openModal("#add-contact-modal")
     })
     $('#save-contact-button').on('click', function(e){
+        $('#save-contact-button').addClass('is-loading');
         console.log('#save-contact-button to save contacts');
         //collect values
         const action = {
@@ -756,6 +795,7 @@ function initializeDOMListeners(){
             other_phone: $('#contact-other').val().trim()
         };
         addActionRow(action);
+        $('#save-contact-button').removeClass('is-loading');
         //close the modal
         closeModal('#add-contact-modal')
     })
