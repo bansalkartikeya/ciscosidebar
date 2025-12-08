@@ -140,6 +140,10 @@ function addActionRow(action) {
         case 'Home Phone': transferNumber = action.home_phone; break;
         case 'Other Phone': transferNumber = action.other_phone; break;
     }
+    //clean transfer phone despense with select... if exists
+    const transferPhone = $('#contact-transfer-phone').val();
+    action.transfer_phone = transferPhone === "Select..." ? "" : transferPhone;
+
     // Compose agent instruction
     let agentInstruction = '';
     if(action.answering_mode && action.transfer_phone) {
