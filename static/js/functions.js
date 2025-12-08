@@ -135,67 +135,53 @@ function addActionRow(action) {
 
 
 function fillSettings(data) {
-    customLog('fillSettings data:');
-    customLog(data);
-    $("#modal-settings-error").empty();
+    const htmlFields = ["instructions", "script", "website", "info"];
 
-    // Loop through the `allInputs` array (which combines `firstColumn` and `secondColumn`)
     for (let item of allInputs) {
-        let itemKey = item.id;
-        let value;
-        if (data) {
-            let dataKey = itemKey.replaceAll("-", "_");
-            value = data[dataKey];
-        }
 
-        try {
-            $(`#${itemKey}-settings`).empty();
+        let id = `${item.id}-settings`;  // <-- always use settings layout
+        let container = $(`#${id}`);
+        container.empty();
 
-            // Check if the field should render as HTML (non-editable fields)
-            if (["instructions", "script", "website", "info"].indexOf(itemKey) >= 0) {
-                // Render HTML for fields with HTML content
-                $(`#${itemKey}-settings`).html(value || ''); // Render the HTML tags correctly
-            } else {
-                let inputItem;
-                if (["script", "instructions", "website", "info"].indexOf(itemKey) >= 0) {
-                    let rows = 3;
-                    if (itemKey === "script") {
-                        rows = 2;
-                    }
-                    inputItem = $(`<textarea id="${itemKey}-input" class="textarea admin-input" rows="${rows}">`);
-                } else {
-                    inputItem = $(`<input id="${itemKey}-input" class="input admin-input" type="text">`);
-                }
-                if (value) {
-                    inputItem.val(value);
-                }
-                $(`#${itemKey}-settings`).append(inputItem);
-            }
-        } catch (e) {
-            customLog('fillSettings key error:');
-            customLog(e);
+        let dbKey = item.id.replaceAll("-", "_");
+        let value = data ? data[dbKey] : "";
+
+        // HTML fields: PREVIEW MODE
+        if (htmlFields.includes(item.id)) {
+            container.html(value || "");
         }
-    } // Closing brace for the 'for' loop here
-    // for each field a input is created(textarea,input) and appended to a created div for the input eg company-input is a input element and will go into a div call company-settings
-    // this all goes into two columns that are defined in the html first-column-settings and second-column-settings
-    // Create inputs for actions and call logs
-    $('#contacts-settings').empty();
-    if (data) {
-        for (let action of data["actions"]) {
-            customLog('fillSettings action:', action);
-            addActionRow(action);
+        else {
+            let input = $(`<input id="${item.id}-input" class="input admin-input" value="${value || ""}">`);
+            container.append(input);
         }
     }
+
+    //--------------------------------------------------
+    // EDIT BUTTON (only in -settings mode)
+    //--------------------------------------------------
+    $(document).off("click", ".edit-field-btn").on("click", ".edit-field-btn", function () {
+
+        let field = $(this).data("field");
+
+        let key = field.replaceAll("-", "_");
+        let current = data ? data[key] : "";
+
+        let textarea = $(`
+            <textarea id="${field}-input" class="textarea admin-input" rows="5">${current}</textarea>
+        `);
+
+        $(`#${field}-settings`).html(textarea);
+    });
+
+    //--------------------------------------------------
+    // Contacts, call logs unchanged
+    //--------------------------------------------------
+    $('#contacts-settings').empty();
+    if (data && data.actions) data.actions.forEach(addActionRow);
 
     $('#call-log-settings').empty();
-    if (data) {
-        for (let call_log of data["call_logs"]) {
-            customLog('fillSettings calllogs:', call_log);
-            addCallLogRow(call_log);
-        }
-    }
+    if (data && data.call_logs) data.call_logs.forEach(addCallLogRow);
 }
-
 
 function openSettings(entry){
     fillSettings(entry);
@@ -370,23 +356,41 @@ async function saveCallLog(){
 }
 
 
-function buildColumns(identifier){
-    if(!identifier){
-        identifier = "";
-    }
-    for(let row of firstColumn){
-        $(`#first-column${identifier}`).append(
-            $(`<div class="column is-one-third has-text-weight-bold has-background-${backgroundColor}-ter mb-1 py-1" style="border-radius: 5px;">`).html(row.name),
-            $(`<div id="${row.id}${identifier}" class="column is-two-thirds mb-1 py-1">`)
-        )
+function buildColumns(identifier = "") {
+
+    const htmlFields = ["instructions", "script", "website", "info"];
+
+    const isSettingsMode = identifier === "-settings";
+
+    function createRow(row, colId) {
+
+        // Label
+        let labelDiv = $(`
+            <div class="column is-one-third has-text-weight-bold has-background-${backgroundColor}-ter mb-1 py-1"
+                 style="border-radius: 5px;">
+        `);
+
+        if (isSettingsMode && htmlFields.includes(row.id)) {
+            labelDiv.html(`
+                ${row.name}
+                <button class="button is-small is-info edit-field-btn ml-2"
+                        data-field="${row.id}">
+                    Edit
+                </button>
+            `);
+        } else {
+            labelDiv.html(row.name);
+        }
+
+        // Container
+        let containerId = row.id + identifier;  
+        let containerDiv = $(`<div id="${containerId}" class="column is-two-thirds mb-1 py-1"></div>`);
+
+        $(`#${colId}${identifier}`).append(labelDiv, containerDiv);
     }
 
-    for(let row of secondColumn){
-        $(`#second-column${identifier}`).append(
-            $(`<div class="column is-one-third has-text-weight-bold has-background-${backgroundColor}-ter mb-1 py-1" style="border-radius: 5px;">`).html(row.name),
-            $(`<div id="${row.id}${identifier}" class="column is-two-thirds mb-1 py-1">`)
-        )
-    }
+    for (let row of firstColumn) createRow(row, "first-column");
+    for (let row of secondColumn) createRow(row, "second-column");
 }
 
 function buildCustomer(json){
