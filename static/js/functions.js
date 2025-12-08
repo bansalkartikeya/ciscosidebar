@@ -145,7 +145,7 @@ function addActionRow(action) {
     if(action.answering_mode && action.transfer_phone) {
         agentInstruction = `${action.answering_mode} to ${action.transfer_phone}`;
     }
-    else if(action.answering_mode){
+    else if(action.answering_mode && action.transfer_phone === 'Select...'){
         agentInstruction = `${action.answering_mode}`
     }
     //voicemail
