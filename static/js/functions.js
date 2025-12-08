@@ -103,6 +103,28 @@ function addCallLogRow(call_log){
 
 function viewContact(data) {
     if (!data) return;
+    // Fill modal fields
+    $('#contact-name').val(data.name || '');
+    $('#contact-dept').val(data.department || '');
+    $('#contact-answer-mode').val(data.answering_mode || '');
+    $('#contact-transfer-phone').val(data.transfer_phone || '');
+    $('#contact-instructions').val(data.instructions || '');
+
+    $('#contact-email').val(data.email || '');
+    $('#contact-office').val(data.office_phone || '');
+    $('#contact-cell').val(data.cell_phone || '');
+    $('#contact-home').val(data.home_phone || '');
+    $('#contact-other').val(data.other_phone || '');
+
+    // Change button text
+    $('#save-contact-button')
+        .text("Save Changes")
+        .removeClass("is-primary")
+        .addClass("is-success");
+}
+
+function viewContact(data) {
+    if (!data) return;
 
     // Fill modal fields
     $('#contact-name').val(data.name || '');
@@ -171,7 +193,9 @@ function addActionRow(action) {
             <td class="custom-cell">
                 <button class="button is-small action-view"><i class="fas fa-eye"></i></button>
             </td>
-            <td class="custom-cell"><span class="action-instructions">Edit</span></td>
+             <td class="custom-cell">
+                <button class="button is-small action-edit"><i class="fas fa-edit"></i></button>
+            </td>
         </tr>
     `);
 
@@ -186,6 +210,11 @@ function addActionRow(action) {
     //view the data
     row.find('.action-view').on('click', function() {
         viewContact(row.data('action-data'));
+    });
+
+    //edit the data
+    row.find('.action-edit').on('click', function() {
+        editContact(row.data('action-data'));
     });
 
 
