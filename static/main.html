@@ -378,27 +378,24 @@
           <!-- LEFT SIDE -->
           <div class="column">
             <div class="field">
-              <label class="label">First Name</label>
-              <input class="input" type="text" placeholder="First Name">
-            </div>
-
-            <div class="field">
-              <label class="label">Last Name</label>
-              <input class="input" type="text" placeholder="Last Name">
+              <label class="label">Name</label>
+              <input id="contact-name"class="input" type="text" placeholder="Name">
             </div>
 
             <div class="field">
               <label class="label">Department</label>
-              <input class="input" type="text" placeholder="Department">
+              <input id="contact-dept" class="input" type="text" placeholder="Department">
             </div>
 
             <div class="field">
               <label class="label">Answering Mode</label>
               <div class="select is-fullwidth">
-                <select>
-                  <option>Select mode</option>
-                  <option>Auto</option>
-                  <option>Manual</option>
+                <select id="contact-answer-mode">
+                  <option>Select...</option>
+                  <option>Cold Transfer</option>
+                  <option>Send to Voicemail</option>
+                  <option>Take Message</option>
+                  <option>Warm Transfer</option>
                 </select>
               </div>
             </div>
@@ -406,17 +403,19 @@
             <div class="field">
               <label class="label">Transfer Phone</label>
               <div class="select is-fullwidth">
-                <select>
-                  <option>Select number</option>
-                  <option>Number 1</option>
-                  <option>Number 2</option>
+                <select id="contact-transfer-phone">
+                  <option>Select...</option>
+                  <option>Office Phone</option>
+                  <option>Cell Phone</option>
+                  <option>Home Phone</option>
+                  <option>Other Phone</option>
                 </select>
               </div>
             </div>
 
             <div class="field">
               <label class="label">Custom Instructions</label>
-              <textarea class="textarea" placeholder="Write instructions..."></textarea>
+              <textarea id="contact-instructions" class="textarea" placeholder="Write instructions..."></textarea>
             </div>
           </div>
 
@@ -424,27 +423,27 @@
           <div class="column">
             <div class="field">
               <label class="label">Email</label>
-              <input class="input" type="email" placeholder="Email">
+              <input id="contact-email" class="input" type="email" placeholder="Email">
             </div>
 
             <div class="field">
               <label class="label">Office Phone</label>
-              <input class="input" type="text" placeholder="Office Phone">
+              <input id="contact-office" class="input" type="text" placeholder="Office Phone">
             </div>
 
             <div class="field">
               <label class="label">Cell Phone</label>
-              <input class="input" type="text" placeholder="Cell Phone">
+              <input id="contact-cell" class="input" type="text" placeholder="Cell Phone">
             </div>
 
             <div class="field">
               <label class="label">Home Phone</label>
-              <input class="input" type="text" placeholder="Home Phone">
+              <input id="contact-home" class="input" type="text" placeholder="Home Phone">
             </div>
 
             <div class="field">
               <label class="label">Other Phone</label>
-              <input class="input" type="text" placeholder="Other Phone">
+              <input id="contact-other" class="input" type="text" placeholder="Other Phone">
             </div>
           </div>
 
@@ -453,7 +452,7 @@
 
       <!-- FOOTER -->
       <footer class="modal-card-foot" style="justify-content: flex-start;">
-        <button class="button is-primary">Add Contact</button>
+        <button id="save-contact-button" class="button is-primary">Add Contact</button>
       </footer>
 
     </div>

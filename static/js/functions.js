@@ -71,35 +71,68 @@ function addCallLogRow(call_log){
 }
 
 
-function addActionRow(action){
-    let nameInput = $(`<input name="action-name" class="input" type="text" placeholder="Contact Name">`);
-    let numberInput = $(`<input name="action-number" class="input" type="text" placeholder="Contact Phone Number">`);
-    let voiceMailChecked = "";
-    if(action){
-        if(action.name){
-            nameInput.val(action.name);
-        }
-        if(action.number){
-            numberInput.val(action.number);
-        }
-        if(action.voicemail){
-            voiceMailChecked = "checked";
-        }
-    }
-    let row = $('<tr class="action-row">');
-    row.append(
-        $('<td class="custom-cell">').append($(`<button name="action-delete" class="button">`).append(
-            $(`<span class="icon"><i class="fas fa-trash" aria-hidden="true"></i></span>`)
-        ).on('click', function(e){
-            $(e.currentTarget.parentNode.parentNode).remove();
-        })),
-        $('<td class="custom-cell">').append(nameInput),
-        $('<td class="custom-cell">').append(numberInput),
-        $('<td class="custom-cell pt-4">').append($(`<label class="checkbox"><input name="action-voicemail" type="checkbox" ${voiceMailChecked}/> Voicemail Enabled</label>`))
-    );
-    $('#contacts-settings').append(row)
-    // #contacts-settings is the table body that exists in the html, the rows and row data is done dynamivally
+// function addActionRow(action){
+//     let nameInput = $(`<input name="action-name" class="input" type="text" placeholder="Contact Name">`);
+//     let numberInput = $(`<input name="action-number" class="input" type="text" placeholder="Contact Phone Number">`);
+//     let voiceMailChecked = "";
+//     if(action){
+//         if(action.name){
+//             nameInput.val(action.name);
+//         }
+//         if(action.number){
+//             numberInput.val(action.number);
+//         }
+//         if(action.voicemail){
+//             voiceMailChecked = "checked";
+//         }
+//     }
+//     let row = $('<tr class="action-row">');
+//     row.append(
+//         $('<td class="custom-cell">').append($(`<button name="action-delete" class="button">`).append(
+//             $(`<span class="icon"><i class="fas fa-trash" aria-hidden="true"></i></span>`)
+//         ).on('click', function(e){
+//             $(e.currentTarget.parentNode.parentNode).remove();
+//         })),
+//         $('<td class="custom-cell">').append(nameInput),
+//         $('<td class="custom-cell">').append(numberInput),
+//         $('<td class="custom-cell pt-4">').append($(`<label class="checkbox"><input name="action-voicemail" type="checkbox" ${voiceMailChecked}/> Voicemail Enabled</label>`))
+//     );
+//     $('#contacts-settings').append(row)
+//     // #contacts-settings is the table body that exists in the html, the rows and row data is done dynamivally
+// }
+
+function addActionRow(action) {
+    let row = $(`
+        <tr class="action-row">
+            <td class="custom-cell">
+                <button class="button is-small action-delete">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+            <td class="custom-cell"><span class="action-name">${action.name}</span></td>
+            <td class="custom-cell"><span class="action-dept">${action.department}</span></td>
+            <td class="custom-cell"><span class="action-answering">${action.answering_mode}</span></td>
+            <td class="custom-cell"><span class="action-transfer">${action.transfer_phone}</span></td>
+            <td class="custom-cell"><span class="action-instructions">${action.instructions}</span></td>
+            <td class="custom-cell"><span class="action-email">${action.email}</span></td>
+            <td class="custom-cell"><span class="action-office">${action.office_phone}</span></td>
+            <td class="custom-cell"><span class="action-cell">${action.cell_phone}</span></td>
+            <td class="custom-cell"><span class="action-home">${action.home_phone}</span></td>
+            <td class="custom-cell"><span class="action-other">${action.other_phone}</span></td>
+        </tr>
+    `);
+
+    // Store full data in the row for saveSettings
+    row.data('action-data', action);
+
+    // Delete button
+    row.find('.action-delete').on('click', function() {
+        row.remove();
+    });
+
+    $('#contacts-settings').append(row);
 }
+
 
 function fillSettings(data) {
     customLog('fillSettings data:');
@@ -252,18 +285,22 @@ async function saveSettings(){
     }
     let actions = $('#contacts-settings').find('tr');
     newEntry.actions = [];
-    for(let action of actions){
-        let names = $(action).find('[name="action-name"]:first');
-        let numbers = $(action).find('[name="action-number"]:first');
-        let voicemails = $(action).find('[name="action-voicemail"]:first');
-        if(names.length === 1 && numbers.length === 1){
-            let action = {"name": $(names[0]).val(), "number": $(numbers[0]).val()};
-            if(voicemails.length === 1 && $(voicemails[0]).is(':checked')){
-                action.voicemail = true;
-            }
-            newEntry.actions.push(action);
-        }
-    }
+    // for(let action of actions){
+    //     let names = $(action).find('[name="action-name"]:first');
+    //     let numbers = $(action).find('[name="action-number"]:first');
+    //     let voicemails = $(action).find('[name="action-voicemail"]:first');
+    //     if(names.length === 1 && numbers.length === 1){
+    //         let action = {"name": $(names[0]).val(), "number": $(numbers[0]).val()};
+    //         if(voicemails.length === 1 && $(voicemails[0]).is(':checked')){
+    //             action.voicemail = true;
+    //         }
+    //         newEntry.actions.push(action);
+    //     }
+    // }
+    actions.each(function() {
+        const data = $(this).data('action-data');
+        if(data) newEntry.actions.push(data);
+    });
     if(currentEntry){
         newEntry["_id"] = currentEntry["_id"];
     }
@@ -676,13 +713,37 @@ function initializeDOMListeners(){
         $('#settings-menu').toggle();
         //openModal('#modal-settings');
     })
-
-    $('#action-add').on('click', function(e){
-        console.log('#action-add add a row');
-        openModal("#add-contact-modal")
-        addActionRow();
-    })
+    //--------------------section for adding company contacts----------------------------------------------
     // this button action-add is defined at the end of company contact in the modal in html
+    $('#action-add').on('click', function(e){
+        console.log('#action-add opens modal');
+        openModal("#add-contact-modal")
+    })
+    $('#save-contact-button').on('click', function(e){
+        console.log('#save-contact-button to save contacts');
+        //collect values
+        const action = {
+            name: $('#contact-name').val().trim(),
+            department: $('#contact-dept').val().trim(),
+            answering_mode: $('#contact-answer-mode').val(),
+            transfer_phone: $('#contact-transfer-phone').val(),
+            instructions: $('#contact-instructions').val().trim(),
+            email: $('#contact-email').val().trim(),
+            office_phone: $('#contact-office').val().trim(),
+            cell_phone: $('#contact-cell').val().trim(),
+            home_phone: $('#contact-home').val().trim(),
+            other_phone: $('#contact-other').val().trim()
+        };
+        addActionRow(action);
+        //close the modal
+        closeModal('#add-contact-modal')
+    })
+
+    //closes the modal
+    $('#close-contact-modal').on('click', function(e){
+        closeModal('#add-contact-modal')
+    });
+    //---------------------------------------------------------------------------------------------------
 
     $('#modal-settings-save').on('click', async function(e){
         console.log('#modal-settings-save save entry');
