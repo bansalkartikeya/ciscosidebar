@@ -101,7 +101,7 @@ function addCallLogRow(call_log){
 //     // #contacts-settings is the table body that exists in the html, the rows and row data is done dynamivally
 // }
 
-function viewContact(data) {
+function editContact(data) {
     if (!data) return;
     // Fill modal fields
     $('#contact-name').val(data.name || '');
@@ -121,6 +121,9 @@ function viewContact(data) {
         .text("Save Changes")
         .removeClass("is-primary")
         .addClass("is-success");
+
+    // Open modal
+    openModal('#add-contact-modal')    
 }
 
 function viewContact(data) {
@@ -150,7 +153,7 @@ function viewContact(data) {
     $('#close-contact-modal').show();
 
     // Open modal
-    $('#add-contact-modal').addClass('is-active');
+    openModal('#add-contact-modal')
 }
 
 function addActionRow(action) {
@@ -819,6 +822,7 @@ function initializeDOMListeners(){
         $('#add-contact-modal').find('select').each(function () {
             $(this).prop('selectedIndex', 0);
         });
+        $('#save-contact-button').text("Add Contact").addClass("is-primary")
         openModal("#add-contact-modal")
     })
     $('#save-contact-button').on('click', function(e){
