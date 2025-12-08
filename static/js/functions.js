@@ -776,6 +776,11 @@ function initializeDOMListeners(){
     // this button action-add is defined at the end of company contact in the modal in html
     $('#action-add').on('click', function(e){
         console.log('#action-add opens modal');
+        // Re-enable everything
+        $('#add-contact-modal input, #add-contact-modal select, #add-contact-modal textarea')
+        .prop('disabled', false);
+        // Show save button again
+        $('#save-contact-button').show();
         openModal("#add-contact-modal")
     })
     $('#save-contact-button').on('click', function(e){
