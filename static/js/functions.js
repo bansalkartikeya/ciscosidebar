@@ -102,54 +102,42 @@ function addActionRow(action){
 }
 
 function fillSettings(data) {
-    customLog('fillSettings data:');
-    customLog(data);
+    customLog('fillSettings data:', data);
     $("#modal-settings-error").empty();
 
     const htmlFields = ["instructions", "script", "website", "info"];
 
-    // Populate each field
+    // Loop through all inputs and display values
     for (let item of allInputs) {
         let itemKey = item.id;
-        let value;
-        if (data) {
-            let dataKey = itemKey.replaceAll("-", "_");
-            value = data[dataKey];
+        let container = $(`#${itemKey}-settings`);
+        container.empty();
+
+        let dataKey = itemKey.replaceAll("-", "_");
+        let value = data ? data[dataKey] : "";
+
+        // HTML preview fields
+        if (htmlFields.includes(itemKey)) {
+            container.html(value || "");
         }
-
-        try {
-            let container = $(`#${itemKey}-settings`);
-            container.empty();
-
-            // HTML fields start in preview mode
-            if (htmlFields.includes(itemKey)) {
-                container.html(value || "");
-            } else {
-                // Regular inputs
-                let inputItem;
-                inputItem = $(
-                    `<input id="${itemKey}-input" class="input admin-input" type="text">`
-                );
-
-                if (value) inputItem.val(value);
-                container.append(inputItem);
-            }
-
-        } catch (e) {
-            customLog('fillSettings key error:');
-            customLog(e);
+        else {
+            // Normal text fields
+            let input = $(
+                `<input id="${itemKey}-input" class="input admin-input" type="text" value="${value || ""}">`
+            );
+            container.append(input);
         }
     }
 
     //--------------------------------------------------------
-    // ADD EDIT BUTTON BEHAVIOR FOR HTML FIELDS
+    // EDIT BUTTON HANDLER (delegated)
     //--------------------------------------------------------
-    $(".edit-field-btn").off().on("click", function () {
+    $(document).off("click", ".edit-field-btn").on("click", ".edit-field-btn", function () {
         let field = $(this).data("field");
         let dataKey = field.replaceAll("-", "_");
+
         let currentValue = data ? (data[dataKey] || "") : "";
 
-        // Change preview into textarea for editing
         let textarea = $(`
             <textarea id="${field}-input" class="textarea admin-input" rows="5">${currentValue}</textarea>
         `);
@@ -158,26 +146,21 @@ function fillSettings(data) {
     });
 
     //--------------------------------------------------------
-    // ACTIONS
+    // CONTACTS
     //--------------------------------------------------------
     $('#contacts-settings').empty();
-    if (data) {
-        for (let action of data["actions"]) {
-            addActionRow(action);
-        }
+    if (data && data.actions) {
+        for (let action of data.actions) addActionRow(action);
     }
 
     //--------------------------------------------------------
     // CALL LOGS
     //--------------------------------------------------------
     $('#call-log-settings').empty();
-    if (data) {
-        for (let call_log of data["call_logs"]) {
-            addCallLogRow(call_log);
-        }
+    if (data && data.call_logs) {
+        for (let log of data.call_logs) addCallLogRow(log);
     }
 }
-
 
 
 function openSettings(entry){
@@ -350,46 +333,14 @@ async function saveCallLog(){
 
 
 function buildColumns(identifier) {
-    if (!identifier) {
-        identifier = "";
-    }
+    if (!identifier) identifier = "";
 
     const htmlFields = ["instructions", "script", "website", "info"];
 
-    // FIRST COLUMN
-    for (let row of firstColumn) {
-
+    function createRow(row, columnId) {
         const isHtmlField = htmlFields.includes(row.id);
 
-        let labelDiv = $(`
-            <div class="column is-one-third has-text-weight-bold has-background-${backgroundColor}-ter mb-1 py-1"
-                 style="border-radius: 5px;">
-        `);
-
-        if (isHtmlField) {
-            // Label + Edit button
-            labelDiv.html(`
-                ${row.name}
-                <button class="button is-small is-info edit-field-btn ml-2"
-                        data-field="${row.id}">
-                    Edit
-                </button>
-            `);
-        } else {
-            labelDiv.html(row.name);
-        }
-
-        // The container for the actual input or HTML preview
-        let containerDiv = $(`<div id="${row.id}-settings" class="column is-two-thirds mb-1 py-1"></div>`);
-
-        $(`#first-column${identifier}`).append(labelDiv, containerDiv);
-    }
-
-    // SECOND COLUMN
-    for (let row of secondColumn) {
-
-        const isHtmlField = htmlFields.includes(row.id);
-
+        // Label (with optional Edit button)
         let labelDiv = $(`
             <div class="column is-one-third has-text-weight-bold has-background-${backgroundColor}-ter mb-1 py-1"
                  style="border-radius: 5px;">
@@ -407,12 +358,17 @@ function buildColumns(identifier) {
             labelDiv.html(row.name);
         }
 
-        let containerDiv = $(`<div id="${row.id}-settings" class="column is-two-thirds mb-1 py-1"></div>`);
+        // The container that fillSettings() will fill
+        let containerDiv = $(
+            `<div id="${row.id}-settings" class="column is-two-thirds mb-1 py-1"></div>`
+        );
 
-        $(`#second-column${identifier}`).append(labelDiv, containerDiv);
+        $(`#${columnId}${identifier}`).append(labelDiv, containerDiv);
     }
+
+    for (let row of firstColumn) createRow(row, "first-column");
+    for (let row of secondColumn) createRow(row, "second-column");
 }
-
 
 function buildCustomer(json){
     if(json.data){
