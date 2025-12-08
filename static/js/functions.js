@@ -780,7 +780,12 @@ function initializeDOMListeners(){
         $('#add-contact-modal input, #add-contact-modal select, #add-contact-modal textarea')
         .prop('disabled', false);
         // Show save button again
-        $('#save-contact-button').show();
+        $('#save-contact-button').show();            
+        // Clear all input + textarea +select fields
+        $('#add-contact-modal').find('input, textarea').val('');
+        $('#add-contact-modal').find('select').each(function () {
+            $(this).prop('selectedIndex', 0);
+        });
         openModal("#add-contact-modal")
     })
     $('#save-contact-button').on('click', function(e){
