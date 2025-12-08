@@ -106,7 +106,9 @@ function fillSettings(data) {
     customLog(data);
     $("#modal-settings-error").empty();
 
-    // Loop through the `allInputs` array (which combines `firstColumn` and `secondColumn`)
+    const htmlFields = ["instructions", "script", "website", "info"];
+
+    // Populate each field
     for (let item of allInputs) {
         let itemKey = item.id;
         let value;
@@ -116,52 +118,66 @@ function fillSettings(data) {
         }
 
         try {
-            $(`#${itemKey}-settings`).empty();
+            let container = $(`#${itemKey}-settings`);
+            container.empty();
 
-            // Check if the field should render as HTML (non-editable fields)
-            if (["instructions", "script", "website", "info"].indexOf(itemKey) >= 0) {
-                // Render HTML for fields with HTML content
-                $(`#${itemKey}-settings`).html(value || ''); // Render the HTML tags correctly
+            // HTML fields start in preview mode
+            if (htmlFields.includes(itemKey)) {
+                container.html(value || "");
             } else {
+                // Regular inputs
                 let inputItem;
-                if (["script", "instructions", "website", "info"].indexOf(itemKey) >= 0) {
-                    let rows = 3;
-                    if (itemKey === "script") {
-                        rows = 2;
-                    }
-                    inputItem = $(`<textarea id="${itemKey}-input" class="textarea admin-input" rows="${rows}">`);
-                } else {
-                    inputItem = $(`<input id="${itemKey}-input" class="input admin-input" type="text">`);
-                }
-                if (value) {
-                    inputItem.val(value);
-                }
-                $(`#${itemKey}-settings`).append(inputItem);
+                inputItem = $(
+                    `<input id="${itemKey}-input" class="input admin-input" type="text">`
+                );
+
+                if (value) inputItem.val(value);
+                container.append(inputItem);
             }
+
         } catch (e) {
             customLog('fillSettings key error:');
             customLog(e);
         }
-    } // Closing brace for the 'for' loop here
-    // for each field a input is created(textarea,input) and appended to a created div for the input eg company-input is a input element and will go into a div call company-settings
-    // this all goes into two columns that are defined in the html first-column-settings and second-column-settings
-    // Create inputs for actions and call logs
+    }
+
+    //--------------------------------------------------------
+    // ADD EDIT BUTTON BEHAVIOR FOR HTML FIELDS
+    //--------------------------------------------------------
+    $(".edit-field-btn").off().on("click", function () {
+        let field = $(this).data("field");
+        let dataKey = field.replaceAll("-", "_");
+        let currentValue = data ? (data[dataKey] || "") : "";
+
+        // Change preview into textarea for editing
+        let textarea = $(`
+            <textarea id="${field}-input" class="textarea admin-input" rows="5">${currentValue}</textarea>
+        `);
+
+        $(`#${field}-settings`).html(textarea);
+    });
+
+    //--------------------------------------------------------
+    // ACTIONS
+    //--------------------------------------------------------
     $('#contacts-settings').empty();
     if (data) {
         for (let action of data["actions"]) {
-            customLog('fillSettings action:', action);
             addActionRow(action);
         }
     }
 
+    //--------------------------------------------------------
+    // CALL LOGS
+    //--------------------------------------------------------
     $('#call-log-settings').empty();
     if (data) {
         for (let call_log of data["call_logs"]) {
-            customLog('fillSettings calllogs:', call_log);
             addCallLogRow(call_log);
         }
     }
 }
+
 
 
 function openSettings(entry){
@@ -333,24 +349,70 @@ async function saveCallLog(){
 }
 
 
-function buildColumns(identifier){
-    if(!identifier){
+function buildColumns(identifier) {
+    if (!identifier) {
         identifier = "";
     }
-    for(let row of firstColumn){
-        $(`#first-column${identifier}`).append(
-            $(`<div class="column is-one-third has-text-weight-bold has-background-${backgroundColor}-ter mb-1 py-1" style="border-radius: 5px;">`).html(row.name),
-            $(`<div id="${row.id}${identifier}" class="column is-two-thirds mb-1 py-1">`)
-        )
+
+    const htmlFields = ["instructions", "script", "website", "info"];
+
+    // FIRST COLUMN
+    for (let row of firstColumn) {
+
+        const isHtmlField = htmlFields.includes(row.id);
+
+        let labelDiv = $(`
+            <div class="column is-one-third has-text-weight-bold has-background-${backgroundColor}-ter mb-1 py-1"
+                 style="border-radius: 5px;">
+        `);
+
+        if (isHtmlField) {
+            // Label + Edit button
+            labelDiv.html(`
+                ${row.name}
+                <button class="button is-small is-info edit-field-btn ml-2"
+                        data-field="${row.id}">
+                    Edit
+                </button>
+            `);
+        } else {
+            labelDiv.html(row.name);
+        }
+
+        // The container for the actual input or HTML preview
+        let containerDiv = $(`<div id="${row.id}-settings" class="column is-two-thirds mb-1 py-1"></div>`);
+
+        $(`#first-column${identifier}`).append(labelDiv, containerDiv);
     }
 
-    for(let row of secondColumn){
-        $(`#second-column${identifier}`).append(
-            $(`<div class="column is-one-third has-text-weight-bold has-background-${backgroundColor}-ter mb-1 py-1" style="border-radius: 5px;">`).html(row.name),
-            $(`<div id="${row.id}${identifier}" class="column is-two-thirds mb-1 py-1">`)
-        )
+    // SECOND COLUMN
+    for (let row of secondColumn) {
+
+        const isHtmlField = htmlFields.includes(row.id);
+
+        let labelDiv = $(`
+            <div class="column is-one-third has-text-weight-bold has-background-${backgroundColor}-ter mb-1 py-1"
+                 style="border-radius: 5px;">
+        `);
+
+        if (isHtmlField) {
+            labelDiv.html(`
+                ${row.name}
+                <button class="button is-small is-info edit-field-btn ml-2"
+                        data-field="${row.id}">
+                    Edit
+                </button>
+            `);
+        } else {
+            labelDiv.html(row.name);
+        }
+
+        let containerDiv = $(`<div id="${row.id}-settings" class="column is-two-thirds mb-1 py-1"></div>`);
+
+        $(`#second-column${identifier}`).append(labelDiv, containerDiv);
     }
 }
+
 
 function buildCustomer(json){
     if(json.data){
