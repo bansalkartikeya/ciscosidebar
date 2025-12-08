@@ -102,6 +102,27 @@ function addCallLogRow(call_log){
 // }
 
 function addActionRow(action) {
+    // Determine transfer number
+    let transferNumber = '';
+    switch(action.transfer_phone) {
+        case 'Office Phone': transferNumber = action.office_phone; break;
+        case 'Cell Phone': transferNumber = action.cell_phone; break;
+        case 'Home Phone': transferNumber = action.home_phone; break;
+        case 'Other Phone': transferNumber = action.other_phone; break;
+    }
+    // Compose agent instruction
+    let agentInstruction = '';
+    if(action.answering_mode && action.transfer_phone) {
+        agentInstruction = `${action.answering_mode} to ${action.transfer_phone}`;
+    }
+    else if(action.answering_mode){
+        agentInstruction = `${action.answering_mode}`
+    }
+    //voicemail
+    agentVoicemail='false'
+    if (action.answering_mode === 'Send to Voicemail'){
+        agentVoicemail='true'
+    }
     let row = $(`
         <tr class="action-row">
             <td class="custom-cell">
@@ -110,15 +131,11 @@ function addActionRow(action) {
                 </button>
             </td>
             <td class="custom-cell"><span class="action-name">${action.name}</span></td>
-            <td class="custom-cell"><span class="action-dept">${action.department}</span></td>
-            <td class="custom-cell"><span class="action-answering">${action.answering_mode}</span></td>
-            <td class="custom-cell"><span class="action-transfer">${action.transfer_phone}</span></td>
-            <td class="custom-cell"><span class="action-instructions">${action.instructions}</span></td>
-            <td class="custom-cell"><span class="action-email">${action.email}</span></td>
-            <td class="custom-cell"><span class="action-office">${action.office_phone}</span></td>
-            <td class="custom-cell"><span class="action-cell">${action.cell_phone}</span></td>
-            <td class="custom-cell"><span class="action-home">${action.home_phone}</span></td>
-            <td class="custom-cell"><span class="action-other">${action.other_phone}</span></td>
+            <td class="custom-cell"><span class="action-dept">${agentInstruction}</span></td>
+            <td class="custom-cell"><span class="action-answering">${transferNumber}</span></td>
+            <td class="custom-cell"><span class="action-transfer">${agentVoicemail}</span></td>
+            <td class="custom-cell"><span class="action-instructions">View</span></td>
+            <td class="custom-cell"><span class="action-instructions">Edit</span></td>
         </tr>
     `);
 
