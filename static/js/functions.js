@@ -265,48 +265,65 @@ function addActionRow(action) {
 }
 
 
-function fillSettings(data) {
+function fillSettings(data, editable = false) {
+
     const htmlFields = ["instructions", "script", "website", "info"];
 
     for (let item of allInputs) {
 
-        let id = `${item.id}-settings`;  // <-- always use settings layout
-        let container = $(`#${id}`);
+        let key = item.id.replaceAll("-", "_");
+        let settingId = `${item.id}-settings`;
+        let container = $(`#${settingId}`);
         container.empty();
 
-        let dbKey = item.id.replaceAll("-", "_");
-        let value = data ? data[dbKey] : "";
+        let value = data ? data[key] : "";
 
-        // HTML fields: PREVIEW MODE
-        if (htmlFields.includes(item.id)) {
-            container.html(value || "");
+        // ---------------------------------------------------------
+        // EDIT MODE (inside Edit Profile modal)
+        // ---------------------------------------------------------
+        if (editable) {
+            if (htmlFields.includes(item.id)) {
+                container.html(`
+                    <textarea id="${item.id}-input"
+                        class="textarea admin-input"
+                        rows="6">${value || ""}</textarea>
+                `);
+            } else {
+                container.html(`
+                    <input id="${item.id}-input"
+                        class="input admin-input"
+                        value="${value || ""}">
+                `);
+            }
+            continue;
         }
-        else {
-            let input = $(`<input id="${item.id}-input" class="input admin-input" value="${value || ""}">`);
-            container.append(input);
+
+        // ---------------------------------------------------------
+        // PREVIEW MODE (on main settings screen)
+        // ---------------------------------------------------------
+
+        // Visible preview div
+        container.append(`<div class="preview">${value || ""}</div>`);
+
+        // Hidden admin-input (needed for #modal-settings-save backend save)
+        if (htmlFields.includes(item.id)) {
+            container.append(`
+                <textarea id="${item.id}-input"
+                    class="admin-input is-hidden"
+                    rows="1">${value || ""}</textarea>
+            `);
+        } else {
+            container.append(`
+                <input id="${item.id}-input"
+                    class="admin-input is-hidden"
+                    value="${value || ""}">
+            `);
         }
     }
 
-    //--------------------------------------------------
-    // EDIT BUTTON (only in -settings mode)
-    //--------------------------------------------------
-    $(document).off("click", ".edit-field-btn").on("click", ".edit-field-btn", function () {
-
-        let field = $(this).data("field");
-
-        let key = field.replaceAll("-", "_");
-        let current = data ? data[key] : "";
-
-        let textarea = $(`
-            <textarea id="${field}-input" class="textarea admin-input" rows="5">${current}</textarea>
-        `);
-
-        $(`#${field}-settings`).html(textarea);
-    });
-
-    //--------------------------------------------------
-    // Contacts, call logs unchanged
-    //--------------------------------------------------
+    // ---------------------------------------------------------
+    // Contacts and Call Logs remain unchanged
+    // ---------------------------------------------------------
     $('#contacts-settings').empty();
     if (data && data.actions) data.actions.forEach(addActionRow);
 
@@ -1052,6 +1069,40 @@ function initializeDOMListeners(){
 
     // console.log("Profile updated locally:", currentEntry);
     // });
+
+    // ----- Open Edit Profile Modal -----
+    $(document).on("click", "#edit-profile-button", function () {
+
+        if (!currentEntry || typeof currentEntry !== "object") {
+            currentEntry = {}; // prevents crash for "Add New"
+        }
+
+        loadProfileEditModal(currentEntry);
+        openModal("#modal-profile-edit");
+    });
+
+    // ----- Close Edit Modal -----
+    $(document).on("click", ".close-edit-profile", function () {
+        closeModal("#modal-profile-edit");
+    });
+
+    // ----- Save changes locally -----
+    $(document).on("click", "#save-profile-edit", function () {
+
+        $(".edit-field").each(function () {
+            let key = $(this).data("key").replaceAll("-", "_");
+            let newValue = $(this).val();
+            currentEntry[key] = newValue; // local update
+        });
+
+        // Refresh preview (this updates the hidden admin-inputs too)
+        fillSettings(currentEntry, false);
+
+        closeModal("#modal-profile-edit");
+        $("#edit-profile-button").show();
+
+        console.log("Profile updated locally:", currentEntry);
+    });
 }
 
 
@@ -1119,3 +1170,39 @@ function adjustUI(){
 
 //     $("#profile-edit-container").html(html);
 // }
+
+function loadProfileEditModal(data) {
+
+    const htmlFields = ["instructions", "script", "website", "info"];
+    let html = "";
+
+    for (let item of allInputs) {
+
+        let key = item.id.replaceAll("-", "_");
+        let value = data ? data[key] : "";
+
+        html += `
+            <div class="field mb-4">
+                <label class="label">${item.name}</label>
+        `;
+
+        if (htmlFields.includes(item.id)) {
+            html += `
+                <textarea class="textarea edit-field" 
+                    data-key="${item.id}" 
+                    rows="5">${value || ""}</textarea>
+            `;
+        } else {
+            html += `
+                <input class="input edit-field"
+                    data-key="${item.id}" 
+                    value="${value || ""}">
+            `;
+        }
+
+        html += `</div>`;
+    }
+
+    $("#profile-edit-container").html(html);
+}
+
