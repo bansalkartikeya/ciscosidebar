@@ -329,6 +329,7 @@ function fillSettings(data, editable = false) {
 
     $('#call-log-settings').empty();
     if (data && data.call_logs) data.call_logs.forEach(addCallLogRow);
+    
 }
 
 function openSettings(entry){
@@ -509,32 +510,18 @@ async function saveCallLog(){
 
 function buildColumns(identifier = "") {
 
-    const htmlFields = ["instructions", "script", "website", "info"];
-
-    const isSettingsMode = identifier === "-settings";
-
     function createRow(row, colId) {
 
-        // Label
+        // Label WITHOUT individual edit buttons
         let labelDiv = $(`
             <div class="column is-one-third has-text-weight-bold has-background-${backgroundColor}-ter mb-1 py-1"
                  style="border-radius: 5px;">
+                ${row.name}
+            </div>
         `);
 
-        if (isSettingsMode && htmlFields.includes(row.id)) {
-            labelDiv.html(`
-                ${row.name}
-                <button class="button is-small is-info edit-field-btn ml-2"
-                        data-field="${row.id}">
-                    Edit
-                </button>
-            `);
-        } else {
-            labelDiv.html(row.name);
-        }
-
         // Container
-        let containerId = row.id + identifier;  
+        let containerId = row.id + identifier;
         let containerDiv = $(`<div id="${containerId}" class="column is-two-thirds mb-1 py-1"></div>`);
 
         $(`#${colId}${identifier}`).append(labelDiv, containerDiv);
