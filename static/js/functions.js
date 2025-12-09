@@ -329,7 +329,7 @@ function fillSettings(data, editable = false) {
 
     $('#call-log-settings').empty();
     if (data && data.call_logs) data.call_logs.forEach(addCallLogRow);
-    
+
 }
 
 function openSettings(entry){
@@ -1006,57 +1006,7 @@ function initializeDOMListeners(){
     })
 
     // //edit button function for Company Profile
-    // // $(document).on("click", "#edit-profile-button", function () {
-
-    // // console.log("Edit Profile clicked");
-
-    // // // Switch modal to EDIT MODE
-    // // fillSettings(currentEntry, true);
-
-    // // // Hide Edit button so user cannot click again
-    // // $("#edit-profile-button").hide();
-
-    // // // Ensure Save button appears
-    // // $("#modal-settings-save").show();
-    // // });
-    // $(document).on("click", "#edit-profile-button", function () {
-
-    // if (!currentEntry || typeof currentEntry !== "object") {
-    //     currentEntry = {};    // prevent undefined crash
-    // }
-
-    // loadProfileEditModal(currentEntry);
-    // openModal("#modal-profile-edit");
-    // });
     
-    // //close button for company profile
-    // $(document).on("click", ".close-edit-profile", function(){
-    // closeModal("#modal-profile-edit");
-    // });
-
-    // //Modify the save button inside Company Profile modal
-    // $(document).on("click", "#save-profile-edit", function(){
-
-    // $(".edit-field").each(function(){
-    //     let key = $(this).data("key").replaceAll("-", "_");
-    //     let newValue = $(this).val();
-
-    //     // Update the currentEntry object
-    //     currentEntry[key] = newValue;
-    // });
-
-    // // Refresh preview mode on main page
-    // fillSettings(currentEntry, false);
-
-    // // Close edit modal
-    // closeModal("#modal-profile-edit");
-
-    // // Make sure edit button stays visible
-    // $("#edit-profile-button").show();
-
-    // console.log("Profile updated locally:", currentEntry);
-    // });
-
     // ----- Open Edit Profile Modal -----
     $(document).on("click", "#edit-profile-button", function () {
 
@@ -1128,36 +1078,6 @@ function adjustUI(){
 
 // Load Company Profile edit Button
 //Create Company Profile editable form builder
-// function loadProfileEditModal(data){
-
-//     const htmlFields = ["instructions", "script", "website", "info"];
-//     let html = "";
-
-//     for (let item of allInputs) {
-
-//         let key = item.id.replaceAll("-", "_");
-//         let value = data ? data[key] : "";
-
-//         if (htmlFields.includes(item.id)) {
-//             html += `
-//                 <div class="field mb-4">
-//                     <label class="label">${item.name}</label>
-//                     <textarea class="textarea edit-field" data-key="${item.id}" rows="5">${value || ""}</textarea>
-//                 </div>
-//             `;
-//         } else {
-//             html += `
-//                 <div class="field mb-4">
-//                     <label class="label">${item.name}</label>
-//                     <input class="input edit-field" data-key="${item.id}" value="${value || ""}">
-//                 </div>
-//             `;
-//         }
-//     }
-
-//     $("#profile-edit-container").html(html);
-// }
-
 function loadProfileEditModal(data) {
 
     const htmlFields = ["instructions", "script", "website", "info"];
