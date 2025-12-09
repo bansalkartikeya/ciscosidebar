@@ -444,6 +444,9 @@ async function saveSettings(){
         $("#modal-settings-error").addClass("has-text-success");
         $("#modal-settings-error").removeClass("has-text-danger");
         $("#modal-settings-error").text("Save successful");
+
+        // Restore company profile edit button
+        $("#edit-profile-button").show();
     }
 }
 
