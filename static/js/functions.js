@@ -265,50 +265,48 @@ function addActionRow(action) {
 }
 
 
-function fillSettings(data, editable = false) {
-
+function fillSettings(data) {
     const htmlFields = ["instructions", "script", "website", "info"];
 
     for (let item of allInputs) {
 
-        let id = `${item.id}-settings`;
+        let id = `${item.id}-settings`;  // <-- always use settings layout
         let container = $(`#${id}`);
         container.empty();
 
         let dbKey = item.id.replaceAll("-", "_");
         let value = data ? data[dbKey] : "";
 
-        // --------------------------
-        // EDIT MODE
-        // --------------------------
-        if (editable) {
-            if (htmlFields.includes(item.id)) {
-                container.html(`
-                    <textarea id="${item.id}-input"
-                              class="textarea admin-input"
-                              rows="6">${value || ""}</textarea>
-                `);
-            } else {
-                container.html(`
-                    <input id="${item.id}-input"
-                           class="input admin-input"
-                           value="${value || ""}">
-                `);
-            }
-            continue;
-        }
-
-        // --------------------------
-        // PREVIEW MODE
-        // --------------------------
+        // HTML fields: PREVIEW MODE
         if (htmlFields.includes(item.id)) {
             container.html(value || "");
-        } else {
-            container.html(`<div>${value || ""}</div>`);
+        }
+        else {
+            let input = $(`<input id="${item.id}-input" class="input admin-input" value="${value || ""}">`);
+            container.append(input);
         }
     }
 
-    // Contacts & call logs
+    //--------------------------------------------------
+    // EDIT BUTTON (only in -settings mode)
+    //--------------------------------------------------
+    $(document).off("click", ".edit-field-btn").on("click", ".edit-field-btn", function () {
+
+        let field = $(this).data("field");
+
+        let key = field.replaceAll("-", "_");
+        let current = data ? data[key] : "";
+
+        let textarea = $(`
+            <textarea id="${field}-input" class="textarea admin-input" rows="5">${current}</textarea>
+        `);
+
+        $(`#${field}-settings`).html(textarea);
+    });
+
+    //--------------------------------------------------
+    // Contacts, call logs unchanged
+    //--------------------------------------------------
     $('#contacts-settings').empty();
     if (data && data.actions) data.actions.forEach(addActionRow);
 
@@ -1003,57 +1001,57 @@ function initializeDOMListeners(){
     await saveCallLog();
     })
 
-    //edit button function for Company Profile
+    // //edit button function for Company Profile
+    // // $(document).on("click", "#edit-profile-button", function () {
+
+    // // console.log("Edit Profile clicked");
+
+    // // // Switch modal to EDIT MODE
+    // // fillSettings(currentEntry, true);
+
+    // // // Hide Edit button so user cannot click again
+    // // $("#edit-profile-button").hide();
+
+    // // // Ensure Save button appears
+    // // $("#modal-settings-save").show();
+    // // });
     // $(document).on("click", "#edit-profile-button", function () {
 
-    // console.log("Edit Profile clicked");
+    // if (!currentEntry || typeof currentEntry !== "object") {
+    //     currentEntry = {};    // prevent undefined crash
+    // }
 
-    // // Switch modal to EDIT MODE
-    // fillSettings(currentEntry, true);
-
-    // // Hide Edit button so user cannot click again
-    // $("#edit-profile-button").hide();
-
-    // // Ensure Save button appears
-    // $("#modal-settings-save").show();
+    // loadProfileEditModal(currentEntry);
+    // openModal("#modal-profile-edit");
     // });
-    $(document).on("click", "#edit-profile-button", function () {
-
-    if (!currentEntry || typeof currentEntry !== "object") {
-        currentEntry = {};    // prevent undefined crash
-    }
     
-    loadProfileEditModal(currentEntry);
-    openModal("#modal-profile-edit");
-    });
-    
-    //close button for company profile
-    $(document).on("click", ".close-edit-profile", function(){
-    closeModal("#modal-profile-edit");
-    });
+    // //close button for company profile
+    // $(document).on("click", ".close-edit-profile", function(){
+    // closeModal("#modal-profile-edit");
+    // });
 
-    //Modify the save button inside Company Profile modal
-    $(document).on("click", "#save-profile-edit", function(){
+    // //Modify the save button inside Company Profile modal
+    // $(document).on("click", "#save-profile-edit", function(){
 
-    $(".edit-field").each(function(){
-        let key = $(this).data("key").replaceAll("-", "_");
-        let newValue = $(this).val();
+    // $(".edit-field").each(function(){
+    //     let key = $(this).data("key").replaceAll("-", "_");
+    //     let newValue = $(this).val();
 
-        // Update the currentEntry object
-        currentEntry[key] = newValue;
-    });
+    //     // Update the currentEntry object
+    //     currentEntry[key] = newValue;
+    // });
 
-    // Refresh preview mode on main page
-    fillSettings(currentEntry, false);
+    // // Refresh preview mode on main page
+    // fillSettings(currentEntry, false);
 
-    // Close edit modal
-    closeModal("#modal-profile-edit");
+    // // Close edit modal
+    // closeModal("#modal-profile-edit");
 
-    // Make sure edit button stays visible
-    $("#edit-profile-button").show();
+    // // Make sure edit button stays visible
+    // $("#edit-profile-button").show();
 
-    console.log("Profile updated locally:", currentEntry);
-    });
+    // console.log("Profile updated locally:", currentEntry);
+    // });
 }
 
 
@@ -1092,32 +1090,32 @@ function adjustUI(){
 
 // Load Company Profile edit Button
 //Create Company Profile editable form builder
-function loadProfileEditModal(data){
+// function loadProfileEditModal(data){
 
-    const htmlFields = ["instructions", "script", "website", "info"];
-    let html = "";
+//     const htmlFields = ["instructions", "script", "website", "info"];
+//     let html = "";
 
-    for (let item of allInputs) {
+//     for (let item of allInputs) {
 
-        let key = item.id.replaceAll("-", "_");
-        let value = data ? data[key] : "";
+//         let key = item.id.replaceAll("-", "_");
+//         let value = data ? data[key] : "";
 
-        if (htmlFields.includes(item.id)) {
-            html += `
-                <div class="field mb-4">
-                    <label class="label">${item.name}</label>
-                    <textarea class="textarea edit-field" data-key="${item.id}" rows="5">${value || ""}</textarea>
-                </div>
-            `;
-        } else {
-            html += `
-                <div class="field mb-4">
-                    <label class="label">${item.name}</label>
-                    <input class="input edit-field" data-key="${item.id}" value="${value || ""}">
-                </div>
-            `;
-        }
-    }
+//         if (htmlFields.includes(item.id)) {
+//             html += `
+//                 <div class="field mb-4">
+//                     <label class="label">${item.name}</label>
+//                     <textarea class="textarea edit-field" data-key="${item.id}" rows="5">${value || ""}</textarea>
+//                 </div>
+//             `;
+//         } else {
+//             html += `
+//                 <div class="field mb-4">
+//                     <label class="label">${item.name}</label>
+//                     <input class="input edit-field" data-key="${item.id}" value="${value || ""}">
+//                 </div>
+//             `;
+//         }
+//     }
 
-    $("#profile-edit-container").html(html);
-}
+//     $("#profile-edit-container").html(html);
+// }
