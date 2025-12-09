@@ -1018,6 +1018,11 @@ function initializeDOMListeners(){
     // $("#modal-settings-save").show();
     // });
     $(document).on("click", "#edit-profile-button", function () {
+
+    if (!currentEntry || typeof currentEntry !== "object") {
+        currentEntry = {};    // prevent undefined crash
+    }
+    
     loadProfileEditModal(currentEntry);
     openModal("#modal-profile-edit");
     });
