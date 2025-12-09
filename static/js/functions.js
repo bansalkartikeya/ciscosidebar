@@ -265,48 +265,50 @@ function addActionRow(action) {
 }
 
 
-function fillSettings(data) {
+function fillSettings(data, editable = false) {
+
     const htmlFields = ["instructions", "script", "website", "info"];
 
     for (let item of allInputs) {
 
-        let id = `${item.id}-settings`;  // <-- always use settings layout
+        let id = `${item.id}-settings`;
         let container = $(`#${id}`);
         container.empty();
 
         let dbKey = item.id.replaceAll("-", "_");
         let value = data ? data[dbKey] : "";
 
-        // HTML fields: PREVIEW MODE
+        // --------------------------
+        // EDIT MODE
+        // --------------------------
+        if (editable) {
+            if (htmlFields.includes(item.id)) {
+                container.html(`
+                    <textarea id="${item.id}-input"
+                              class="textarea admin-input"
+                              rows="6">${value || ""}</textarea>
+                `);
+            } else {
+                container.html(`
+                    <input id="${item.id}-input"
+                           class="input admin-input"
+                           value="${value || ""}">
+                `);
+            }
+            continue;
+        }
+
+        // --------------------------
+        // PREVIEW MODE
+        // --------------------------
         if (htmlFields.includes(item.id)) {
             container.html(value || "");
-        }
-        else {
-            let input = $(`<input id="${item.id}-input" class="input admin-input" value="${value || ""}">`);
-            container.append(input);
+        } else {
+            container.html(`<div>${value || ""}</div>`);
         }
     }
 
-    //--------------------------------------------------
-    // EDIT BUTTON (only in -settings mode)
-    //--------------------------------------------------
-    $(document).off("click", ".edit-field-btn").on("click", ".edit-field-btn", function () {
-
-        let field = $(this).data("field");
-
-        let key = field.replaceAll("-", "_");
-        let current = data ? data[key] : "";
-
-        let textarea = $(`
-            <textarea id="${field}-input" class="textarea admin-input" rows="5">${current}</textarea>
-        `);
-
-        $(`#${field}-settings`).html(textarea);
-    });
-
-    //--------------------------------------------------
-    // Contacts, call logs unchanged
-    //--------------------------------------------------
+    // Contacts & call logs
     $('#contacts-settings').empty();
     if (data && data.actions) data.actions.forEach(addActionRow);
 
@@ -997,6 +999,21 @@ function initializeDOMListeners(){
     $('#modal-subform-save').addClass('is-loading');
     await saveCallLog();
     })
+
+    //edit button function for Company Profile
+    $(document).on("click", "#edit-profile-button", function () {
+
+    console.log("Edit Profile clicked");
+
+    // Switch modal to EDIT MODE
+    fillSettings(currentEntry, true);
+
+    // Hide Edit button so user cannot click again
+    $("#edit-profile-button").hide();
+
+    // Ensure Save button appears
+    $("#modal-settings-save").show();
+    });
 
 
 }
