@@ -100,8 +100,46 @@ function addCallLogRow(call_log){
 //     $('#contacts-settings').append(row)
 //     // #contacts-settings is the table body that exists in the html, the rows and row data is done dynamivally
 // }
+function updateContactRow(row, action) {
+
+    let transferNumber = "";
+    switch (action.transfer_phone) {
+        case "Office Phone": transferNumber = action.office_phone; break;
+        case "Cell Phone": transferNumber = action.cell_phone; break;
+        case "Home Phone": transferNumber = action.home_phone; break;
+        case "Other Phone": transferNumber = action.other_phone; break;
+    }
+    //clean transfer phone despense with select... if exists
+    const transferPhone = $('#contact-transfer-phone').val();
+    action.transfer_phone = transferPhone === "Select..." ? "" : transferPhone;
+
+    let agentInstruction = "";
+    if (action.answering_mode && action.transfer_phone) {
+        agentInstruction = `${action.answering_mode} to ${action.transfer_phone}`;
+    } else if (action.answering_mode) {
+        agentInstruction = action.answering_mode;
+    }
+    //voicemail
+    agentVoicemail='false'
+    if (action.answering_mode === 'Send Voicemail'){
+        agentVoicemail='true'
+    }
+
+
+    // Update displayed text
+    row.find('.action-name').text(action.name);
+    row.find('.action-dept').text(agentInstruction);
+    row.find('.action-answering').text(transferNumber);
+    row.find('.action-transfer').text(agentVoicemail);
+
+    // update stored full data
+    row.data('action-data', action);
+}
+
 
 function editContact(data) {
+    // store row reference globally so we can update it later
+    window.currentEditRow = row;
     if (!data) return;
     // Fill modal fields
     $('#contact-name').val(data.name || '');
@@ -122,6 +160,8 @@ function editContact(data) {
         .removeClass("is-primary")
         .addClass("is-success");
 
+    // Mark the modal as EDIT mode
+    $('#add-contact-modal').attr('data-mode', 'edit');
     // Open modal
     openModal('#add-contact-modal')    
 }
@@ -179,7 +219,7 @@ function addActionRow(action) {
     }
     //voicemail
     agentVoicemail='false'
-    if (action.answering_mode === 'Send to Voicemail'){
+    if (action.answering_mode === 'Send Voicemail'){
         agentVoicemail='true'
     }
     let row = $(`
@@ -826,6 +866,7 @@ function initializeDOMListeners(){
         openModal("#add-contact-modal")
     })
     $('#save-contact-button').on('click', function(e){
+        const mode = $('#add-contact-modal').attr('data-mode');
         $('#save-contact-button').addClass('is-loading');
         console.log('#save-contact-button to save contacts');
         //collect values
@@ -841,7 +882,11 @@ function initializeDOMListeners(){
             home_phone: $('#contact-home').val().trim(),
             other_phone: $('#contact-other').val().trim()
         };
-        addActionRow(action);
+        if (mode === "edit") {
+            updateContactRow(window.currentEditRow, contact);
+        } else {
+            addActionRow(contact);
+        }
         $('#save-contact-button').removeClass('is-loading');
         //close the modal
         closeModal('#add-contact-modal')
