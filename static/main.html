@@ -301,6 +301,9 @@
               </div>
             </div>
           </div>
+          <button id="edit-profile-button" class="button is-info mr-3">
+              Edit Profile
+          </button>
         </div>
         <div class="mx-5 mt-6">
           <h2 class="subtitle is-4 my-1">Company Contacts</h2>
@@ -370,6 +373,29 @@
       </footer>
     </div>
   </div>
+
+  <!-- EDIT COMPANY PROFILE MODAL -->
+  <div id="modal-profile-edit" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card" style="width:80%;">
+      
+      <header class="modal-card-head">
+        <p class="modal-card-title">Edit Company Profile</p>
+        <button class="delete close-edit-profile" aria-label="close"></button>
+      </header>
+
+      <section class="modal-card-body">
+        <div id="profile-edit-container"></div>
+      </section>
+
+      <footer class="modal-card-foot">
+        <button id="save-profile-edit" class="button is-info">Update Changes</button>
+        <button class="button close-edit-profile">Cancel</button>
+      </footer>
+
+    </div>
+  </div>
+
 
   <!-- add contact modal -->
   <div id="add-contact-modal" class="modal">
