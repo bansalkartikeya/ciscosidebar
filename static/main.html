@@ -31,6 +31,14 @@
     .theme-light {
       background-color: white;
     }
+    #call-log-scroll-container {
+      max-height: 400px;       /* vertical scroll height */
+      overflow-y: auto;        /* vertical scroll */
+      overflow-x: auto;        /* horizontal scroll */
+      width: 100%;
+      display: block;
+    }
+
   </style>
 </head>
 
@@ -343,26 +351,28 @@
           </button>
           <h2 class="subtitle is-4 my-1">Call Logs</h2>
           <div id="callog-settings-table">
-            <table class="table is-bordered is-fullwidth">
-              <thead>
-                <tr>
-                  <th style="background-color:grey;">Timestamp</th>
-                  <th style="background-color:grey;">Agent</th>
-                  <th style="background-color:grey;">Call Type</th>
-                  <th style="background-color:grey;">Recipient</th>
-                  <th style="background-color:grey;">Reason For Call</th>
-                  <th style="background-color:grey;">Caller name</th>
-                  <th style="background-color:grey;">Caller Company</th>
-                  <th style="background-color:grey;">Call Back Number</th>
-                  <th style="background-color:grey;">Caller Email</th>
-                  <th style="background-color:grey;">Details</th>
-                </tr>
-              </thead>
+            <div id="call-log-scroll-container">
+              <table class="table is-bordered is-fullwidth">
+                <thead>
+                  <tr>
+                    <th style="background-color:grey;">Timestamp</th>
+                    <th style="background-color:grey;">Agent</th>
+                    <th style="background-color:grey;">Call Type</th>
+                    <th style="background-color:grey;">Recipient</th>
+                    <th style="background-color:grey;">Reason For Call</th>
+                    <th style="background-color:grey;">Caller name</th>
+                    <th style="background-color:grey;">Caller Company</th>
+                    <th style="background-color:grey;">Call Back Number</th>
+                    <th style="background-color:grey;">Caller Email</th>
+                    <th style="background-color:grey;">Details</th>
+                  </tr>
+                </thead>
 
-              <tbody id="call-log-settings">
-                <!-- Your dynamic rows will fill here -->
-              </tbody>
-            </table>
+                <tbody id="call-log-settings">
+                  <!-- Your dynamic rows will fill here -->
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>
