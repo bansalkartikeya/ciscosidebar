@@ -101,6 +101,7 @@ function addCallLogRow(call_log){
 //     // #contacts-settings is the table body that exists in the html, the rows and row data is done dynamivally
 // }
 function updateContactRow(row, action) {
+    console.log (action)
 
     // clean transfer phone first
     const transferPhone = $('#contact-transfer-phone').val();
