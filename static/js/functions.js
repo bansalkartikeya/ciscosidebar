@@ -55,7 +55,7 @@ function addCallLogRow(call_log){
     }
     let row = $('<tr class="call-log-row">');
     row.append(
-        $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(timestampInput),
+        $('<td class="custom-cell">').append(timestampInput),
         $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(agentInput),
         $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(callTypeInput),
         $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(companyContactInput),
@@ -261,8 +261,6 @@ function searchContacts() {
         }
     });
 }
-
-
 //-------------------------------------contact section for admin---------------------------------------------------------------------------
 
 
@@ -421,18 +419,6 @@ async function saveSettings(){
     }
     let actions = $('#contacts-settings').find('tr');
     newEntry.actions = [];
-    // for(let action of actions){
-    //     let names = $(action).find('[name="action-name"]:first');
-    //     let numbers = $(action).find('[name="action-number"]:first');
-    //     let voicemails = $(action).find('[name="action-voicemail"]:first');
-    //     if(names.length === 1 && numbers.length === 1){
-    //         let action = {"name": $(names[0]).val(), "number": $(numbers[0]).val()};
-    //         if(voicemails.length === 1 && $(voicemails[0]).is(':checked')){
-    //             action.voicemail = true;
-    //         }
-    //         newEntry.actions.push(action);
-    //     }
-    // }
     actions.each(function() {
         const data = $(this).data('action-data');
         if(data) newEntry.actions.push(data);
