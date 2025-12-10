@@ -69,76 +69,7 @@ function addCallLogRow(call_log){
     // #call-log-settings is the table body that exists in the html, the rows and row data is done dynamivally
 
 }
-
-
-// function addActionRow(action){
-//     let nameInput = $(`<input name="action-name" class="input" type="text" placeholder="Contact Name">`);
-//     let numberInput = $(`<input name="action-number" class="input" type="text" placeholder="Contact Phone Number">`);
-//     let voiceMailChecked = "";
-//     if(action){
-//         if(action.name){
-//             nameInput.val(action.name);
-//         }
-//         if(action.number){
-//             numberInput.val(action.number);
-//         }
-//         if(action.voicemail){
-//             voiceMailChecked = "checked";
-//         }
-//     }
-//     let row = $('<tr class="action-row">');
-//     row.append(
-//         $('<td class="custom-cell">').append($(`<button name="action-delete" class="button">`).append(
-//             $(`<span class="icon"><i class="fas fa-trash" aria-hidden="true"></i></span>`)
-//         ).on('click', function(e){
-//             $(e.currentTarget.parentNode.parentNode).remove();
-//         })),
-//         $('<td class="custom-cell">').append(nameInput),
-//         $('<td class="custom-cell">').append(numberInput),
-//         $('<td class="custom-cell pt-4">').append($(`<label class="checkbox"><input name="action-voicemail" type="checkbox" ${voiceMailChecked}/> Voicemail Enabled</label>`))
-//     );
-//     $('#contacts-settings').append(row)
-//     // #contacts-settings is the table body that exists in the html, the rows and row data is done dynamivally
-// }
-function updateContactRow(row, action) {
-    console.log (action)
-
-    // clean transfer phone first
-    const transferPhone = $('#contact-transfer-phone').val();
-    action.transfer_phone = transferPhone === "Select..." ? "" : transferPhone;
-
-    let transferNumber = "";
-    switch (action.transfer_phone) {
-        case "Office Phone": transferNumber = action.office_phone; break;
-        case "Cell Phone": transferNumber = action.cell_phone; break;
-        case "Home Phone": transferNumber = action.home_phone; break;
-        case "Other Phone": transferNumber = action.other_phone; break;
-    }
-
-    let agentInstruction = "";
-    if (action.answering_mode && action.transfer_phone) {
-        agentInstruction = `${action.answering_mode} to ${action.transfer_phone}`;
-    } else if (action.answering_mode) {
-        agentInstruction = action.answering_mode;
-    }
-    //voicemail
-    agentVoicemail='false'
-    if (action.answering_mode === 'Send Voicemail'){
-        agentVoicemail='true'
-    }
-
-
-    // Update displayed text
-    row.find('.action-name').text(action.name);
-    row.find('.action-dept').text(agentInstruction);
-    row.find('.action-answering').text(transferNumber);
-    row.find('.action-transfer').text(agentVoicemail);
-
-    // update stored full data
-    row.data('action-data', action);
-}
-
-
+//-------------------------------------contact section for admin----------------------------------------------------------------
 function editContact(data) {
 
     // Re-enable everything
@@ -270,6 +201,69 @@ function addActionRow(action) {
 
     $('#contacts-settings').append(row);
 }
+
+function updateContactRow(row, action) {
+    console.log (action)
+
+    // clean transfer phone first
+    const transferPhone = $('#contact-transfer-phone').val();
+    action.transfer_phone = transferPhone === "Select..." ? "" : transferPhone;
+
+    let transferNumber = "";
+    switch (action.transfer_phone) {
+        case "Office Phone": transferNumber = action.office_phone; break;
+        case "Cell Phone": transferNumber = action.cell_phone; break;
+        case "Home Phone": transferNumber = action.home_phone; break;
+        case "Other Phone": transferNumber = action.other_phone; break;
+    }
+
+    let agentInstruction = "";
+    if (action.answering_mode && action.transfer_phone) {
+        agentInstruction = `${action.answering_mode} to ${action.transfer_phone}`;
+    } else if (action.answering_mode) {
+        agentInstruction = action.answering_mode;
+    }
+    //voicemail
+    agentVoicemail='false'
+    if (action.answering_mode === 'Send Voicemail'){
+        agentVoicemail='true'
+    }
+
+
+    // Update displayed text
+    row.find('.action-name').text(action.name);
+    row.find('.action-dept').text(agentInstruction);
+    row.find('.action-answering').text(transferNumber);
+    row.find('.action-transfer').text(agentVoicemail);
+
+    // update stored full data
+    row.data('action-data', action);
+}
+
+function searchContacts() {
+    const term = $('#contact-search').val().toLowerCase();
+
+    $('#contacts-settings .action-row').each(function () {
+        const row = $(this);
+
+        // stored action object
+        const data = row.data('action-data') || {};
+
+        // Make one searchable string
+        const combined = Object.values(data)
+            .join(' ')
+            .toLowerCase();
+
+        if (combined.includes(term)) {
+            row.show();
+        } else {
+            row.hide();
+        }
+    });
+}
+
+
+//-------------------------------------contact section for admin---------------------------------------------------------------------------
 
 
 function fillSettings(data, editable = false) {
@@ -905,6 +899,10 @@ function initializeDOMListeners(){
         //close the modal
         closeModal('#add-contact-modal')
     })
+    //searchs in contacts
+    $('#contact-search').on('input', function () {
+    searchContacts();
+    });
 
     //closes the modal
     $('#close-contact-modal').on('click', function(e){
