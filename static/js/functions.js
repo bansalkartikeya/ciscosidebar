@@ -139,6 +139,10 @@ function updateContactRow(row, action) {
 
 function editContact(data) {
 
+    // Re-enable everything
+    $('#add-contact-modal input, #add-contact-modal select, #add-contact-modal textarea')
+    .prop('disabled', false);
+
     if (!data) return;
     // Fill modal fields
     $('#contact-name').val(data.name || '');
@@ -157,7 +161,8 @@ function editContact(data) {
     $('#save-contact-button')
         .text("Save Changes")
         .removeClass("is-primary")
-        .addClass("is-success");
+        .addClass("is-success")
+        .show();
 
     // Mark the modal as EDIT mode
     $('#add-contact-modal').attr('data-mode', 'edit');
