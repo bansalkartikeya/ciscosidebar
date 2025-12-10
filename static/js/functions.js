@@ -138,8 +138,7 @@ function updateContactRow(row, action) {
 
 
 function editContact(data) {
-    // store row reference globally so we can update it later
-    window.currentEditRow = row;
+
     if (!data) return;
     // Fill modal fields
     $('#contact-name').val(data.name || '');
@@ -257,6 +256,7 @@ function addActionRow(action) {
 
     //edit the data
     row.find('.action-edit').on('click', function() {
+        window.currentEditRow = row;
         editContact(row.data('action-data'));
     });
 
@@ -883,9 +883,9 @@ function initializeDOMListeners(){
             other_phone: $('#contact-other').val().trim()
         };
         if (mode === "edit") {
-            updateContactRow(window.currentEditRow, contact);
+            updateContactRow(window.currentEditRow, action);
         } else {
-            addActionRow(contact);
+            addActionRow(action);
         }
         $('#save-contact-button').removeClass('is-loading');
         //close the modal
