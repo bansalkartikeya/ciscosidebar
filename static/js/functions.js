@@ -102,6 +102,10 @@ function addCallLogRow(call_log){
 // }
 function updateContactRow(row, action) {
 
+    // clean transfer phone first
+    const transferPhone = $('#contact-transfer-phone').val();
+    action.transfer_phone = transferPhone === "Select..." ? "" : transferPhone;
+
     let transferNumber = "";
     switch (action.transfer_phone) {
         case "Office Phone": transferNumber = action.office_phone; break;
@@ -109,9 +113,6 @@ function updateContactRow(row, action) {
         case "Home Phone": transferNumber = action.home_phone; break;
         case "Other Phone": transferNumber = action.other_phone; break;
     }
-    //clean transfer phone despense with select... if exists
-    const transferPhone = $('#contact-transfer-phone').val();
-    action.transfer_phone = transferPhone === "Select..." ? "" : transferPhone;
 
     let agentInstruction = "";
     if (action.answering_mode && action.transfer_phone) {
