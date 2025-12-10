@@ -13,62 +13,102 @@ function closeAllModals() {
     };
 }
 
-function addCallLogRow(call_log){
-    let timestampInput = $(`<input name="call-log-field8" class="input" type="text" placeholder="Timestamp" readonly>`);
-    let agentInput = $(`<input name="call-log-field9" class="input" type="text" placeholder="Agent" readonly>`);
-    let callTypeInput = $(`<input name="call-log-field1" class="input" type="text" placeholder="Call Type" readonly>`);
-    let companyContactInput = $(`<input name="call-log-field3" class="input" type="text" placeholder="Company Contact" readonly>`);
-    let reasonForCallInput = $(`<input name="call-log-field5" class="input" type="text" placeholder="Reason For Call" readonly>`);
-    let callerNameInput = $(`<input name="call-log-field4" class="input" type="text" placeholder="Caller Name" readonly>`);
-    let callerCompanyInput = $(`<input name="call-log-field6" class="input" type="text" placeholder="Caller Company" readonly>`);
-    let callbackNumberInput = $(`<input name="call-log-field2" class="input" type="text" placeholder="Callback Number" readonly>`);
-    let callerEmailInput = $(`<input name="call-log-field7" class="input" type="text" placeholder="Caller Email" readonly>`);
+function addCallLogRow(call_log) {
 
-    if(call_log){
-        if(call_log.timestamp){
-            timestampInput.val(call_log.timestamp);
-        }
-        if(call_log.agent){
-            agentInput.val(call_log.agent);
-        }
-        if(call_log.call_type){
-            callTypeInput.val(call_log.call_type);
-        }
-        if (call_log.company_contacts && Array.isArray(call_log.company_contacts)) {
-            companyContactInput.val(call_log.company_contacts.join(", "));
-        }
-        if(call_log.reason_for_call){
-            reasonForCallInput.val(call_log.reason_for_call);
-        }
-        if(call_log.caller_name){
-            callerNameInput.val(call_log.caller_name);
-        }
-        if(call_log.caller_company){
-            callerCompanyInput.val(call_log.caller_company);
-        }
-        if(call_log.callback_number){
-            callbackNumberInput.val(call_log.callback_number);
-        }
-        if(call_log.caller_email){
-            callerEmailInput.val(call_log.caller_email);
-        }
-    }
-    let row = $('<tr class="call-log-row">');
-    row.append(
-        $('<td class="custom-cell">').append(timestampInput),
-        $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(agentInput),
-        $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(callTypeInput),
-        $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(companyContactInput),
-        $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(reasonForCallInput),
-        $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(callerNameInput),
-        $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(callerCompanyInput),
-        $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(callbackNumberInput),
-        $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(callerEmailInput),
-    );
-    $('#call-log-settings').prepend(row)
-    // #call-log-settings is the table body that exists in the html, the rows and row data is done dynamivally
+    // Extract values safely
+    const timestamp = call_log?.timestamp || "";
+    const agent = call_log?.agent || "";
+    const callType = call_log?.call_type || "";
+    const companyContacts = (call_log?.company_contacts || []).join(", ");
+    const reasonForCall = call_log?.reason_for_call || "";
+    const callerName = call_log?.caller_name || "";
+    const callerCompany = call_log?.caller_company || "";
+    const callbackNumber = call_log?.callback_number || "";
+    const callerEmail = call_log?.caller_email || "";
 
+    // Build row using plain TD + span
+    const row = $(`
+        <tr class="call-log-row">
+
+            <td class="custom-cell"><span class="cl-timestamp">${timestamp}</span></td>
+            <td class="custom-cell"><span class="cl-agent">${agent}</span></td>
+            <td class="custom-cell"><span class="cl-call-type">${callType}</span></td>
+            <td class="custom-cell"><span class="cl-company-contact">${companyContacts}</span></td>
+            <td class="custom-cell"><span class="cl-reason">${reasonForCall}</span></td>
+            <td class="custom-cell"><span class="cl-caller-name">${callerName}</span></td>
+            <td class="custom-cell"><span class="cl-caller-company">${callerCompany}</span></td>
+            <td class="custom-cell"><span class="cl-callback-number">${callbackNumber}</span></td>
+            <td class="custom-cell"><span class="cl-caller-email">${callerEmail}</span></td>
+            <td class="custom-cell">
+                <button class="button is-small action-view"><i class="fas fa-eye"></i></button>
+            </td>
+        </tr>
+    `);
+
+    // Store full call log object for view/edit later
+    row.data("call-log-data", call_log);
+
+    // Add to table
+    $('#call-log-settings').prepend(row);
 }
+
+
+// function addCallLogRow(call_log){
+//     let timestampInput = $(`<input name="call-log-field8" class="input" type="text" placeholder="Timestamp" readonly>`);
+//     let agentInput = $(`<input name="call-log-field9" class="input" type="text" placeholder="Agent" readonly>`);
+//     let callTypeInput = $(`<input name="call-log-field1" class="input" type="text" placeholder="Call Type" readonly>`);
+//     let companyContactInput = $(`<input name="call-log-field3" class="input" type="text" placeholder="Company Contact" readonly>`);
+//     let reasonForCallInput = $(`<input name="call-log-field5" class="input" type="text" placeholder="Reason For Call" readonly>`);
+//     let callerNameInput = $(`<input name="call-log-field4" class="input" type="text" placeholder="Caller Name" readonly>`);
+//     let callerCompanyInput = $(`<input name="call-log-field6" class="input" type="text" placeholder="Caller Company" readonly>`);
+//     let callbackNumberInput = $(`<input name="call-log-field2" class="input" type="text" placeholder="Callback Number" readonly>`);
+//     let callerEmailInput = $(`<input name="call-log-field7" class="input" type="text" placeholder="Caller Email" readonly>`);
+
+//     if(call_log){
+//         if(call_log.timestamp){
+//             timestampInput.val(call_log.timestamp);
+//         }
+//         if(call_log.agent){
+//             agentInput.val(call_log.agent);
+//         }
+//         if(call_log.call_type){
+//             callTypeInput.val(call_log.call_type);
+//         }
+//         if (call_log.company_contacts && Array.isArray(call_log.company_contacts)) {
+//             companyContactInput.val(call_log.company_contacts.join(", "));
+//         }
+//         if(call_log.reason_for_call){
+//             reasonForCallInput.val(call_log.reason_for_call);
+//         }
+//         if(call_log.caller_name){
+//             callerNameInput.val(call_log.caller_name);
+//         }
+//         if(call_log.caller_company){
+//             callerCompanyInput.val(call_log.caller_company);
+//         }
+//         if(call_log.callback_number){
+//             callbackNumberInput.val(call_log.callback_number);
+//         }
+//         if(call_log.caller_email){
+//             callerEmailInput.val(call_log.caller_email);
+//         }
+//     }
+//     let row = $('<tr class="call-log-row">');
+//     row.append(
+//         $('<td class="custom-cell">').append(timestampInput),
+//         $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(agentInput),
+//         $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(callTypeInput),
+//         $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(companyContactInput),
+//         $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(reasonForCallInput),
+//         $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(callerNameInput),
+//         $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(callerCompanyInput),
+//         $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(callbackNumberInput),
+//         $('<td class="is-hoverable-cell is-striped-cell is-cell-input">').append(callerEmailInput),
+//     );
+//     $('#call-log-settings').prepend(row)
+//     // #call-log-settings is the table body that exists in the html, the rows and row data is done dynamivally
+
+// }
 //-------------------------------------contact section for admin----------------------------------------------------------------
 function editContact(data) {
 
