@@ -636,18 +636,43 @@ function buildCallLogs(callLogs){
     try{
         $('#call-logs').empty();
         for(let call_log of callLogs){
-            let row = $('<tr>')
-            row.append(
-                $('<td class="custom-cell">').text(call_log.call_type),
-                $('<td class="custom-cell">').text(call_log.callback_number),
-                $('<td class="custom-cell">').text(call_log.company_contact),
-                $('<td class="custom-cell">').text(call_log.caller_name),
-                $('<td class="custom-cell">').text(call_log.reason_for_call),
-                $('<td class="custom-cell">').text(call_log.caller_company),
-                $('<td class="custom-cell">').text(call_log.caller_email),
-                $('<td class="custom-cell">').text(call_log.timestamp),
-            );
-            $('#call-logs').append(row)
+                // Extract values safely
+                const timestamp = call_log?.timestamp || "";
+                const agent = call_log?.agent || "";
+                const callType = call_log?.call_type || "";
+                const companyContacts = (call_log?.company_contacts || []).join(", ");
+                const reasonForCall = call_log?.reason_for_call || "";
+                const callerName = call_log?.caller_name || "";
+                const callerCompany = call_log?.caller_company || "";
+                const callbackNumber = call_log?.callback_number || "";
+                const callerEmail = call_log?.caller_email || "";
+
+                // Build row using plain TD + span
+                const row = $(`
+                    <tr class="call-log-row">
+
+                        <td class="custom-cell"><span class="cl-timestamp">${timestamp}</span></td>
+                        <td class="custom-cell"><span class="cl-agent">${agent}</span></td>
+                        <td class="custom-cell"><span class="cl-call-type">${callType}</span></td>
+                        <td class="custom-cell"><span class="cl-company-contact">${companyContacts}</span></td>
+                        <td class="custom-cell"><span class="cl-reason">${reasonForCall}</span></td>
+                        <td class="custom-cell"><span class="cl-caller-name">${callerName}</span></td>
+                        <td class="custom-cell"><span class="cl-caller-company">${callerCompany}</span></td>
+                        <td class="custom-cell"><span class="cl-callback-number">${callbackNumber}</span></td>
+                        <td class="custom-cell"><span class="cl-caller-email">${callerEmail}</span></td>
+                        <td class="custom-cell">
+                            <button class="button is-small action-view"><i class="fas fa-eye"></i></button>
+                        </td>
+                    </tr>
+                `);
+                // Store full call log object for view/edit later
+                row.data("call-log-data", call_log);
+                //Call log view-button function
+                row.find(".action-view").on("click", function () {
+                const data = row.data("call-log-data");
+                viewCallLog(data);
+                });
+                $("#call-logs").prepend(row);
         }
       
     }

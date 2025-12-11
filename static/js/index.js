@@ -78,17 +78,17 @@ if(mercuryMode){
                                 let json = await response.json();
                                 console.log(json);
                                 if(json?.queue){
-                                    // //get all call logs for specific queue
-                                    // let logsResponse=await fetch(`/call_logs?queue_id=${currentEntry._id}`,{
-                                    // method: "GET",
-                                    // headers:customHeaders
-                                    // });
-                                    // let callLogs = await logsResponse.json();
+                                    //get all call logs for specific queue
+                                    let logsResponse=await fetch(`/call_logs?queue_id=${json?.queue._id}`,{
+                                    method: "GET",
+                                    headers:customHeaders
+                                    });
+                                    let callLogs = await logsResponse.json();
                                     $('#caller-info').hide();
                                     window.currentAgentEntry = json.queue;
                                     buildCompany(remoteNumber, remoteName, json.queue);
                                     buildContacts(remoteNumber, remoteName, json.queue?.actions);
-                                    // buildCallLogs(callLogs);
+                                    buildCallLogs(callLogs);
                                     $('#main-content').show();
                                 } else {
                                     $('#caller-info').show();
