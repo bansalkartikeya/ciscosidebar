@@ -48,8 +48,31 @@ function addCallLogRow(call_log) {
     // Store full call log object for view/edit later
     row.data("call-log-data", call_log);
 
+    //Call log view-button function
+    row.find(".action-view").on("click", function () {
+    const data = row.data("call-log-data");
+    viewCallLog(data);
+    });
+
     // Add to table
     $('#call-log-settings').prepend(row);
+    
+}
+
+function viewCallLog(data) {
+    if (!data) return;
+
+    $('#view-timestamp').val(data.timestamp || "");
+    $('#view-agent').val(data.agent || "");
+    $('#view-call-type').val(data.call_type || "");
+    $('#view-company-contacts').val((data.company_contacts || []).join(", "));
+    $('#view-caller-name').val(data.caller_name || "");
+    $('#view-caller-company').val(data.caller_company || "");
+    $('#view-callback-number').val(data.callback_number || "");
+    $('#view-caller-email').val(data.caller_email || "");
+    $('#view-reason-for-call').val(data.reason_for_call || "");
+
+    openModal('#modal-calllog-view');
 }
 
 
@@ -1054,7 +1077,7 @@ function initializeDOMListeners(){
         closeModal("#modal-profile-edit");
     });
 
-    // ----- Save changes locally -----
+    // ----- Save changes locally for Company Profile -----
     $(document).on("click", "#save-profile-edit", function () {
 
         $(".edit-field").each(function () {
