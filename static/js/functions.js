@@ -470,7 +470,7 @@ async function saveCallLog(){
     //create the data to be sent
     const currentUser = await getCurrentUser(); //get current user
     let callLog = {
-            queue_id: window.currentAgentEntry._id || currentEntry._id,   // IMPORTANT: link to queue
+            queue_id: window.currentAgentEntry?._id || currentEntry?._id,   // IMPORTANT: link to queue
             timestamp: new Date(),
             call_type:  $('#callType').val().trim(),
             callback_number: $('#callbackNumber').val().trim() || null,
