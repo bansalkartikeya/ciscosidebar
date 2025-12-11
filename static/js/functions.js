@@ -999,6 +999,11 @@ function initializeDOMListeners(){
     $('#modal-subform-save').addClass('is-loading');
     await saveCallLog();
     })
+
+    //close call log view modal
+    $('.close-calllog-view').on('click', function () {
+    closeModal('#modal-calllog-view');
+    });
 //-----------------------------------------------call log table ------------------------------------------------------------------------------------------------------------
     // //edit button function for Company Profile
     
