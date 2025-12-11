@@ -85,6 +85,7 @@ if(mercuryMode){
                                     // });
                                     // let callLogs = await logsResponse.json();
                                     $('#caller-info').hide();
+                                    window.currentAgentEntry = json.queue;
                                     buildCompany(remoteNumber, remoteName, json.queue);
                                     buildContacts(remoteNumber, remoteName, json.queue?.actions);
                                     // buildCallLogs(callLogs);

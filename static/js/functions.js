@@ -943,16 +943,12 @@ function initializeDOMListeners(){
         closeModal(`#${parts[0]}`);
     });
 
-    $('#open-call-log-modal').on('click', function(e){
-    console.log('#open-call-log-modal was clicked');
-    openModal("#modal-subform");
-    })
 //-----------------------------------call log table----------------------------------------------------------------------------------------------------------------------------------------------------
     
     //agent call log
     $('#open-call-log-modal').on('click', function(e){
     console.log('#open-call-log-modal was clicked');
-    openCallLogModal(currentEntry);   
+    openCallLogModal(window.currentAgentEntry);   
     })
     //admin call log
     $('#open-subform').on('click', function(e){
