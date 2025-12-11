@@ -35,20 +35,38 @@ function formatTimestamp(ts) {
 
 //function for sorting timestamp for Call Logs
 let timestampSortAsc = true;                        // default ascending
-function sortCallLogsByTimestamp(tableSelector) { 
-    const tableBody = $(tableSelector);
-    const rows = tableBody.find('tr').get();
+let sortAscAdmin = true;
+// function sortCallLogsByTimestamp(tableSelector) { 
+//     const tableBody = $(tableSelector);
+//     const rows = tableBody.find('tr').get();
 
-    rows.sort((a, b) => {
-        const tsA = new Date($(a).find('.cl-timestamp').text());
-        const tsB = new Date($(b).find('.cl-timestamp').text());
-        return timestampSortAsc ? tsA - tsB : tsB - tsA;
+//     rows.sort((a, b) => {
+//         const tsA = new Date($(a).find('.cl-timestamp').text());
+//         const tsB = new Date($(b).find('.cl-timestamp').text());
+//         return timestampSortAsc ? tsA - tsB : tsB - tsA;
+//     });
+
+//     $.each(rows, (index, row) => tableBody.append(row));
+
+//     // Toggle sort order
+//     timestampSortAsc = !timestampSortAsc;
+// }
+
+function sortCallLogsByTimestamp(tableBodySelector, sortAsc) {
+    let rows = $(tableBodySelector + " tr").get();
+
+    rows.sort(function (a, b) {
+        let t1 = new Date($(a).find(".cl-timestamp").text());
+        let t2 = new Date($(b).find(".cl-timestamp").text());
+
+        return sortAsc ? t1 - t2 : t2 - t1;
     });
 
-    $.each(rows, (index, row) => tableBody.append(row));
-
-    // Toggle sort order
-    timestampSortAsc = !timestampSortAsc;
+    // Remove existing rows and add them back in sorted order
+    $(tableBodySelector).empty();
+    $.each(rows, function (_, row) {
+        $(tableBodySelector).append(row);
+    });
 }
 
 function addCallLogRow(call_log) {
@@ -1080,9 +1098,29 @@ function initializeDOMListeners(){
     });
 
     // sorting click listener for agent table
-    $('#call-logs th .timestamp-sort').on('click', function () {
-        sortCallLogsByTimestamp('#call-logs');
-        $(this).html(timestampSortAsc ? '&#9650;' : '&#9660;'); // Update arrow
+    // $('#call-logs th .timestamp-sort').on('click', function () {
+    //     sortCallLogsByTimestamp('#call-logs');
+    //     $(this).html(timestampSortAsc ? '&#9650;' : '&#9660;'); // Update arrow
+    // });
+
+    // --- Agent Sort ---
+    $("#sort-timestamp-agent").on("click", function () {
+        sortCallLogsByTimestamp("#call-logs", sortAscAgent);
+
+        // Update icon
+        $(this).html(sortAscAgent ? "&#9660;" : "&#9650;");
+
+        sortAscAgent = !sortAscAgent; // Toggle
+    });
+
+    // --- Admin Sort ---
+    $("#sort-timestamp-admin").on("click", function () {
+        sortCallLogsByTimestamp("#call-log-settings", sortAscAdmin);
+
+        // Update icon
+        $(this).html(sortAscAdmin ? "&#9660;" : "&#9650;");
+
+        sortAscAdmin = !sortAscAdmin; // Toggle
     });
 //-----------------------------------------------call log table ------------------------------------------------------------------------------------------------------------
     // //edit button function for Company Profile
