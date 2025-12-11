@@ -104,11 +104,11 @@ function addCallLogRow(call_log) {
     // Store full call log object for view/edit later
     row.data("call-log-data", call_log);
 
-    //Call log view-button function
-    row.find(".action-view").on("click", function () {
-    const data = row.data("call-log-data");
-    viewCallLog(data);
-    });
+    // //Call log view-button function
+    // row.find(".action-view").on("click", function () {
+    // const data = row.data("call-log-data");
+    // viewCallLog(data);
+    // });
 
     // Add to table
     if ($("#call-log-settings").length) {
@@ -1106,22 +1106,32 @@ function initializeDOMListeners(){
     // --- Agent Sort ---
     $("#sort-timestamp-agent").on("click", function () {
         sortCallLogsByTimestamp("#call-logs", sortAscAgent);
-
-        // Update icon
-        $(this).html(sortAscAgent ? "&#9660;" : "&#9650;");
-
-        sortAscAgent = !sortAscAgent; // Toggle
+        $(this).html(sortAscAgent ? "&#9660;" : "&#9650;"); // toggle arrow
+        sortAscAgent = !sortAscAgent;
     });
 
     // --- Admin Sort ---
     $("#sort-timestamp-admin").on("click", function () {
         sortCallLogsByTimestamp("#call-log-settings", sortAscAdmin);
-
-        // Update icon
-        $(this).html(sortAscAdmin ? "&#9660;" : "&#9650;");
-
-        sortAscAdmin = !sortAscAdmin; // Toggle
+        $(this).html(sortAscAdmin ? "&#9660;" : "&#9650;"); // toggle arrow
+        sortAscAdmin = !sortAscAdmin;
     });
+
+    // --- Agent View Button ---
+    $("#call-logs").on("click", ".action-view", function() {
+        const row = $(this).closest("tr");
+        const data = row.data("call-log-data");
+        viewCallLog(data);
+    });
+
+    // --- Admin View Button ---
+    $("#call-log-settings").on("click", ".action-view", function() {
+        const row = $(this).closest("tr");
+        const data = row.data("call-log-data");
+        viewCallLog(data);
+    });
+
+
 //-----------------------------------------------call log table ------------------------------------------------------------------------------------------------------------
     // //edit button function for Company Profile
     
