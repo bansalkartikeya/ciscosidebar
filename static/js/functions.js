@@ -55,7 +55,13 @@ function addCallLogRow(call_log) {
     });
 
     // Add to table
-    $('#call-log-settings').prepend(row);
+    if ($("#call-log-settings").length) {
+        $("#call-log-settings").prepend(row);
+    } else if ($("#call-logs").length) {
+        $("#call-logs").prepend(row);
+    } else {
+        console.error("No call log table found!");
+    }
     
 }
 
