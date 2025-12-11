@@ -13,10 +13,31 @@ function closeAllModals() {
     };
 }
 
+// time-formatting function used for call-log
+function formatTimestamp(ts) {
+    if (!ts) return "";
+
+    let date = new Date(ts);
+    if (isNaN(date.getTime())) return "";
+
+    let month = String(date.getMonth() + 1).padStart(2, "0");
+    let day = String(date.getDate()).padStart(2, "0");
+    let year = date.getFullYear();
+
+    let hours = date.getHours();
+    let minutes = String(date.getMinutes()).padStart(2, "0");
+
+    let ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12;
+    hours = hours ? hours : 12; // 0 becomes 12
+
+    return `${month}/${day}/${year} ${String(hours).padStart(2, "0")}:${minutes} ${ampm}`;
+}
+
 function addCallLogRow(call_log) {
 
     // Extract values safely
-    const timestamp = call_log?.timestamp || "";
+    const timestamp = formatTimestamp(call_log?.timestamp);
     const agent = call_log?.agent || "";
     const callType = call_log?.call_type || "";
     const companyContacts = (call_log?.company_contacts || []).join(", ");
@@ -68,7 +89,7 @@ function addCallLogRow(call_log) {
 function viewCallLog(data) {
     if (!data) return;
 
-    $('#view-timestamp').val(data.timestamp || "");
+    $('#view-timestamp').val(formatTimestamp(data.timestamp));
     $('#view-agent').val(data.agent || "");
     $('#view-call-type').val(data.call_type || "");
     $('#view-company-contacts').val((data.company_contacts || []).join(", "));
