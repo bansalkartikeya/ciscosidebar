@@ -501,8 +501,9 @@ async function saveCallLog(){
         $("#modal-settings-error").removeClass("has-text-danger");
         $("#modal-settings-error").text("Save successful");
     }
-    closeModal("#modal-subform");
     addCallLogRow(callLog)
+    closeModal("#modal-subform");
+    
 }
 
 
