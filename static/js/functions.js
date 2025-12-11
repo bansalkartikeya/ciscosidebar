@@ -62,12 +62,6 @@ function sortCallLogsByTimestamp(tableBodySelector, sortAsc) {
         return sortAsc ? t1 - t2 : t2 - t1;
     });
 
-    // Remove existing rows and add them back in sorted order
-    // $(tableBodySelector).empty();
-    // $.each(rows, function (_, row) {
-    //     $(tableBodySelector).append(row);
-    // });
-
     // Detach and append preserves .data()
     $(tableBodySelector).append(rows);
 }
@@ -1099,12 +1093,6 @@ function initializeDOMListeners(){
         sortCallLogsByTimestamp('#call-log-settings');
         $(this).html(timestampSortAsc ? '&#9650;' : '&#9660;'); // Update arrow
     });
-
-    // sorting click listener for agent table
-    // $('#call-logs th .timestamp-sort').on('click', function () {
-    //     sortCallLogsByTimestamp('#call-logs');
-    //     $(this).html(timestampSortAsc ? '&#9650;' : '&#9660;'); // Update arrow
-    // });
 
     // --- Agent Sort ---
     $("#sort-timestamp-agent").on("click", function () {
