@@ -77,4 +77,4 @@ const secondColumn = [
     {id:"website", name:"Website"}
 ]
 
-const allInputs = firstColumn.concat(secondColumn).concat([{id:"script"}]);
+const allInputs = firstColumn.concat(secondColumn).concat([{id:"script", name:"Script"}]);
