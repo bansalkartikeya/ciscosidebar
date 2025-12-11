@@ -96,6 +96,7 @@ function addCallLogRow(call_log) {
     if ($("#call-log-settings").length) {
         $("#call-log-settings").prepend(row);
     } else if ($("#call-logs").length) {
+        console.log("Exists? call-logs:", $("#call-logs").length);
         $("#call-logs").prepend(row);
     } else {
         console.error("No call log table found!");
