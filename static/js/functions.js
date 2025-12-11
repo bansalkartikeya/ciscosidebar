@@ -63,10 +63,13 @@ function sortCallLogsByTimestamp(tableBodySelector, sortAsc) {
     });
 
     // Remove existing rows and add them back in sorted order
-    $(tableBodySelector).empty();
-    $.each(rows, function (_, row) {
-        $(tableBodySelector).append(row);
-    });
+    // $(tableBodySelector).empty();
+    // $.each(rows, function (_, row) {
+    //     $(tableBodySelector).append(row);
+    // });
+
+    // Detach and append preserves .data()
+    $(tableBodySelector).append(rows);
 }
 
 function addCallLogRow(call_log) {
