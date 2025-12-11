@@ -76,7 +76,8 @@ function viewCallLog(data) {
     $('#view-caller-company').val(data.caller_company || "");
     $('#view-callback-number').val(data.callback_number || "");
     $('#view-caller-email').val(data.caller_email || "");
-    $('#view-reason-for-call').val(data.reason_for_call || "");
+    // $('#view-reason-for-call').val(data.reason_for_call || "");
+    $('#view-reason-for-call').html(data.reason_for_call || '');
 
     openModal('#modal-calllog-view');
 }
