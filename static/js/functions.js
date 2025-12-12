@@ -36,7 +36,6 @@ function formatTimestamp(ts) {
 //function for sorting timestamp for Call Logs
 let timestampSortAsc = true;                        // default ascending
 let sortAscAdmin = true;
-let sortAscAgent = true;
 // function sortCallLogsByTimestamp(tableSelector) { 
 //     const tableBody = $(tableSelector);
 //     const rows = tableBody.find('tr').get();
@@ -53,31 +52,17 @@ let sortAscAgent = true;
 //     timestampSortAsc = !timestampSortAsc;
 // }
 
-// function sortCallLogsByTimestamp(tableBodySelector, sortAsc) {
-//     let rows = $(tableBodySelector + " tr").get();
-
-//     rows.sort(function (a, b) {
-//         let t1 = new Date($(a).find(".cl-timestamp").text());
-//         let t2 = new Date($(b).find(".cl-timestamp").text());
-
-//         return sortAsc ? t1 - t2 : t2 - t1;
-//     });
-
-//     // Detach and append preserves .data()
-//     $(tableBodySelector).append(rows);
-// }
-
 function sortCallLogsByTimestamp(tableBodySelector, sortAsc) {
     let rows = $(tableBodySelector + " tr").get();
 
     rows.sort(function (a, b) {
-        let t1 = new Date($(a).find(".cl-timestamp").data("real-ts"));
-        let t2 = new Date($(b).find(".cl-timestamp").data("real-ts"));
+        let t1 = new Date($(a).find(".cl-timestamp").text());
+        let t2 = new Date($(b).find(".cl-timestamp").text());
 
         return sortAsc ? t1 - t2 : t2 - t1;
     });
 
-    // re-append rows (data is preserved)
+    // Detach and append preserves .data()
     $(tableBodySelector).append(rows);
 }
 
@@ -98,10 +83,7 @@ function addCallLogRow(call_log) {
     const row = $(`
         <tr class="call-log-row">
 
-            <td class="custom-cell"><span class="cl-timestamp" data-real-ts="${realTimestamp}">
-                    ${displayTimestamp}
-                </span
-            </td>
+            <td class="custom-cell"><span class="cl-timestamp">${timestamp}</span></td>
             <td class="custom-cell"><span class="cl-agent">${agent}</span></td>
             <td class="custom-cell"><span class="cl-call-type">${callType}</span></td>
             <td class="custom-cell"><span class="cl-company-contact">${companyContacts}</span></td>
@@ -711,9 +693,7 @@ function buildCallLogs(callLogs){
         $('#call-logs').empty();
         for(let call_log of callLogs){
                 // Extract values safely
-                //const timestamp = call_log?.timestamp || "";
-                const realTimestamp = call_log?.timestamp || "";
-                const displayTimestamp = formatTimestamp(realTimestamp);
+                const timestamp = call_log?.timestamp || "";
                 const agent = call_log?.agent || "";
                 const callType = call_log?.call_type || "";
                 const companyContacts = (call_log?.company_contacts || []).join(", ");
@@ -727,11 +707,7 @@ function buildCallLogs(callLogs){
                 const row = $(`
                     <tr class="call-log-row">
 
-                        <td class="custom-cell">
-                        <span class="cl-timestamp" data-real-ts="${realTimestamp}">
-                            ${displayTimestamp}
-                        </span>
-                        </td>
+                        <td class="custom-cell"><span class="cl-timestamp">${timestamp}</span></td>
                         <td class="custom-cell"><span class="cl-agent">${agent}</span></td>
                         <td class="custom-cell"><span class="cl-call-type">${callType}</span></td>
                         <td class="custom-cell"><span class="cl-company-contact">${companyContacts}</span></td>
@@ -1118,57 +1094,31 @@ function initializeDOMListeners(){
         $(this).html(timestampSortAsc ? '&#9650;' : '&#9660;'); // Update arrow
     });
 
-    // // --- Agent Sort ---
-    // $("#sort-timestamp-agent").on("click", function () {
-    //     sortCallLogsByTimestamp("#call-logs", sortAscAgent);
-    //     $(this).html(sortAscAgent ? "&#9660;" : "&#9650;"); // toggle arrow
-    //     sortAscAgent = !sortAscAgent;
-    // });
-
-    // // --- Admin Sort ---
-    // $("#sort-timestamp-admin").on("click", function () {
-    //     sortCallLogsByTimestamp("#call-log-settings", sortAscAdmin);
-    //     $(this).html(sortAscAdmin ? "&#9660;" : "&#9650;"); // toggle arrow
-    //     sortAscAdmin = !sortAscAdmin;
-    // });
-
-    // // --- Agent View Button ---
-    // $("#call-logs").on("click", ".action-view", function() {
-    //     const row = $(this).closest("tr");
-    //     const data = row.data("call-log-data");
-    //     viewCallLog(data);
-    // });
-
-    // // --- Admin View Button ---
-    // $("#call-log-settings").on("click", ".action-view", function() {
-    //     const row = $(this).closest("tr");
-    //     const data = row.data("call-log-data");
-    //     viewCallLog(data);
-    // });
-
-    // Agent sort
+    // --- Agent Sort ---
     $("#sort-timestamp-agent").on("click", function () {
         sortCallLogsByTimestamp("#call-logs", sortAscAgent);
-        $(this).html(sortAscAgent ? "&#9660;" : "&#9650;");
+        $(this).html(sortAscAgent ? "&#9660;" : "&#9650;"); // toggle arrow
         sortAscAgent = !sortAscAgent;
     });
 
-    // Admin sort
+    // --- Admin Sort ---
     $("#sort-timestamp-admin").on("click", function () {
         sortCallLogsByTimestamp("#call-log-settings", sortAscAdmin);
-        $(this).html(sortAscAdmin ? "&#9660;" : "&#9650;");
+        $(this).html(sortAscAdmin ? "&#9660;" : "&#9650;"); // toggle arrow
         sortAscAdmin = !sortAscAdmin;
     });
 
-    // Agent view
+    // --- Agent View Button ---
     $("#call-logs").on("click", ".action-view", function() {
-        const data = $(this).closest("tr").data("call-log-data");
+        const row = $(this).closest("tr");
+        const data = row.data("call-log-data");
         viewCallLog(data);
     });
 
-    // Admin view
+    // --- Admin View Button ---
     $("#call-log-settings").on("click", ".action-view", function() {
-        const data = $(this).closest("tr").data("call-log-data");
+        const row = $(this).closest("tr");
+        const data = row.data("call-log-data");
         viewCallLog(data);
     });
 
