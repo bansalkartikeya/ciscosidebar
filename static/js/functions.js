@@ -623,31 +623,83 @@ function buildContacts(callerId, callerName, actionData){
         $('#contacts').empty();
         for(let data of actionData){
             customLog('buildContacts data:', data);
-            let row = $('<tr>')
-            row.append(
-                $('<th class="custom-cell" style="vertical-align: middle;">').append(
-                    $('<span class="panel-icon">').append(
-                        $('<i class="fas fa-hashtag" aria-hidden="true">')
-                    )
-                ),
-                $('<td class="custom-cell">').text(data.name),
-                $('<td class="custom-cell">'),
-                $('<td class="custom-cell">').text(data.number),
-                $('<td class="custom-cell">').append(
-                    buildButton("Warm Xfer", data.number, callerId, callerName, false, true)
-                ),
-                $('<td class="custom-cell">').append(
-                    buildButton("Blind Xfer", data.number, callerId, callerName)
-                )
-            );
-            let voiceMailButton = $('<td class="custom-cell">')
-            if(data.voicemail){
-                voiceMailButton.append(
-                    buildButton("Voicemail", data.number, callerId, callerName, true)
+            // Determine transfer number
+            let transferNumber = '';
+            switch(data.transfer_phone) {
+                case 'Office Phone': transferNumber = data.office_phone; break;
+                case 'Cell Phone': transferNumber = data.cell_phone; break;
+                case 'Home Phone': transferNumber = data.home_phone; break;
+                case 'Other Phone': transferNumber = data.other_phone; break;
+            }
+            // Compose agent instruction
+            let agentInstruction = '';
+            if(data.answering_mode && data.transfer_phone) {
+                agentInstruction = `${data.answering_mode} to ${data.transfer_phone}`;
+            }
+            else if(data.answering_mode){
+                agentInstruction = `${data.answering_mode}`
+            }
+            let row = $(`
+                <tr class="action-row">
+                    <td class="custom-cell">${data.name}</td>
+                    <td class="custom-cell">${agentInstruction}</td>
+                    <td class="custom-cell transfer-cell">${transferNumber}</td>
+                    <td class="custom-cell voicemail-cell"></td>
+                    <td class="custom-cell">
+                        <button class="button is-small action-view"><i class="fas fa-eye"></i></button>
+                    </td>
+                </tr>
+            `);
+            //button for voicemail
+            if (data.answering_mode === "Send Voicemail") {
+                row.find('.voicemail-cell').append(
+                    buildButton("Voicemail",transferNumber, callerId, callerName, true)
                 );
             }
-            row.append(voiceMailButton);
+            //button for warm tranfer
+            else if (data.answering_mode === "Warm Transfer") {
+                row.find('.transfer-cell').append(
+                    buildButton("Warm Xfer", transferNumber, callerId, callerName, false, true)
+                );
+            }
+            //button for cold tranfer
+            else if (data.answering_mode === "Cold Transfer") {
+                row.find('.transfer-cell').append(
+                    buildButton("Blind Xfer", transferNumber, callerId, callerName)
+                );
+            }
+            // Store full data in the row 
+            row.data('action-data', data);
+            //view the data
+            row.find('.action-view').on('click', function() {
+                viewContact(row.data('action-data'));
+            });
             $('#contacts').append(row)
+           
+            // let row = $('<tr>')
+            // row.append(
+            //     $('<th class="custom-cell" style="vertical-align: middle;">').append(
+            //         $('<span class="panel-icon">').append(
+            //             $('<i class="fas fa-hashtag" aria-hidden="true">')
+            //         )
+            //     ),
+            //     $('<td class="custom-cell">').text(data.name),
+            //     $('<td class="custom-cell">'),
+            //     $('<td class="custom-cell">').text(data.number),
+            //     $('<td class="custom-cell">').append(
+            //         buildButton("Warm Xfer", data.number, callerId, callerName, false, true)
+            //     ),
+            //     $('<td class="custom-cell">').append(
+            //         buildButton("Blind Xfer", data.number, callerId, callerName)
+            //     )
+            // );
+            // let voiceMailButton = $('<td class="custom-cell">')
+            // if(data.voicemail){
+            //     voiceMailButton.append(
+            //         buildButton("Voicemail", data.number, callerId, callerName, true)
+            //     );
+            // }
+            // row.append(voiceMailButton);
         }
     } catch(e){
         customLog("buildContacts Error:");
@@ -660,7 +712,7 @@ function buildCallLogs(callLogs){
         $('#call-logs').empty();
         for(let call_log of callLogs){
                 // Extract values safely
-                const timestamp = call_log?.timestamp || "";
+                const timestamp = formatTimestamp(call_log?.timestamp || "");
                 const agent = call_log?.agent || "";
                 const callType = call_log?.call_type || "";
                 const companyContacts = (call_log?.company_contacts || []).join(", ");
