@@ -794,7 +794,7 @@ function buildCallLogs(callLogs){
 function buildButton(text, key, callerId, callerName, voicemail, warm){
     let button;
     if(warm){
-        button = $('<button class="button is-warm ml-3" disabled="disabled">').text(text);
+        button = $('<button class="button is-warm ml-3">').text(text);
     } else {
         button = $('<button class="button is-blind ml-3">').text(text);
     }
