@@ -745,7 +745,8 @@ function buildCallLogs(callLogs){
         $('#call-logs').empty();
         for(let call_log of callLogs){
                 // Extract values safely
-                const timestamp = formatTimestamp(call_log?.timestamp || "");
+                //const timestamp = formatTimestamp(call_log?.timestamp || "");
+                const timestamp = formatTimestamp(call_log?.timestamp);
                 const agent = call_log?.agent || "";
                 const callType = call_log?.call_type || "";
                 const companyContacts = (call_log?.company_contacts || []).join(", ");
