@@ -736,51 +736,47 @@
       </header>
 
       <section class="modal-card-body">
-        <div class="columns">
+        <div class="columns is-centered">
+          <div class="column is-two-thirds">
 
-          <!-- LEFT -->
-          <div class="column is-one-third">
             <div class="table is-fullwidth is-striped">
 
+              <!-- Center ID -->
               <div class="columns mb-2">
-                <div class="column is-5 has-text-weight-semibold">
+                <div class="column is-4 has-text-weight-semibold">
                   Center ID
                 </div>
-                <div class="column is-7">
+                <div class="column is-8">
                   <input id="ci-center-id" class="input is-small" readonly>
                 </div>
               </div>
 
+              <!-- Center Main Number -->
               <div class="columns mb-2">
-                <div class="column is-5 has-text-weight-semibold">
+                <div class="column is-4 has-text-weight-semibold">
                   Center Main Number
                 </div>
-                <div class="column is-7">
+                <div class="column is-8">
                   <input id="ci-center-number" class="input is-small" readonly>
                 </div>
               </div>
 
-              <!-- Map label moved to LEFT -->
+              <!-- Map row -->
               <div class="columns mb-2">
-                <div class="column is-5 has-text-weight-semibold">
+                <div class="column is-4 has-text-weight-semibold">
                   Map
                 </div>
-                <div class="column is-7">
-                  <!-- intentionally empty (map shown on right) -->
+                <div class="column is-8">
+                  <div id="ci-map"
+                      style="height:320px;border-radius:6px;border:1px solid #ddd;">
+                  </div>
+                  <p id="ci-error" class="help is-danger mt-2" style="display:none;"></p>
                 </div>
               </div>
 
             </div>
-          </div>
 
-          <!-- RIGHT -->
-          <div class="column is-two-thirds">
-            <div id="ci-map"
-                style="height:320px;border-radius:6px;border:1px solid #ddd;">
-            </div>
-            <p id="ci-error" class="help is-danger mt-2" style="display:none;"></p>
           </div>
-
         </div>
       </section>
 

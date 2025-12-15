@@ -1245,7 +1245,55 @@ function initializeDOMListeners(){
     //     window.open(mapsUrl, "_blank");
     // });
 
-    //new code
+    // //new code
+    // $(document).on("click", "#center-info-button", async function () {
+
+    //     if (!currentEntry) {
+    //         alert("No company profile loaded.");
+    //         return;
+    //     }
+
+    //     const query =
+    //         currentEntry.center_address ||
+    //         currentEntry.center_name ||
+    //         currentEntry.center_number;
+
+    //     // Always open modal
+    //     openModal("#modal-center-info");
+
+    //     // Fill basic fields
+    //     $("#ci-center-id").val(currentEntry.center || "");
+    //     $("#ci-center-number").val(currentEntry.center_number || "");
+
+    //     // Clear previous map + error
+    //     $("#ci-map").empty();
+    //     $("#ci-error").hide();
+
+    //     // No query → do nothing else
+    //     if (!query) {
+    //         return;
+    //     }
+
+    //     try {
+    //         const geo = await geocodeByQuery(query);
+
+    //         // If location NOT found → leave map blank
+    //         if (!geo) {
+    //             return;
+    //         }
+
+    //         // ✅ Only here do we load the map
+    //         loadCenterMapIframe(query);
+
+    //     } catch (e) {
+    //         console.warn("Location lookup failed", e);
+    //         // Do nothing → map remains blank
+    //     }
+    // });
+    // //new code end
+
+    //new code 2
+
     $(document).on("click", "#center-info-button", async function () {
 
         if (!currentEntry) {
@@ -1258,10 +1306,10 @@ function initializeDOMListeners(){
             currentEntry.center_name ||
             currentEntry.center_number;
 
-        // Always open modal
+        // Open modal first
         openModal("#modal-center-info");
 
-        // Fill basic fields
+        // Fill fields
         $("#ci-center-id").val(currentEntry.center || "");
         $("#ci-center-number").val(currentEntry.center_number || "");
 
@@ -1269,28 +1317,29 @@ function initializeDOMListeners(){
         $("#ci-map").empty();
         $("#ci-error").hide();
 
-        // No query → do nothing else
+        // No query → no map
         if (!query) {
             return;
         }
 
         try {
+            // Validate location
             const geo = await geocodeByQuery(query);
 
-            // If location NOT found → leave map blank
+            // Location not found → do NOT load map
             if (!geo) {
                 return;
             }
 
-            // ✅ Only here do we load the map
+            // Location found → load map
             loadCenterMapIframe(query);
 
         } catch (e) {
             console.warn("Location lookup failed", e);
-            // Do nothing → map remains blank
+            // Fail silently → map stays blank
         }
     });
-    //new code end
+    //new code 2 end
 
     // //old code
     // $(document).on("click", "#center-info-button", async function () {
