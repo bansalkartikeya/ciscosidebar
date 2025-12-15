@@ -1244,6 +1244,7 @@ function initializeDOMListeners(){
     //     const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(centerNumber)}`;
     //     window.open(mapsUrl, "_blank");
     // });
+
     //new code
     $(document).on("click", "#center-info-button", async function () {
 
@@ -1257,45 +1258,92 @@ function initializeDOMListeners(){
             currentEntry.center_name ||
             currentEntry.center_number;
 
+        // Always open modal
+        openModal("#modal-center-info");
+
+        // Fill basic fields
+        $("#ci-center-id").val(currentEntry.center || "");
+        $("#ci-center-number").val(currentEntry.center_number || "");
+
+        // Clear previous map + error
+        $("#ci-map").empty();
+        $("#ci-error").hide();
+
+        // No query → do nothing else
         if (!query) {
-            $("#ci-error").text("No center location information available.").show();
-            openModal("#modal-center-info");
             return;
         }
 
-        $("#ci-center-id").val(currentEntry.center || "");
-        $("#ci-center-number").val(currentEntry.center_number || "");
-        $("#ci-center-address").val("");
-        $("#ci-error").hide();
-
-        openModal("#modal-center-info");
-
-        //Load map (iframe)
-        loadCenterMapIframe(query);
-
-        //Resolve address text
-        let addressFilled = false;
         try {
             const geo = await geocodeByQuery(query);
-            if (geo && geo.address) {
-                $("#ci-center-address").val(geo.address);
-                addressFilled = true;
+
+            // If location NOT found → leave map blank
+            if (!geo) {
+                return;
             }
+
+            // ✅ Only here do we load the map
+            loadCenterMapIframe(query);
+
         } catch (e) {
-            console.warn("Address lookup failed", e);
+            console.warn("Location lookup failed", e);
+            // Do nothing → map remains blank
         }
-
-        //Fallback ONLY if query is NOT phone-like
-        if (!addressFilled) {
-            if (!isPhoneLike(query)) {
-                $("#ci-center-address").val(query);
-            } else {
-                $("#ci-center-address").val("Address not available");
-            }
-        }
-
     });
     //new code end
+
+    // //old code
+    // $(document).on("click", "#center-info-button", async function () {
+
+    //     if (!currentEntry) {
+    //         alert("No company profile loaded.");
+    //         return;
+    //     }
+
+    //     const query =
+    //         currentEntry.center_address ||
+    //         currentEntry.center_name ||
+    //         currentEntry.center_number;
+
+    //     if (!query) {
+    //         $("#ci-error").text("No center location information available.").show();
+    //         openModal("#modal-center-info");
+    //         return;
+    //     }
+
+    //     $("#ci-center-id").val(currentEntry.center || "");
+    //     $("#ci-center-number").val(currentEntry.center_number || "");
+    //     $("#ci-center-address").val("");
+    //     $("#ci-error").hide();
+
+    //     openModal("#modal-center-info");
+
+    //     //Load map (iframe)
+    //     loadCenterMapIframe(query);
+
+    //     //Resolve address text
+    //     let addressFilled = false;
+    //     try {
+    //         const geo = await geocodeByQuery(query);
+    //         if (geo && geo.address) {
+    //             $("#ci-center-address").val(geo.address);
+    //             addressFilled = true;
+    //         }
+    //     } catch (e) {
+    //         console.warn("Address lookup failed", e);
+    //     }
+
+    //     //Fallback ONLY if query is NOT phone-like
+    //     if (!addressFilled) {
+    //         if (!isPhoneLike(query)) {
+    //             $("#ci-center-address").val(query);
+    //         } else {
+    //             $("#ci-center-address").val("Address not available");
+    //         }
+    //     }
+
+    // });
+    //old code end
 
     // // let centerMap;
     // // let centerMarker;

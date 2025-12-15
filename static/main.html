@@ -737,10 +737,11 @@
 
       <section class="modal-card-body">
         <div class="columns">
+
           <!-- LEFT -->
           <div class="column is-one-third">
             <div class="table is-fullwidth is-striped">
-              
+
               <div class="columns mb-2">
                 <div class="column is-5 has-text-weight-semibold">
                   Center ID
@@ -759,15 +760,13 @@
                 </div>
               </div>
 
+              <!-- Map label moved to LEFT -->
               <div class="columns mb-2">
                 <div class="column is-5 has-text-weight-semibold">
-                  Center Address
+                  Map
                 </div>
                 <div class="column is-7">
-                  <textarea id="ci-center-address"
-                            class="textarea is-small"
-                            rows="3"
-                            readonly></textarea>
+                  <!-- intentionally empty (map shown on right) -->
                 </div>
               </div>
 
@@ -776,21 +775,12 @@
 
           <!-- RIGHT -->
           <div class="column is-two-thirds">
-            <div class="columns mb-2">
-              <!-- Map label -->
-              <div class="column is-3 has-text-weight-semibold">
-                Map
-              </div>
-
-              <!-- Map value -->
-              <div class="column is-9">
-                <div id="ci-map"
-                    style="height:320px;border-radius:6px;border:1px solid #ddd;">
-                </div>
-                <p id="ci-error" class="help is-danger mt-2" style="display:none;"></p>
-              </div>
+            <div id="ci-map"
+                style="height:320px;border-radius:6px;border:1px solid #ddd;">
             </div>
+            <p id="ci-error" class="help is-danger mt-2" style="display:none;"></p>
           </div>
+
         </div>
       </section>
 
@@ -799,6 +789,7 @@
       </footer>
     </div>
   </div>
+
 
 
   <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
