@@ -1267,7 +1267,9 @@ function initializeDOMListeners(){
 
         try {
             // Use Google-style search via Nominatim (phone numbers work well for businesses)
-            const geo = await geocodeByPhone(centerNumber);
+            //const geo = await geocodeByPhone(centerNumber);
+
+            const geo = await geocodeByQuery(centerNumber);
 
             if (!geo) {
                 $("#ci-error").text("Unable to resolve center address.").show();
@@ -1367,6 +1369,28 @@ function loadProfileEditModal(data) {
 //Geocoding function (phone → address)
 async function geocodeByPhone(phone) {
     const q = encodeURIComponent(phone);
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${q}&limit=1`;
+
+    const res = await fetch(url, {
+        headers: { "Accept-Language": "en" }
+    });
+
+    if (!res.ok) return null;
+
+    const data = await res.json();
+    if (!data || !data.length) return null;
+
+    return {
+        lat: parseFloat(data[0].lat),
+        lon: parseFloat(data[0].lon),
+        address: data[0].display_name
+    };
+}
+
+async function geocodeByQuery(query) {
+    if (!query) return null;
+
+    const q = encodeURIComponent(query);
     const url = `https://nominatim.openstreetmap.org/search?format=json&q=${q}&limit=1`;
 
     const res = await fetch(url, {
