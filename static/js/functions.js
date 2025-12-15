@@ -1409,14 +1409,44 @@ async function geocodeByQuery(query) {
     };
 }
 
-//MapLibre mini-map
-function showCenterMap(lat, lon, label) {
+function loadMapLibreIfNeeded() {
+    return new Promise((resolve, reject) => {
+        if (window.maplibregl) {
+            resolve();
+            return;
+        }
 
-    if (typeof maplibregl === "undefined") {
-        console.error("MapLibre not loaded");
+        const script = document.createElement("script");
+        script.src = "https://unpkg.com/maplibre-gl@2.5.0/dist/maplibre-gl.js";
+        script.async = true;
+
+        script.onload = () => {
+            if (window.maplibregl) {
+                resolve();
+            } else {
+                reject("MapLibre loaded but not available");
+            }
+        };
+
+        script.onerror = () => reject("Failed to load MapLibre");
+
+        document.head.appendChild(script);
+    });
+}
+
+//MapLibre mini-map
+async function showCenterMap(lat, lon, label) {
+
+    try {
+        // Ensure MapLibre is loaded (works in Webex iframe)
+        await loadMapLibreIfNeeded();
+    } catch (e) {
+        console.error("MapLibre load error:", e);
         $("#ci-error").text("Map library failed to load.").show();
         return;
     }
+
+    // ---- MapLibre is guaranteed to exist from here ----
 
     if (!centerMap) {
         centerMap = new maplibregl.Map({
@@ -1431,34 +1461,42 @@ function showCenterMap(lat, lon, label) {
                             "https://b.tile.openstreetmap.org/{z}/{x}/{y}.png",
                             "https://c.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         ],
-                        tileSize: 256
+                        tileSize: 256,
+                        attribution: "© OpenStreetMap contributors"
                     }
                 },
-                layers: [{
-                    id: "osm",
-                    type: "raster",
-                    source: "osm"
-                }]
+                layers: [
+                    {
+                        id: "osm",
+                        type: "raster",
+                        source: "osm"
+                    }
+                ]
             },
             center: [lon, lat],
             zoom: 15
         });
 
-        centerMap.addControl(new maplibregl.NavigationControl(), "top-right");
+        centerMap.addControl(
+            new maplibregl.NavigationControl({ showCompass: false }),
+            "top-right"
+        );
     } else {
         centerMap.setCenter([lon, lat]);
         centerMap.setZoom(15);
     }
 
+    // Remove previous marker
     if (centerMarker) {
         centerMarker.remove();
     }
 
+    // Add new marker
     centerMarker = new maplibregl.Marker({ color: "#3273dc" })
         .setLngLat([lon, lat])
-        .setPopup(new maplibregl.Popup().setText(label))
+        .setPopup(
+            new maplibregl.Popup({ offset: 25 }).setText(label || "")
+        )
         .addTo(centerMap);
 }
-
-
 //-------------------------------------Map section for admin---------------------------------------------------------------------------
