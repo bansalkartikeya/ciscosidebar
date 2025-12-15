@@ -1224,28 +1224,28 @@ function initializeDOMListeners(){
         console.log("Profile updated locally:", currentEntry);
     });
 
-//----------------------------------------------------------------MAP Function-------------------------------------------------------------------
-    // $(document).on("click", "#center-info-button", function () {
+    //----------------------------------------------------------------MAP Function--------------------------------------------------------
+    $(document).on("click", "#center-info-button", function () {
 
-    //     if (!currentEntry) {
-    //         alert("No company profile loaded.");
-    //         return;
-    //     }
+        if (!currentEntry) {
+            alert("No company profile loaded.");
+            return;
+        }
 
-    //     // Center Main Number is stored as center_number (underscore form)
-    //     const centerNumber = currentEntry.center_number;
+        // Center Main Number is stored as center_number (underscore form)
+        const centerNumber = currentEntry.center_number;
 
-    //     if (!centerNumber) {
-    //         alert("Center Main Number is not available.");
-    //         return;
-    //     }
+        if (!centerNumber) {
+            alert("Center Main Number is not available.");
+            return;
+        }
 
-    //     // Open Google Maps search using the phone number
-    //     const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(centerNumber)}`;
-    //     window.open(mapsUrl, "_blank");
-    // });
+        // Open Google Maps search using the phone number
+        const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(centerNumber)}`;
+        window.open(mapsUrl, "_blank");
+    });
 
-    // //new code
+    // //Update code
     // $(document).on("click", "#center-info-button", async function () {
 
     //     if (!currentEntry) {
@@ -1258,10 +1258,10 @@ function initializeDOMListeners(){
     //         currentEntry.center_name ||
     //         currentEntry.center_number;
 
-    //     // Always open modal
+    //     // Open modal first
     //     openModal("#modal-center-info");
 
-    //     // Fill basic fields
+    //     // Fill fields
     //     $("#ci-center-id").val(currentEntry.center || "");
     //     $("#ci-center-number").val(currentEntry.center_number || "");
 
@@ -1269,175 +1269,29 @@ function initializeDOMListeners(){
     //     $("#ci-map").empty();
     //     $("#ci-error").hide();
 
-    //     // No query → do nothing else
+    //     // No query → no map
     //     if (!query) {
     //         return;
     //     }
 
     //     try {
+    //         // Validate location
     //         const geo = await geocodeByQuery(query);
 
-    //         // If location NOT found → leave map blank
+    //         // Location not found → do NOT load map
     //         if (!geo) {
     //             return;
     //         }
 
-    //         // ✅ Only here do we load the map
+    //         // Location found → load map
     //         loadCenterMapIframe(query);
 
     //     } catch (e) {
     //         console.warn("Location lookup failed", e);
-    //         // Do nothing → map remains blank
+    //         // Fail silently → map stays blank
     //     }
     // });
-    // //new code end
-
-    //new code 2
-
-    $(document).on("click", "#center-info-button", async function () {
-
-        if (!currentEntry) {
-            alert("No company profile loaded.");
-            return;
-        }
-
-        const query =
-            currentEntry.center_address ||
-            currentEntry.center_name ||
-            currentEntry.center_number;
-
-        // Open modal first
-        openModal("#modal-center-info");
-
-        // Fill fields
-        $("#ci-center-id").val(currentEntry.center || "");
-        $("#ci-center-number").val(currentEntry.center_number || "");
-
-        // Clear previous map + error
-        $("#ci-map").empty();
-        $("#ci-error").hide();
-
-        // No query → no map
-        if (!query) {
-            return;
-        }
-
-        try {
-            // Validate location
-            const geo = await geocodeByQuery(query);
-
-            // Location not found → do NOT load map
-            if (!geo) {
-                return;
-            }
-
-            // Location found → load map
-            loadCenterMapIframe(query);
-
-        } catch (e) {
-            console.warn("Location lookup failed", e);
-            // Fail silently → map stays blank
-        }
-    });
-    //new code 2 end
-
-    // //old code
-    // $(document).on("click", "#center-info-button", async function () {
-
-    //     if (!currentEntry) {
-    //         alert("No company profile loaded.");
-    //         return;
-    //     }
-
-    //     const query =
-    //         currentEntry.center_address ||
-    //         currentEntry.center_name ||
-    //         currentEntry.center_number;
-
-    //     if (!query) {
-    //         $("#ci-error").text("No center location information available.").show();
-    //         openModal("#modal-center-info");
-    //         return;
-    //     }
-
-    //     $("#ci-center-id").val(currentEntry.center || "");
-    //     $("#ci-center-number").val(currentEntry.center_number || "");
-    //     $("#ci-center-address").val("");
-    //     $("#ci-error").hide();
-
-    //     openModal("#modal-center-info");
-
-    //     //Load map (iframe)
-    //     loadCenterMapIframe(query);
-
-    //     //Resolve address text
-    //     let addressFilled = false;
-    //     try {
-    //         const geo = await geocodeByQuery(query);
-    //         if (geo && geo.address) {
-    //             $("#ci-center-address").val(geo.address);
-    //             addressFilled = true;
-    //         }
-    //     } catch (e) {
-    //         console.warn("Address lookup failed", e);
-    //     }
-
-    //     //Fallback ONLY if query is NOT phone-like
-    //     if (!addressFilled) {
-    //         if (!isPhoneLike(query)) {
-    //             $("#ci-center-address").val(query);
-    //         } else {
-    //             $("#ci-center-address").val("Address not available");
-    //         }
-    //     }
-
-    // });
-    //old code end
-
-    // // let centerMap;
-    // // let centerMarker;
-
-    // $(document).on("click", "#center-info-button", async function () {
-
-    //     if (!currentEntry) {
-    //         alert("No company profile loaded.");
-    //         return;
-    //     }
-
-    //     const centerId = currentEntry.center || "";
-    //     const centerNumber = currentEntry.center_number || "";
-
-    //     $("#ci-center-id").val(centerId);
-    //     $("#ci-center-number").val(centerNumber);
-    //     $("#ci-center-address").val("");
-    //     $("#ci-error").hide();
-
-    //     openModal("#modal-center-info");
-
-    //     if (!centerNumber) {
-    //         $("#ci-error").text("Center main number not available.").show();
-    //         return;
-    //     }
-
-    //     try {
-    //         // Use Google-style search via Nominatim (phone numbers work well for businesses)
-    //         //const geo = await geocodeByPhone(centerNumber);
-
-    //         const geo = await geocodeByQuery(centerNumber);
-
-    //         if (!geo) {
-    //             $("#ci-error").text("Unable to resolve center address.").show();
-    //             return;
-    //         }
-
-    //         $("#ci-center-address").val(geo.address);
-    //         showCenterMap(geo.lat, geo.lon, geo.address);
-
-    //     } catch (e) {
-    //         console.error(e);
-    //         $("#ci-error").text("Error loading map data.").show();
-    //     }
-    // });
+    // //nUpdate code
 
     // Close modal
     $(document).on("click", ".close-center-info", function () {
@@ -1562,97 +1416,6 @@ async function geocodeByQuery(query) {
         address: data[0].display_name
     };
 }
-
-function loadMapLibreIfNeeded() {
-    return new Promise((resolve, reject) => {
-        if (window.maplibregl) {
-            resolve();
-            return;
-        }
-
-        const script = document.createElement("script");
-        script.src = "https://unpkg.com/maplibre-gl@2.5.0/dist/maplibre-gl.js";
-        script.async = true;
-
-        script.onload = () => {
-            if (window.maplibregl) {
-                resolve();
-            } else {
-                reject("MapLibre loaded but not available");
-            }
-        };
-
-        script.onerror = () => reject("Failed to load MapLibre");
-
-        document.head.appendChild(script);
-    });
-}
-
-//MapLibre mini-map
-// async function showCenterMap(lat, lon, label) {
-
-//     try {
-//         // Ensure MapLibre is loaded (works in Webex iframe)
-//         await loadMapLibreIfNeeded();
-//     } catch (e) {
-//         console.error("MapLibre load error:", e);
-//         $("#ci-error").text("Map library failed to load.").show();
-//         return;
-//     }
-
-//     // ---- MapLibre is guaranteed to exist from here ----
-
-//     if (!centerMap) {
-//         centerMap = new maplibregl.Map({
-//             container: "ci-map",
-//             style: {
-//                 version: 8,
-//                 sources: {
-//                     osm: {
-//                         type: "raster",
-//                         tiles: [
-//                             "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
-//                             "https://b.tile.openstreetmap.org/{z}/{x}/{y}.png",
-//                             "https://c.tile.openstreetmap.org/{z}/{x}/{y}.png"
-//                         ],
-//                         tileSize: 256,
-//                         attribution: "© OpenStreetMap contributors"
-//                     }
-//                 },
-//                 layers: [
-//                     {
-//                         id: "osm",
-//                         type: "raster",
-//                         source: "osm"
-//                     }
-//                 ]
-//             },
-//             center: [lon, lat],
-//             zoom: 15
-//         });
-
-//         centerMap.addControl(
-//             new maplibregl.NavigationControl({ showCompass: false }),
-//             "top-right"
-//         );
-//     } else {
-//         centerMap.setCenter([lon, lat]);
-//         centerMap.setZoom(15);
-//     }
-
-//     // Remove previous marker
-//     if (centerMarker) {
-//         centerMarker.remove();
-//     }
-
-//     // Add new marker
-//     centerMarker = new maplibregl.Marker({ color: "#3273dc" })
-//         .setLngLat([lon, lat])
-//         .setPopup(
-//             new maplibregl.Popup({ offset: 25 }).setText(label || "")
-//         )
-//         .addTo(centerMap);
-// }
 
 // // temp testing
 // function showCenterMap(lat, lon, label) {
