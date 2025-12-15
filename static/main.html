@@ -7,6 +7,8 @@
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css">
   <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+  <link href="https://unpkg.com/maplibre-gl@2.5.0/dist/maplibre-gl.css" rel="stylesheet" />
+  <script src="https://unpkg.com/maplibre-gl@2.5.0/dist/maplibre-gl.js"></script>
   <style>
     .column.is-centered {
       display: flex;
@@ -720,6 +722,51 @@
 
       <footer class="modal-card-foot">
         <button class="button close-calllog-view">Close</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- CENTER INFO MODAL -->
+  <div id="modal-center-info" class="modal">
+    <div class="modal-background"></div>
+
+    <div class="modal-card" style="width:85%; max-width:900px;">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Center Info</p>
+        <button class="delete close-center-info"></button>
+      </header>
+
+      <section class="modal-card-body">
+        <div class="columns">
+          <!-- LEFT -->
+          <div class="column is-one-third">
+            <div class="field">
+              <label class="label">Center ID</label>
+              <input id="ci-center-id" class="input" readonly>
+            </div>
+
+            <div class="field">
+              <label class="label">Center Main Number</label>
+              <input id="ci-center-number" class="input" readonly>
+            </div>
+
+            <div class="field">
+              <label class="label">Center Address</label>
+              <textarea id="ci-center-address" class="textarea" rows="3" readonly></textarea>
+            </div>
+          </div>
+
+          <!-- RIGHT -->
+          <div class="column is-two-thirds">
+            <label class="label">Map</label>
+            <div id="ci-map" style="height:320px;border-radius:6px;border:1px solid #ddd;"></div>
+            <p id="ci-error" class="help is-danger mt-2" style="display:none;"></p>
+          </div>
+        </div>
+      </section>
+
+      <footer class="modal-card-foot">
+        <button class="button close-center-info">Close</button>
       </footer>
     </div>
   </div>

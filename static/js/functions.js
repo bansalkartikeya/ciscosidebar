@@ -942,6 +942,9 @@ function applyTheme(theme){
     }
 }
 
+let centerMap;
+let centerMarker;
+
 function initializeDOMListeners(){
     $('#theme-button').on('click', function(e){
         $('#theme-menu').toggle();
@@ -1217,25 +1220,74 @@ function initializeDOMListeners(){
     });
 
 //----------------------------------------------------------------MAP Function-------------------------------------------------------------------
-    $(document).on("click", "#center-info-button", function () {
+    // $(document).on("click", "#center-info-button", function () {
+
+    //     if (!currentEntry) {
+    //         alert("No company profile loaded.");
+    //         return;
+    //     }
+
+    //     // Center Main Number is stored as center_number (underscore form)
+    //     const centerNumber = currentEntry.center_number;
+
+    //     if (!centerNumber) {
+    //         alert("Center Main Number is not available.");
+    //         return;
+    //     }
+
+    //     // Open Google Maps search using the phone number
+    //     const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(centerNumber)}`;
+    //     window.open(mapsUrl, "_blank");
+    // });
+
+    // let centerMap;
+    // let centerMarker;
+
+    $(document).on("click", "#center-info-button", async function () {
 
         if (!currentEntry) {
             alert("No company profile loaded.");
             return;
         }
 
-        // Center Main Number is stored as center_number (underscore form)
-        const centerNumber = currentEntry.center_number;
+        const centerId = currentEntry.center || "";
+        const centerNumber = currentEntry.center_number || "";
+
+        $("#ci-center-id").val(centerId);
+        $("#ci-center-number").val(centerNumber);
+        $("#ci-center-address").val("");
+        $("#ci-error").hide();
+
+        openModal("#modal-center-info");
 
         if (!centerNumber) {
-            alert("Center Main Number is not available.");
+            $("#ci-error").text("Center main number not available.").show();
             return;
         }
 
-        // Open Google Maps search using the phone number
-        const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(centerNumber)}`;
-        window.open(mapsUrl, "_blank");
+        try {
+            // Use Google-style search via Nominatim (phone numbers work well for businesses)
+            const geo = await geocodeByPhone(centerNumber);
+
+            if (!geo) {
+                $("#ci-error").text("Unable to resolve center address.").show();
+                return;
+            }
+
+            $("#ci-center-address").val(geo.address);
+            showCenterMap(geo.lat, geo.lon, geo.address);
+
+        } catch (e) {
+            console.error(e);
+            $("#ci-error").text("Error loading map data.").show();
+        }
     });
+
+    // Close modal
+    $(document).on("click", ".close-center-info", function () {
+        closeModal("#modal-center-info");
+    });
+
 
 }
 
@@ -1310,3 +1362,73 @@ function loadProfileEditModal(data) {
     $("#profile-edit-container").html(html);
 }
 
+//-------------------------------------Map section for admin---------------------------------------------------------------------------
+
+//Geocoding function (phone → address)
+async function geocodeByPhone(phone) {
+    const q = encodeURIComponent(phone);
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${q}&limit=1`;
+
+    const res = await fetch(url, {
+        headers: { "Accept-Language": "en" }
+    });
+
+    if (!res.ok) return null;
+
+    const data = await res.json();
+    if (!data || !data.length) return null;
+
+    return {
+        lat: parseFloat(data[0].lat),
+        lon: parseFloat(data[0].lon),
+        address: data[0].display_name
+    };
+}
+
+//MapLibre mini-map
+function showCenterMap(lat, lon, label) {
+
+    if (!centerMap) {
+        centerMap = new maplibregl.Map({
+            container: "ci-map",
+            style: {
+                version: 8,
+                sources: {
+                    osm: {
+                        type: "raster",
+                        tiles: [
+                            "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                            "https://b.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                            "https://c.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        ],
+                        tileSize: 256
+                    }
+                },
+                layers: [{
+                    id: "osm",
+                    type: "raster",
+                    source: "osm"
+                }]
+            },
+            center: [lon, lat],
+            zoom: 15
+        });
+
+        centerMap.addControl(new maplibregl.NavigationControl(), "top-right");
+    } else {
+        centerMap.setCenter([lon, lat]);
+        centerMap.setZoom(15);
+    }
+
+    if (centerMarker) {
+        centerMarker.remove();
+    }
+
+    centerMarker = new maplibregl.Marker({ color: "#3273dc" })
+        .setLngLat([lon, lat])
+        .setPopup(new maplibregl.Popup().setText(label))
+        .addTo(centerMap);
+}
+
+
+//-------------------------------------Map section for admin---------------------------------------------------------------------------
