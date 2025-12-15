@@ -1412,6 +1412,12 @@ async function geocodeByQuery(query) {
 //MapLibre mini-map
 function showCenterMap(lat, lon, label) {
 
+    if (typeof maplibregl === "undefined") {
+        console.error("MapLibre not loaded");
+        $("#ci-error").text("Map library failed to load.").show();
+        return;
+    }
+
     if (!centerMap) {
         centerMap = new maplibregl.Map({
             container: "ci-map",
