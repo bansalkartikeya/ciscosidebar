@@ -944,6 +944,11 @@ function applyTheme(theme){
 
 let centerMap;
 let centerMarker;
+function isPhoneLike(value) {
+    if (!value) return false;
+    // Matches numbers, +, spaces, dashes, parentheses
+    return /^[\d+\s\-()]+$/.test(value.trim());
+}
 
 function initializeDOMListeners(){
     $('#theme-button').on('click', function(e){
@@ -1239,7 +1244,6 @@ function initializeDOMListeners(){
     //     const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(centerNumber)}`;
     //     window.open(mapsUrl, "_blank");
     // });
-
     //new code
     $(document).on("click", "#center-info-button", async function () {
 
@@ -1271,7 +1275,6 @@ function initializeDOMListeners(){
 
         //Resolve address text
         let addressFilled = false;
-
         try {
             const geo = await geocodeByQuery(query);
             if (geo && geo.address) {
@@ -1282,9 +1285,13 @@ function initializeDOMListeners(){
             console.warn("Address lookup failed", e);
         }
 
-        // Fallback: use query text itself
+        //Fallback ONLY if query is NOT phone-like
         if (!addressFilled) {
-            $("#ci-center-address").val(query);
+            if (!isPhoneLike(query)) {
+                $("#ci-center-address").val(query);
+            } else {
+                $("#ci-center-address").val("Address not available");
+            }
         }
 
     });

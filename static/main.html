@@ -776,9 +776,20 @@
 
           <!-- RIGHT -->
           <div class="column is-two-thirds">
-            <label class="label">Map</label>
-            <div id="ci-map" style="height:320px;border-radius:6px;border:1px solid #ddd;"></div>
-            <p id="ci-error" class="help is-danger mt-2" style="display:none;"></p>
+            <div class="columns mb-2">
+              <!-- Map label -->
+              <div class="column is-3 has-text-weight-semibold">
+                Map
+              </div>
+
+              <!-- Map value -->
+              <div class="column is-9">
+                <div id="ci-map"
+                    style="height:320px;border-radius:6px;border:1px solid #ddd;">
+                </div>
+                <p id="ci-error" class="help is-danger mt-2" style="display:none;"></p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
