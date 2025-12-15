@@ -1240,6 +1240,47 @@ function initializeDOMListeners(){
         window.open(mapsUrl, "_blank");
     });
 
+    //new code
+    $(document).on("click", "#center-info-button", async function () {
+
+        if (!currentEntry) {
+            alert("No company profile loaded.");
+            return;
+        }
+
+        const query =
+            currentEntry.center_address ||
+            currentEntry.center_name ||
+            currentEntry.center_number;
+
+        if (!query) {
+            $("#ci-error").text("No center location information available.").show();
+            openModal("#modal-center-info");
+            return;
+        }
+
+        $("#ci-center-id").val(currentEntry.center || "");
+        $("#ci-center-number").val(currentEntry.center_number || "");
+        $("#ci-center-address").val("");
+        $("#ci-error").hide();
+
+        openModal("#modal-center-info");
+
+        // 1️⃣ Load map (iframe)
+        loadCenterMapIframe(query);
+
+        // 2️⃣ Resolve address text
+        try {
+            const geo = await geocodeByQuery(query);
+            if (geo) {
+                $("#ci-center-address").val(geo.address);
+            }
+        } catch (e) {
+            console.warn("Address lookup failed", e);
+        }
+    });
+    //new code end
+
     // // let centerMap;
     // // let centerMarker;
 
@@ -1500,22 +1541,47 @@ function loadMapLibreIfNeeded() {
 //         .addTo(centerMap);
 // }
 
-// temp testing
-function showCenterMap(lat, lon, label) {
+// // temp testing
+// function showCenterMap(lat, lon, label) {
 
-    // TEMP: Hard-coded Ireland location
-    const iframe = `
-        <iframe
-            width="100%"
-            height="320"
-            style="border:0;border-radius:6px;"
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-            src="https://www.google.com/maps?q=Australia&output=embed">
-        </iframe>
-    `;
+//     // TEMP: Hard-coded Ireland location
+//     const iframe = `
+//         <iframe
+//             width="100%"
+//             height="320"
+//             style="border:0;border-radius:6px;"
+//             loading="lazy"
+//             referrerpolicy="no-referrer-when-downgrade"
+//             src="https://www.google.com/maps?q=Australia&output=embed">
+//         </iframe>
+//     `;
 
-    $("#ci-map").html(iframe);
+//     $("#ci-map").html(iframe);
+// }
+
+function loadCenterMapIframe(query) {
+
+    $("#ci-map").html(`
+        <div class="has-text-centered has-text-grey" style="padding-top:120px;">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading map…</p>
+        </div>
+    `);
+
+    setTimeout(() => {
+        const iframe = `
+            <iframe
+                width="100%"
+                height="320"
+                style="border:0;border-radius:6px;"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                src="https://www.google.com/maps?q=${encodeURIComponent(query)}&output=embed">
+            </iframe>
+        `;
+        $("#ci-map").html(iframe);
+    }, 150);
 }
+
 
 //-------------------------------------Map section for admin---------------------------------------------------------------------------
