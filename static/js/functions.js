@@ -1511,7 +1511,7 @@ function showCenterMap(lat, lon, label) {
             style="border:0;border-radius:6px;"
             loading="lazy"
             referrerpolicy="no-referrer-when-downgrade"
-            src="https://www.google.com/maps?q=Ireland&output=embed">
+            src="https://www.google.com/maps?q=Australia&output=embed">
         </iframe>
     `;
 
