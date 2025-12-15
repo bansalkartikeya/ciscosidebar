@@ -1220,25 +1220,25 @@ function initializeDOMListeners(){
     });
 
 //----------------------------------------------------------------MAP Function-------------------------------------------------------------------
-    $(document).on("click", "#center-info-button", function () {
+    // $(document).on("click", "#center-info-button", function () {
 
-        if (!currentEntry) {
-            alert("No company profile loaded.");
-            return;
-        }
+    //     if (!currentEntry) {
+    //         alert("No company profile loaded.");
+    //         return;
+    //     }
 
-        // Center Main Number is stored as center_number (underscore form)
-        const centerNumber = currentEntry.center_number;
+    //     // Center Main Number is stored as center_number (underscore form)
+    //     const centerNumber = currentEntry.center_number;
 
-        if (!centerNumber) {
-            alert("Center Main Number is not available.");
-            return;
-        }
+    //     if (!centerNumber) {
+    //         alert("Center Main Number is not available.");
+    //         return;
+    //     }
 
-        // Open Google Maps search using the phone number
-        const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(centerNumber)}`;
-        window.open(mapsUrl, "_blank");
-    });
+    //     // Open Google Maps search using the phone number
+    //     const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(centerNumber)}`;
+    //     window.open(mapsUrl, "_blank");
+    // });
 
     //new code
     $(document).on("click", "#center-info-button", async function () {
@@ -1266,18 +1266,27 @@ function initializeDOMListeners(){
 
         openModal("#modal-center-info");
 
-        // 1️⃣ Load map (iframe)
+        //Load map (iframe)
         loadCenterMapIframe(query);
 
-        // 2️⃣ Resolve address text
+        //Resolve address text
+        let addressFilled = false;
+
         try {
             const geo = await geocodeByQuery(query);
-            if (geo) {
+            if (geo && geo.address) {
                 $("#ci-center-address").val(geo.address);
+                addressFilled = true;
             }
         } catch (e) {
             console.warn("Address lookup failed", e);
         }
+
+        // Fallback: use query text itself
+        if (!addressFilled) {
+            $("#ci-center-address").val(query);
+        }
+
     });
     //new code end
 
@@ -1326,10 +1335,10 @@ function initializeDOMListeners(){
     //     }
     // });
 
-    // // Close modal
-    // $(document).on("click", ".close-center-info", function () {
-    //     closeModal("#modal-center-info");
-    // });
+    // Close modal
+    $(document).on("click", ".close-center-info", function () {
+        closeModal("#modal-center-info");
+    });
 
 
 }
