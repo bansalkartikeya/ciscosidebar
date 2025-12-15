@@ -516,6 +516,9 @@ async function saveSettings(){
 
         // Restore company profile edit button
         $("#edit-profile-button").show();
+
+        //center info button
+        $("#center-info-button").show();
     }
 }
 
@@ -1212,6 +1215,28 @@ function initializeDOMListeners(){
 
         console.log("Profile updated locally:", currentEntry);
     });
+
+//----------------------------------------------------------------MAP Function-------------------------------------------------------------------
+    $(document).on("click", "#center-info-button", function () {
+
+        if (!currentEntry) {
+            alert("No company profile loaded.");
+            return;
+        }
+
+        // Center Main Number is stored as center_number (underscore form)
+        const centerNumber = currentEntry.center_number;
+
+        if (!centerNumber) {
+            alert("Center Main Number is not available.");
+            return;
+        }
+
+        // Open Google Maps search using the phone number
+        const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(centerNumber)}`;
+        window.open(mapsUrl, "_blank");
+    });
+
 }
 
 
