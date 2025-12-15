@@ -1435,68 +1435,87 @@ function loadMapLibreIfNeeded() {
 }
 
 //MapLibre mini-map
-async function showCenterMap(lat, lon, label) {
+// async function showCenterMap(lat, lon, label) {
 
-    try {
-        // Ensure MapLibre is loaded (works in Webex iframe)
-        await loadMapLibreIfNeeded();
-    } catch (e) {
-        console.error("MapLibre load error:", e);
-        $("#ci-error").text("Map library failed to load.").show();
-        return;
-    }
+//     try {
+//         // Ensure MapLibre is loaded (works in Webex iframe)
+//         await loadMapLibreIfNeeded();
+//     } catch (e) {
+//         console.error("MapLibre load error:", e);
+//         $("#ci-error").text("Map library failed to load.").show();
+//         return;
+//     }
 
-    // ---- MapLibre is guaranteed to exist from here ----
+//     // ---- MapLibre is guaranteed to exist from here ----
 
-    if (!centerMap) {
-        centerMap = new maplibregl.Map({
-            container: "ci-map",
-            style: {
-                version: 8,
-                sources: {
-                    osm: {
-                        type: "raster",
-                        tiles: [
-                            "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                            "https://b.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                            "https://c.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        ],
-                        tileSize: 256,
-                        attribution: "© OpenStreetMap contributors"
-                    }
-                },
-                layers: [
-                    {
-                        id: "osm",
-                        type: "raster",
-                        source: "osm"
-                    }
-                ]
-            },
-            center: [lon, lat],
-            zoom: 15
-        });
+//     if (!centerMap) {
+//         centerMap = new maplibregl.Map({
+//             container: "ci-map",
+//             style: {
+//                 version: 8,
+//                 sources: {
+//                     osm: {
+//                         type: "raster",
+//                         tiles: [
+//                             "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
+//                             "https://b.tile.openstreetmap.org/{z}/{x}/{y}.png",
+//                             "https://c.tile.openstreetmap.org/{z}/{x}/{y}.png"
+//                         ],
+//                         tileSize: 256,
+//                         attribution: "© OpenStreetMap contributors"
+//                     }
+//                 },
+//                 layers: [
+//                     {
+//                         id: "osm",
+//                         type: "raster",
+//                         source: "osm"
+//                     }
+//                 ]
+//             },
+//             center: [lon, lat],
+//             zoom: 15
+//         });
 
-        centerMap.addControl(
-            new maplibregl.NavigationControl({ showCompass: false }),
-            "top-right"
-        );
-    } else {
-        centerMap.setCenter([lon, lat]);
-        centerMap.setZoom(15);
-    }
+//         centerMap.addControl(
+//             new maplibregl.NavigationControl({ showCompass: false }),
+//             "top-right"
+//         );
+//     } else {
+//         centerMap.setCenter([lon, lat]);
+//         centerMap.setZoom(15);
+//     }
 
-    // Remove previous marker
-    if (centerMarker) {
-        centerMarker.remove();
-    }
+//     // Remove previous marker
+//     if (centerMarker) {
+//         centerMarker.remove();
+//     }
 
-    // Add new marker
-    centerMarker = new maplibregl.Marker({ color: "#3273dc" })
-        .setLngLat([lon, lat])
-        .setPopup(
-            new maplibregl.Popup({ offset: 25 }).setText(label || "")
-        )
-        .addTo(centerMap);
+//     // Add new marker
+//     centerMarker = new maplibregl.Marker({ color: "#3273dc" })
+//         .setLngLat([lon, lat])
+//         .setPopup(
+//             new maplibregl.Popup({ offset: 25 }).setText(label || "")
+//         )
+//         .addTo(centerMap);
+// }
+
+// temp testing
+function showCenterMap(lat, lon, label) {
+
+    // TEMP: Hard-coded Ireland location
+    const iframe = `
+        <iframe
+            width="100%"
+            height="320"
+            style="border:0;border-radius:6px;"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            src="https://www.google.com/maps?q=Ireland&output=embed">
+        </iframe>
+    `;
+
+    $("#ci-map").html(iframe);
 }
+
 //-------------------------------------Map section for admin---------------------------------------------------------------------------
