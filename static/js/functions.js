@@ -1220,75 +1220,75 @@ function initializeDOMListeners(){
     });
 
 //----------------------------------------------------------------MAP Function-------------------------------------------------------------------
-    // $(document).on("click", "#center-info-button", function () {
-
-    //     if (!currentEntry) {
-    //         alert("No company profile loaded.");
-    //         return;
-    //     }
-
-    //     // Center Main Number is stored as center_number (underscore form)
-    //     const centerNumber = currentEntry.center_number;
-
-    //     if (!centerNumber) {
-    //         alert("Center Main Number is not available.");
-    //         return;
-    //     }
-
-    //     // Open Google Maps search using the phone number
-    //     const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(centerNumber)}`;
-    //     window.open(mapsUrl, "_blank");
-    // });
-
-    // let centerMap;
-    // let centerMarker;
-
-    $(document).on("click", "#center-info-button", async function () {
+    $(document).on("click", "#center-info-button", function () {
 
         if (!currentEntry) {
             alert("No company profile loaded.");
             return;
         }
 
-        const centerId = currentEntry.center || "";
-        const centerNumber = currentEntry.center_number || "";
-
-        $("#ci-center-id").val(centerId);
-        $("#ci-center-number").val(centerNumber);
-        $("#ci-center-address").val("");
-        $("#ci-error").hide();
-
-        openModal("#modal-center-info");
+        // Center Main Number is stored as center_number (underscore form)
+        const centerNumber = currentEntry.center_number;
 
         if (!centerNumber) {
-            $("#ci-error").text("Center main number not available.").show();
+            alert("Center Main Number is not available.");
             return;
         }
 
-        try {
-            // Use Google-style search via Nominatim (phone numbers work well for businesses)
-            //const geo = await geocodeByPhone(centerNumber);
-
-            const geo = await geocodeByQuery(centerNumber);
-
-            if (!geo) {
-                $("#ci-error").text("Unable to resolve center address.").show();
-                return;
-            }
-
-            $("#ci-center-address").val(geo.address);
-            showCenterMap(geo.lat, geo.lon, geo.address);
-
-        } catch (e) {
-            console.error(e);
-            $("#ci-error").text("Error loading map data.").show();
-        }
+        // Open Google Maps search using the phone number
+        const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(centerNumber)}`;
+        window.open(mapsUrl, "_blank");
     });
 
-    // Close modal
-    $(document).on("click", ".close-center-info", function () {
-        closeModal("#modal-center-info");
-    });
+    // // let centerMap;
+    // // let centerMarker;
+
+    // $(document).on("click", "#center-info-button", async function () {
+
+    //     if (!currentEntry) {
+    //         alert("No company profile loaded.");
+    //         return;
+    //     }
+
+    //     const centerId = currentEntry.center || "";
+    //     const centerNumber = currentEntry.center_number || "";
+
+    //     $("#ci-center-id").val(centerId);
+    //     $("#ci-center-number").val(centerNumber);
+    //     $("#ci-center-address").val("");
+    //     $("#ci-error").hide();
+
+    //     openModal("#modal-center-info");
+
+    //     if (!centerNumber) {
+    //         $("#ci-error").text("Center main number not available.").show();
+    //         return;
+    //     }
+
+    //     try {
+    //         // Use Google-style search via Nominatim (phone numbers work well for businesses)
+    //         //const geo = await geocodeByPhone(centerNumber);
+
+    //         const geo = await geocodeByQuery(centerNumber);
+
+    //         if (!geo) {
+    //             $("#ci-error").text("Unable to resolve center address.").show();
+    //             return;
+    //         }
+
+    //         $("#ci-center-address").val(geo.address);
+    //         showCenterMap(geo.lat, geo.lon, geo.address);
+
+    //     } catch (e) {
+    //         console.error(e);
+    //         $("#ci-error").text("Error loading map data.").show();
+    //     }
+    // });
+
+    // // Close modal
+    // $(document).on("click", ".close-center-info", function () {
+    //     closeModal("#modal-center-info");
+    // });
 
 
 }
