@@ -3,6 +3,7 @@ import cors from 'cors';
 import { requireAuth } from '../lib/auth.js';
 import { insertCallLog, getCallLogs, updateCallLog, deleteCallLog } from '../lib/database.js';
 import { getPerson } from '../lib/webexService.js';
+import { sendCallLogEmail } from '../lib/mailgun.js';
 
 const router = express.Router();
 
@@ -12,6 +13,12 @@ const router = express.Router();
 router.post('/call_logs', requireAuth, async (req, res) => {
   try {
     const insert = await insertCallLog(req.body);
+
+    // send mail
+    sendCallLogEmail(req.body).catch(err => {
+      console.error('Mailgun error:', err.message);
+    });
+
     res.json({ insertedId: insert.insertedId });
   } catch (error) {
     console.error('Call log insert error:', error);
