@@ -21,13 +21,12 @@ router.post('/call_logs', requireAuth, async (req, res) => {
     // });
 
     const callLog = req.body;
-
     //Save to DB
     const insert = await insertCallLog(callLog);
-
     //Send email AFTER save
     try {
       await sendCallLogEmail(callLog);
+      console.log("Email function completed");
     } catch (emailError) {
       console.error('Mailgun email failed:', emailError.message);
     }
