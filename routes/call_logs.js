@@ -14,10 +14,10 @@ router.post('/call_logs', requireAuth, async (req, res) => {
   try {
     const insert = await insertCallLog(req.body);
 
-    // send mail
-    sendCallLogEmail(req.body).catch(err => {
-      console.error('Mailgun error:', err.message);
-    });
+    // // send mail
+    // sendCallLogEmail(req.body).catch(err => {
+    //   console.error('Mailgun error:', err.message);
+    // });
 
     res.json({ insertedId: insert.insertedId });
   } catch (error) {
