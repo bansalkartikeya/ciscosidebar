@@ -3,7 +3,7 @@ import cors from 'cors';
 import { requireAuth } from '../lib/auth.js';
 import { insertCallLog, getCallLogs, updateCallLog, deleteCallLog } from '../lib/database.js';
 import { getPerson } from '../lib/webexService.js';
-import { sendCallLogEmail } from '../lib/mailgun.js';
+// import { sendCallLogEmail } from '../lib/mailgun.js';
 
 const router = express.Router();
 
