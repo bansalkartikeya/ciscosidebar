@@ -516,6 +516,9 @@ async function saveSettings(){
 
         // Restore company profile edit button
         $("#edit-profile-button").show();
+
+        //center info button
+        $("#center-info-button").show();
     }
 }
 
@@ -939,6 +942,14 @@ function applyTheme(theme){
     }
 }
 
+let centerMap;
+let centerMarker;
+function isPhoneLike(value) {
+    if (!value) return false;
+    // Matches numbers, +, spaces, dashes, parentheses
+    return /^[\d+\s\-()]+$/.test(value.trim());
+}
+
 function initializeDOMListeners(){
     $('#theme-button').on('click', function(e){
         $('#theme-menu').toggle();
@@ -1212,6 +1223,82 @@ function initializeDOMListeners(){
 
         console.log("Profile updated locally:", currentEntry);
     });
+
+    //----------------------------------------------------------------MAP Function--------------------------------------------------------
+    $(document).on("click", "#center-info-button", function () {
+
+        if (!currentEntry) {
+            alert("No company profile loaded.");
+            return;
+        }
+
+        // Center Main Number is stored as center_number (underscore form)
+        const centerNumber = currentEntry.center_number;
+
+        if (!centerNumber) {
+            alert("Center Main Number is not available.");
+            return;
+        }
+
+        // Open Google Maps search using the phone number
+        const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(centerNumber)}`;
+        window.open(mapsUrl, "_blank");
+    });
+
+    // //Update code
+    // $(document).on("click", "#center-info-button", async function () {
+
+    //     if (!currentEntry) {
+    //         alert("No company profile loaded.");
+    //         return;
+    //     }
+
+    //     const query =
+    //         currentEntry.center_address ||
+    //         currentEntry.center_name ||
+    //         currentEntry.center_number;
+
+    //     // Open modal first
+    //     openModal("#modal-center-info");
+
+    //     // Fill fields
+    //     $("#ci-center-id").val(currentEntry.center || "");
+    //     $("#ci-center-number").val(currentEntry.center_number || "");
+
+    //     // Clear previous map + error
+    //     $("#ci-map").empty();
+    //     $("#ci-error").hide();
+
+    //     // No query → no map
+    //     if (!query) {
+    //         return;
+    //     }
+
+    //     try {
+    //         // Validate location
+    //         const geo = await geocodeByQuery(query);
+
+    //         // Location not found → do NOT load map
+    //         if (!geo) {
+    //             return;
+    //         }
+
+    //         // Location found → load map
+    //         loadCenterMapIframe(query);
+
+    //     } catch (e) {
+    //         console.warn("Location lookup failed", e);
+    //         // Fail silently → map stays blank
+    //     }
+    // });
+    // //nUpdate code
+
+    // Close modal
+    $(document).on("click", ".close-center-info", function () {
+        closeModal("#modal-center-info");
+    });
+
+
 }
 
 
@@ -1285,3 +1372,92 @@ function loadProfileEditModal(data) {
     $("#profile-edit-container").html(html);
 }
 
+//-------------------------------------Map section for admin---------------------------------------------------------------------------
+
+//Geocoding function (phone → address)
+async function geocodeByPhone(phone) {
+    const q = encodeURIComponent(phone);
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${q}&limit=1`;
+
+    const res = await fetch(url, {
+        headers: { "Accept-Language": "en" }
+    });
+
+    if (!res.ok) return null;
+
+    const data = await res.json();
+    if (!data || !data.length) return null;
+
+    return {
+        lat: parseFloat(data[0].lat),
+        lon: parseFloat(data[0].lon),
+        address: data[0].display_name
+    };
+}
+
+async function geocodeByQuery(query) {
+    if (!query) return null;
+
+    const q = encodeURIComponent(query);
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${q}&limit=1`;
+
+    const res = await fetch(url, {
+        headers: { "Accept-Language": "en" }
+    });
+
+    if (!res.ok) return null;
+
+    const data = await res.json();
+    if (!data || !data.length) return null;
+
+    return {
+        lat: parseFloat(data[0].lat),
+        lon: parseFloat(data[0].lon),
+        address: data[0].display_name
+    };
+}
+
+// // temp testing
+// function showCenterMap(lat, lon, label) {
+
+//     // TEMP: Hard-coded Ireland location
+//     const iframe = `
+//         <iframe
+//             width="100%"
+//             height="320"
+//             style="border:0;border-radius:6px;"
+//             loading="lazy"
+//             referrerpolicy="no-referrer-when-downgrade"
+//             src="https://www.google.com/maps?q=Australia&output=embed">
+//         </iframe>
+//     `;
+
+//     $("#ci-map").html(iframe);
+// }
+
+function loadCenterMapIframe(query) {
+
+    $("#ci-map").html(`
+        <div class="has-text-centered has-text-grey" style="padding-top:120px;">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading map…</p>
+        </div>
+    `);
+
+    setTimeout(() => {
+        const iframe = `
+            <iframe
+                width="100%"
+                height="320"
+                style="border:0;border-radius:6px;"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                src="https://www.google.com/maps?q=${encodeURIComponent(query)}&output=embed">
+            </iframe>
+        `;
+        $("#ci-map").html(iframe);
+    }, 150);
+}
+
+
+//-------------------------------------Map section for admin---------------------------------------------------------------------------
