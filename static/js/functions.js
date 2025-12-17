@@ -313,25 +313,40 @@ function updateContactRow(row, action) {
     row.data('action-data', action);
 }
 
-function searchContacts() {
-    const term = $('#contact-search').val().toLowerCase();
+// function searchContacts() {
+//     const term = $('#contact-search').val().toLowerCase();
 
-    $('#contacts-settings .action-row').each(function () {
+//     $('#contacts-settings .action-row').each(function () {
+//         const row = $(this);
+
+//         // stored action object
+//         const data = row.data('action-data') || {};
+
+//         // Make one searchable string
+//         const combined = Object.values(data)
+//             .join(' ')
+//             .toLowerCase();
+
+//         if (combined.includes(term)) {
+//             row.show();
+//         } else {
+//             row.hide();
+//         }
+//     });
+// }
+
+function searchContacts(inputSelector, tableSelector) {
+    const term = $(inputSelector).val().toLowerCase();
+
+    $(`${tableSelector} .action-row`).each(function () {
         const row = $(this);
-
-        // stored action object
         const data = row.data('action-data') || {};
 
-        // Make one searchable string
         const combined = Object.values(data)
             .join(' ')
             .toLowerCase();
 
-        if (combined.includes(term)) {
-            row.show();
-        } else {
-            row.hide();
-        }
+        row.toggle(combined.includes(term));
     });
 }
 //-------------------------------------contact section for admin---------------------------------------------------------------------------
@@ -1058,9 +1073,20 @@ function initializeDOMListeners(){
         //close the modal
         closeModal('#add-contact-modal')
     })
-    //searchs in contacts
+
+    // //searchs in contacts
+    // $('#contact-search').on('input', function () {
+    // searchContacts();
+    // });
+
+    // Admin contacts search
     $('#contact-search').on('input', function () {
-    searchContacts();
+        searchContacts('#contact-search', '#contacts-settings');
+    });
+
+    // Agent contacts search
+    $('#contact-search-agent').on('input', function () {
+        searchContacts('#contact-search-agent', '#contacts');
     });
 
     //closes the modal
