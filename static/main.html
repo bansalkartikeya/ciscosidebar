@@ -40,6 +40,35 @@
       display: block;
     }
 
+    .reason-html {
+      max-width: 100%;
+      overflow-wrap: break-word;
+      word-break: break-word;
+      white-space: normal;
+    }
+
+    .reason-html ol,
+    .reason-html ul {
+      margin: 0.5em 0 0.5em 1.25em;   /* keep numbers inside */
+      padding-left: 1.25em;
+    }
+
+    .reason-html li {
+      margin-left: 0;
+      padding-left: 0;
+    }
+
+    /* Prevent table overflow */
+    td .reason-html {
+      overflow: hidden;
+    }
+
+    /*for long contect*/
+    #view-reason-for-call {
+      max-height: 250px;
+      overflow-y: auto;
+    }
+
   </style>
 </head>
 
@@ -712,7 +741,7 @@
             <div class="field">
               <label class="label">Reason for Call</label>
               <!-- <textarea id="view-reason-for-call" class="textarea" disabled></textarea> -->
-              <div id="view-reason-for-call" class="textarea is-static"></div>
+              <div id="view-reason-for-call" class="textarea is-static reason-html"></div>
             </div>
 
           </div>
