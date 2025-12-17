@@ -66,7 +66,7 @@ function sortCallLogsByTimestamp(tableBodySelector, sortAsc) {
     $(tableBodySelector).append(rows);
 }
 
-function addCallLogRow(call_log) {
+function addCallLogRow(call_log, target = "agent") {
 
     // Extract values safely
     const timestamp = formatTimestamp(call_log?.timestamp);
@@ -107,14 +107,20 @@ function addCallLogRow(call_log) {
     // viewCallLog(data);
     // });
 
-    // Add to table
-    if ($("#call-log-settings").length) {
+    // // Add to table
+    // if ($("#call-log-settings").length) {
+    //     $("#call-log-settings").prepend(row);
+    // } else if ($("#call-logs").length) {
+    //     console.log("Exists? call-logs:", $("#call-logs").length);
+    //     $("#call-logs").prepend(row);
+    // } else {
+    //     console.error("No call log table found!");
+    // }
+
+    if (target === "admin") {
         $("#call-log-settings").prepend(row);
-    } else if ($("#call-logs").length) {
-        console.log("Exists? call-logs:", $("#call-logs").length);
-        $("#call-logs").prepend(row);
     } else {
-        console.error("No call log table found!");
+        $("#call-logs").prepend(row);
     }
     
 }
@@ -393,7 +399,10 @@ function fillSettings(data, editable = false) {
     if (data && data.actions) data.actions.forEach(addActionRow);
 
     $('#call-log-settings').empty();
-    if (data && data.call_logs) data.call_logs.forEach(addCallLogRow);
+    //if (data && data.call_logs) data.call_logs.forEach(addCallLogRow);
+    if (data && data.call_logs) {
+        data.call_logs.forEach(log => addCallLogRow(log, "admin"));
+    }
 
 }
 
@@ -559,7 +568,14 @@ async function saveCallLog(){
         $("#modal-settings-error").removeClass("has-text-danger");
         $("#modal-settings-error").text("Save successful");
     }
-    addCallLogRow(callLog)
+
+    // addCallLogRow(callLog)
+    if (window.currentAgentEntry) {
+        addCallLogRow(callLog, "agent");
+    } else {
+        addCallLogRow(callLog, "admin");
+    }
+
     closeModal("#modal-subform");
     
 }
