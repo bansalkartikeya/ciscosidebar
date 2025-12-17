@@ -88,7 +88,7 @@ function addCallLogRow(call_log, target = "agent") {
             <td class="custom-cell"><span class="cl-agent">${agent}</span></td>
             <td class="custom-cell"><span class="cl-call-type">${callType}</span></td>
             <td class="custom-cell"><span class="cl-company-contact">${companyContacts}</span></td>
-            <td class="custom-cell"><cl-reason reason-html">${reasonForCall}</span></td>
+            <td class="custom-cell"><div class="cl-reason reason-html">${reasonForCall}</div></td>
             <td class="custom-cell"><span class="cl-caller-name">${callerName}</span></td>
             <td class="custom-cell"><span class="cl-caller-company">${callerCompany}</span></td>
             <td class="custom-cell"><span class="cl-callback-number">${callbackNumber}</span></td>
@@ -784,7 +784,7 @@ function buildCallLogs(callLogs){
                         <td class="custom-cell"><span class="cl-agent">${agent}</span></td>
                         <td class="custom-cell"><span class="cl-call-type">${callType}</span></td>
                         <td class="custom-cell"><span class="cl-company-contact">${companyContacts}</span></td>
-                        <td class="custom-cell"><span class="cl-reason reason-html">${reasonForCall}</span></td>
+                        <td class="custom-cell"><div class="cl-reason reason-html">${reasonForCall}</div></td>
                         <td class="custom-cell"><span class="cl-caller-name">${callerName}</span></td>
                         <td class="custom-cell"><span class="cl-caller-company">${callerCompany}</span></td>
                         <td class="custom-cell"><span class="cl-callback-number">${callbackNumber}</span></td>
