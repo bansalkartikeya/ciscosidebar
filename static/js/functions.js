@@ -142,6 +142,23 @@ function viewCallLog(data) {
 
     openModal('#modal-calllog-view');
 }
+
+function searchCallLogs(inputSelector, tableSelector) {
+    const term = $(inputSelector).val().toLowerCase();
+
+    $(`${tableSelector} .call-log-row`).each(function () {
+        const row = $(this);
+        const data = row.data('call-log-data') || {};
+
+        // Flatten ALL fields into one searchable string
+        const combined = Object.values(data)
+            .join(' ')
+            .toLowerCase();
+
+        row.toggle(combined.includes(term));
+    });
+}
+
 //-------------------------------------contact section for admin----------------------------------------------------------------
 function editContact(data) {
 
@@ -1193,6 +1210,16 @@ function initializeDOMListeners(){
     //close call log view modal
     $('.close-calllog-view').on('click', function () {
     closeModal('#modal-calllog-view');
+    });
+
+    // --- Agent Call Logs Search ---
+    $('#calllog-search-agent').on('input', function () {
+        searchCallLogs('#calllog-search-agent', '#call-logs');
+    });
+
+    // --- Admin Call Logs Search ---
+    $('#calllog-search-admin').on('input', function () {
+        searchCallLogs('#calllog-search-admin', '#call-log-settings');
     });
 
     // // sorting click listener for admin table
