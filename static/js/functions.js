@@ -36,6 +36,7 @@ function formatTimestamp(ts) {
 //function for sorting timestamp for Call Logs
 let timestampSortAsc = true;                        // default ascending
 let sortAscAdmin = true;
+let sortAscAgent = true;
 // function sortCallLogsByTimestamp(tableSelector) { 
 //     const tableBody = $(tableSelector);
 //     const rows = tableBody.find('tr').get();
@@ -1168,11 +1169,11 @@ function initializeDOMListeners(){
     closeModal('#modal-calllog-view');
     });
 
-    // sorting click listener for admin table
-    $('#call-log-settings th .timestamp-sort').on('click', function () {
-        sortCallLogsByTimestamp('#call-log-settings');
-        $(this).html(timestampSortAsc ? '&#9650;' : '&#9660;'); // Update arrow
-    });
+    // // sorting click listener for admin table
+    // $('#call-log-settings th .timestamp-sort').on('click', function () {
+    //     sortCallLogsByTimestamp('#call-log-settings');
+    //     $(this).html(timestampSortAsc ? '&#9650;' : '&#9660;'); // Update arrow
+    // });
 
     // --- Agent Sort ---
     $("#sort-timestamp-agent").on("click", function () {
