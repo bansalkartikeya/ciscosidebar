@@ -44,21 +44,6 @@ function formatTimestamp(ts) {
 let timestampSortAsc = true;                        // default ascending
 let sortAscAdmin = true;
 let sortAscAgent = true;
-// function sortCallLogsByTimestamp(tableSelector) { 
-//     const tableBody = $(tableSelector);
-//     const rows = tableBody.find('tr').get();
-
-//     rows.sort((a, b) => {
-//         const tsA = new Date($(a).find('.cl-timestamp').text());
-//         const tsB = new Date($(b).find('.cl-timestamp').text());
-//         return timestampSortAsc ? tsA - tsB : tsB - tsA;
-//     });
-
-//     $.each(rows, (index, row) => tableBody.append(row));
-
-//     // Toggle sort order
-//     timestampSortAsc = !timestampSortAsc;
-// }
 
 function sortCallLogsByTimestamp(tableBodySelector, sortAsc) {
     let rows = $(tableBodySelector + " tr").get();
@@ -333,28 +318,6 @@ function updateContactRow(row, action) {
     // update stored full data
     row.data('action-data', action);
 }
-
-// function searchContacts() {
-//     const term = $('#contact-search').val().toLowerCase();
-
-//     $('#contacts-settings .action-row').each(function () {
-//         const row = $(this);
-
-//         // stored action object
-//         const data = row.data('action-data') || {};
-
-//         // Make one searchable string
-//         const combined = Object.values(data)
-//             .join(' ')
-//             .toLowerCase();
-
-//         if (combined.includes(term)) {
-//             row.show();
-//         } else {
-//             row.hide();
-//         }
-//     });
-// }
 
 function searchContacts(inputSelector, tableSelector) {
     const term = $(inputSelector).val().toLowerCase();
@@ -1096,11 +1059,6 @@ function initializeDOMListeners(){
         closeModal('#add-contact-modal')
     })
 
-    // //searchs in contacts
-    // $('#contact-search').on('input', function () {
-    // searchContacts();
-    // });
-
     // Admin contacts search
     $('#contact-search').on('input', function () {
         searchContacts('#contact-search', '#contacts-settings');
@@ -1226,12 +1184,6 @@ function initializeDOMListeners(){
     $('#calllog-search-admin').on('input', function () {
         searchCallLogs('#calllog-search-admin', '#call-log-settings');
     });
-
-    // // sorting click listener for admin table
-    // $('#call-log-settings th .timestamp-sort').on('click', function () {
-    //     sortCallLogsByTimestamp('#call-log-settings');
-    //     $(this).html(timestampSortAsc ? '&#9650;' : '&#9660;'); // Update arrow
-    // });
 
     // --- Agent Sort ---
     $("#sort-timestamp-agent").on("click", function () {
