@@ -74,7 +74,8 @@ function addCallLogRow(call_log, target = "agent") {
     const agent = call_log?.agent || "";
     const callType = call_log?.call_type || "";
     const companyContacts = (call_log?.company_contacts || []).join(", ");
-    const reasonForCall = call_log?.reason_for_call || "";
+    //const reasonForCall = call_log?.reason_for_call || "";
+    const reasonPreview = stripHTML(reasonForCall).substring(0, 4) + "...";
     const callerName = call_log?.caller_name || "";
     const callerCompany = call_log?.caller_company || "";
     const callbackNumber = call_log?.callback_number || "";
@@ -88,7 +89,7 @@ function addCallLogRow(call_log, target = "agent") {
             <td class="custom-cell"><span class="cl-agent">${agent}</span></td>
             <td class="custom-cell"><span class="cl-call-type">${callType}</span></td>
             <td class="custom-cell"><span class="cl-company-contact">${companyContacts}</span></td>
-            <td class="custom-cell"><div class="cl-reason reason-html">${reasonForCall}</div></td>
+            <td class="custom-cell"><div class="cl-reason-preview">${reasonPreview}</div></td>
             <td class="custom-cell"><span class="cl-caller-name">${callerName}</span></td>
             <td class="custom-cell"><span class="cl-caller-company">${callerCompany}</span></td>
             <td class="custom-cell"><span class="cl-callback-number">${callbackNumber}</span></td>
@@ -453,6 +454,13 @@ function openSettings(entry){
     $('#settings-menu').hide();
 }
 
+// this function used to disaplay plaint text in Call Logs for "reason fo call"
+function stripHTML(html) {
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    return div.textContent || div.innerText || "";
+}
+
 function clearCallLogModal(){
     $('#callType').val('');
     $('#callbackNumber').val('');
@@ -802,7 +810,8 @@ function buildCallLogs(callLogs){
                 const agent = call_log?.agent || "";
                 const callType = call_log?.call_type || "";
                 const companyContacts = (call_log?.company_contacts || []).join(", ");
-                const reasonForCall = call_log?.reason_for_call || "";
+                //const reasonForCall = call_log?.reason_for_call || "";
+                const reasonPreview = stripHTML(reasonForCall).substring(0, 4) + "...";
                 const callerName = call_log?.caller_name || "";
                 const callerCompany = call_log?.caller_company || "";
                 const callbackNumber = call_log?.callback_number || "";
@@ -816,7 +825,7 @@ function buildCallLogs(callLogs){
                         <td class="custom-cell"><span class="cl-agent">${agent}</span></td>
                         <td class="custom-cell"><span class="cl-call-type">${callType}</span></td>
                         <td class="custom-cell"><span class="cl-company-contact">${companyContacts}</span></td>
-                        <td class="custom-cell"><div class="cl-reason reason-html">${reasonForCall}</div></td>
+                        <td class="custom-cell"><div class="cl-reason-preview">${reasonPreview}</div></td>
                         <td class="custom-cell"><span class="cl-caller-name">${callerName}</span></td>
                         <td class="custom-cell"><span class="cl-caller-company">${callerCompany}</span></td>
                         <td class="custom-cell"><span class="cl-callback-number">${callbackNumber}</span></td>
