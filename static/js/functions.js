@@ -185,7 +185,12 @@ function editContact(data) {
     // Mark the modal as EDIT mode
     $('#add-contact-modal').attr('data-mode', 'edit');
     // Open modal
-    openModal('#add-contact-modal')    
+    openModal('#add-contact-modal')
+    
+    // Force UI sync AFTER modal opens
+    setTimeout(() => {
+    $('#contact-transfer-phone').val(data.transfer_phone || '');
+    }, 50);
 }
 
 function viewContact(data) {
@@ -230,9 +235,10 @@ function addActionRow(action) {
         case 'Home Phone': transferNumber = action.home_phone; break;
         case 'Other Phone': transferNumber = action.other_phone; break;
     }
-    //clean transfer phone despense with select... if exists
-    const transferPhone = $('#contact-transfer-phone').val();
-    action.transfer_phone = transferPhone === "Select..." ? "" : transferPhone;
+
+    // //clean transfer phone despense with select... if exists
+    // const transferPhone = $('#contact-transfer-phone').val();
+    // action.transfer_phone = transferPhone === "Select..." ? "" : transferPhone;
 
     // Compose agent instruction
     let agentInstruction = '';
@@ -293,9 +299,9 @@ function addActionRow(action) {
 function updateContactRow(row, action) {
     console.log (action)
 
-    // clean transfer phone first
-    const transferPhone = $('#contact-transfer-phone').val();
-    action.transfer_phone = transferPhone === "Select..." ? "" : transferPhone;
+    // // clean transfer phone first
+    // const transferPhone = $('#contact-transfer-phone').val();
+    // action.transfer_phone = transferPhone === "Select..." ? "" : transferPhone;
 
     let transferNumber = "";
     switch (action.transfer_phone) {
