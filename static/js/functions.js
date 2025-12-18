@@ -13,6 +13,13 @@ function closeAllModals() {
     };
 }
 
+// this function used to disaplay plaint text in Call Logs for "reason fo call"
+function stripHTML(html) {
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    return div.textContent || div.innerText || "";
+}
+
 function formatTimestamp(ts) {
     if (!ts) return "";
 
@@ -74,7 +81,7 @@ function addCallLogRow(call_log, target = "agent") {
     const agent = call_log?.agent || "";
     const callType = call_log?.call_type || "";
     const companyContacts = (call_log?.company_contacts || []).join(", ");
-    //const reasonForCall = call_log?.reason_for_call || "";
+    const reasonForCall = call_log?.reason_for_call || "";
     const reasonPreview = stripHTML(reasonForCall).substring(0, 4) + "...";
     const callerName = call_log?.caller_name || "";
     const callerCompany = call_log?.caller_company || "";
@@ -102,22 +109,6 @@ function addCallLogRow(call_log, target = "agent") {
 
     // Store full call log object for view/edit later
     row.data("call-log-data", call_log);
-
-    // //Call log view-button function
-    // row.find(".action-view").on("click", function () {
-    // const data = row.data("call-log-data");
-    // viewCallLog(data);
-    // });
-
-    // // Add to table
-    // if ($("#call-log-settings").length) {
-    //     $("#call-log-settings").prepend(row);
-    // } else if ($("#call-logs").length) {
-    //     console.log("Exists? call-logs:", $("#call-logs").length);
-    //     $("#call-logs").prepend(row);
-    // } else {
-    //     console.error("No call log table found!");
-    // }
 
     if (target === "admin") {
         $("#call-log-settings").prepend(row);
@@ -452,13 +443,6 @@ function openSettings(entry){
     openModal('#modal-settings');
     // #modal-settings is a modal div whose skeleton is defined in the html header,section,footer
     $('#settings-menu').hide();
-}
-
-// this function used to disaplay plaint text in Call Logs for "reason fo call"
-function stripHTML(html) {
-    const div = document.createElement("div");
-    div.innerHTML = html;
-    return div.textContent || div.innerText || "";
 }
 
 function clearCallLogModal(){
@@ -810,7 +794,7 @@ function buildCallLogs(callLogs){
                 const agent = call_log?.agent || "";
                 const callType = call_log?.call_type || "";
                 const companyContacts = (call_log?.company_contacts || []).join(", ");
-                //const reasonForCall = call_log?.reason_for_call || "";
+                const reasonForCall = call_log?.reason_for_call || "";
                 const reasonPreview = stripHTML(reasonForCall).substring(0, 4) + "...";
                 const callerName = call_log?.caller_name || "";
                 const callerCompany = call_log?.caller_company || "";
