@@ -158,6 +158,9 @@ function editContact(data) {
     $('#add-contact-modal input, #add-contact-modal select, #add-contact-modal textarea')
     .prop('disabled', false);
 
+    // RESET Transfer call BEFORE FILL
+    $('#contact-transfer-phone').val('');
+
     if (!data) return;
     // Fill modal fields
     $('#contact-name').val(data.name || '');
@@ -187,6 +190,9 @@ function editContact(data) {
 
 function viewContact(data) {
     if (!data) return;
+
+    // RESET FIRST
+    $('#contact-transfer-phone').val('');
 
     // Fill modal fields
     $('#contact-name').val(data.name || '');
