@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { requireAuth } from '../lib/auth.js';
-import { insertCallLog, getCallLogs, updateCallLog, deleteCallLog } from '../lib/database.js';
+import { insertCallLog, getCallLogs, updateCallLog, deleteCallLog, getQueueByObjectId } from '../lib/database.js';
 import { getPerson } from '../lib/webexService.js';
 // import { sendCallLogEmail } from '../lib/mailgun.js';
 import { sendCallLogEmail } from '../lib/mailgun_service.js';
@@ -13,16 +13,16 @@ const router = express.Router();
 // Create a call log
 router.post('/call_logs', requireAuth, async (req, res) => {
   try {
-    //const insert = await insertCallLog(req.body);
-
-    // // send mail
-    // sendCallLogEmail(req.body).catch(err => {
-    //   console.error('Mailgun error:', err.message);
-    // });
-
+    
     const callLog = req.body;
+
+    // pull company contacts for matching emails
+    const companyEntry = await getQueueByObjectId(callLog.queue_id);
+    callLog.full_actions = companyEntry?.actions || [];
+   
     //Save to DB
     const insert = await insertCallLog(callLog);
+
     //Send email AFTER save
     try {
       await sendCallLogEmail(callLog);
