@@ -1214,6 +1214,16 @@ function initializeDOMListeners(){
     });
 
 
+    //Instruction for the multiple email in call log
+    $("#callerEmail").on("focus", function() {
+        $("#callerEmailHint").show();
+    });
+
+    $("#callerEmail").on("blur", function() {
+        $("#callerEmailHint").hide();
+    });
+
+
 //-----------------------------------------------call log table ------------------------------------------------------------------------------------------------------------
     // //edit button function for Company Profile
     
