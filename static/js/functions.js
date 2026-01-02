@@ -650,7 +650,7 @@ function buildCompany(callerId, callerName, data){
             $(`#${key}`).html(`<a href="mailto:${data[key]}" ${style}>${data[key]}</a>`);
         } else if(key === "center_number"){
             $(`#${useKey}`).html(data[key]).append(
-                buildButton("Blind Xfer", data[key], callerId, callerName)
+                buildButton("Direct Transfer", data[key], callerId, callerName)
             );
         } else if(key === "voicemail"){
             $(`#${useKey}`).html(data[key]).append(
@@ -711,13 +711,13 @@ function buildContacts(callerId, callerName, actionData){
             //button for warm tranfer
             else if (data.answering_mode === "Warm Transfer") {
                 row.find('.transfer-cell').append(
-                    buildButton("Warm Xfer", transferNumber, callerId, callerName, false, true)
+                    buildButton("Consulted Transfer", transferNumber, callerId, callerName, false, true)
                 );
             }
             //button for cold tranfer
             else if (data.answering_mode === "Cold Transfer") {
                 row.find('.transfer-cell').append(
-                    buildButton("Blind Xfer", transferNumber, callerId, callerName)
+                    buildButton("Direct Transfer", transferNumber, callerId, callerName)
                 );
             }
             // Store full data in the row 
