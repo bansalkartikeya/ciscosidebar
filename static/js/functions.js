@@ -696,7 +696,7 @@ function buildContacts(callerId, callerName, actionData){
                     <td class="custom-cell">${data.name}</td>
                     <td class="custom-cell">${agentInstruction}</td>
                     <td class="custom-cell transfer-cell">${transferNumber}</td>
-                    <td class="custom-cell voicemail-cell"></td>
+                    <td class="custom-cell action-cell"></td>
                     <td class="custom-cell">
                         <button class="button is-small action-view"><i class="fas fa-eye"></i></button>
                     </td>
@@ -704,19 +704,19 @@ function buildContacts(callerId, callerName, actionData){
             `);
             //button for voicemail
             if (data.answering_mode === "Send Voicemail") {
-                row.find('.voicemail-cell').append(
+                row.find('.action-cell').append(
                     buildButton("Voicemail",transferNumber, callerId, callerName, true)
                 );
             }
             //button for warm tranfer
             else if (data.answering_mode === "Warm Transfer") {
-                row.find('.transfer-cell').append(
+                row.find('.action-cell').append(
                     buildButton("Consulted Transfer", transferNumber, callerId, callerName, false, true)
                 );
             }
             //button for cold tranfer
             else if (data.answering_mode === "Cold Transfer") {
-                row.find('.transfer-cell').append(
+                row.find('.action-cell').append(
                     buildButton("Direct Transfer", transferNumber, callerId, callerName)
                 );
             }
