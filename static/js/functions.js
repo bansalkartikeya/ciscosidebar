@@ -429,10 +429,11 @@ function clearCallLogModal(){
     $('#callerEmail').val('');
 
     // Reset Quill editor + hidden field
-    if (window.quillEditor) {
-        window.quillEditor.setText('');
-        $('#reasonForCall').val('');
+    if (window.quill) {
+        //window.quillEditor.setText('');
+        quill.setText('');
     }
+    $('#reasonForCall').val('');
 
     // Company name label
     $('#companyName').val('');
