@@ -335,7 +335,67 @@ function searchContacts(inputSelector, tableSelector) {
 }
 //-------------------------------------contact section for admin---------------------------------------------------------------------------
 
+//-------------------------------------dashboard section------------------------------------------------------------------------------------------
+function searchDashboard(inputSelector, tableSelector) {
+    const term = $(inputSelector).val().toLowerCase();
 
+    $(`${tableSelector} .dashboard-row`).each(function () {
+        const row = $(this);
+        const data = row.data('dashboard-data') || {};
+
+        const combined = Object.values(data)
+            .join(' ')
+            .toLowerCase();
+
+        row.toggle(combined.includes(term));
+    });
+}
+async function loadDashboard() {
+    try{
+        let response = await fetch('/admin',{
+            method: "GET",
+            headers:customHeaders
+        });
+        if (!response.ok) {
+            throw new Error('Failed to fetch dashboard data');
+        }
+        let companyData = await response.json();
+        console.log(companyData);
+        renderDashboardRows(companyData);
+    }catch(e){
+        console.error('Dashboard load error:', err);
+    }
+}
+
+function renderDashboardRows(data) {
+    const tbody = $('#dashboard-contents');
+    tbody.empty(); // reset on reload
+
+    data.forEach(item => {
+        const row = $(`
+            <tr class="dashboard-row">
+                <td class="custom-cell"><span class="dashboard-company">${item.company}</span></td>
+                <td class="custom-cell"><span class="dashboard-company">${item.number}</span></td>
+                <td class="custom-cell"><span class="dashboard-company">${item.titan}</span></td>
+                <td class="custom-cell"><span class="dashboard-company">${item.center}</span></td>
+                <td class="custom-cell"><span class="dashboard-company">${item.center_number}</span></td>
+                <td class="custom-cell"><span class="dashboard-company">${item.email}</span></td>
+                <td class="custom-cell">
+                    <button class="button is-small action-view"><i class="fas fa-eye"></i></button>
+                </td>
+            </tr>
+        `);
+
+        row.data('dashboard-data', item);
+
+        tbody.append(row);
+    });
+}
+
+
+
+
+//------------------------------------------------------------------------------------------------------------------------------------------------
 function fillSettings(data, editable = false) {
 
     const htmlFields = ["instructions", "script", "website", "info"];
@@ -1281,6 +1341,16 @@ function initializeDOMListeners(){
         const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(centerNumber)}`;
         window.open(mapsUrl, "_blank");
     });
+    //-----------------------------------------dashboard----------------------------------------------------------------------
+    // dashboard search
+    $('#dashboard-search').on('input', function () {
+        searchDashboard('#dashboard-search', '#dashboard-contents');
+    });
+    // dashboard load
+    $(document).ready(function () {
+        loadDashboard();
+    });
+    //----------------------------------------------------------------------------------------------------------------------------
 
     // //Update code
     // $(document).on("click", "#center-info-button", async function () {
