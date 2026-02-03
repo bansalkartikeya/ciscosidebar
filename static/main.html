@@ -153,30 +153,32 @@
     <h2 id="script" class="subtitle is-3"></h2>
   </div>
   <!-- this section would be the dashboard and search bar -->
-  <div class="field" style="margin-bottom: 15px;">
-    <div class="control has-icons-left">
-      <input id="dashboard-search" class="input" type="text" placeholder="Search...">
-      <span class="icon is-left">
-        <i class="fas fa-search"></i>
-      </span>
+  <div class="mx-5 mt-6">
+    <div class="field" style="margin-bottom: 15px;">
+      <div class="control has-icons-left">
+        <input id="dashboard-search" class="input" type="text" placeholder="Search...">
+        <span class="icon is-left">
+          <i class="fas fa-search"></i>
+        </span>
+      </div>
     </div>
-  </div>
-   <div id="dashboard">
-        <table class="table mb-1 is-bordered is-fullwidth">
-          <thead>
-            <tr>
-              <th style="background-color:grey;">Company</th>
-              <th style="background-color:grey;">Main Number</th>
-              <th style="background-color:grey;">Titan ID</th>
-              <th style="background-color:grey;">Center ID</th>
-              <th style="background-color:grey;">Center Number</th>
-              <th style="background-color:grey;">Center Email</th>
-              <th style="background-color:grey;">View</th>
-            </tr>
-          </thead>
-          <tbody id="dashboard-contents">
-          </tbody>
-        </table>
+    <div id="dashboard">
+          <table class="table mb-1 is-bordered is-fullwidth">
+            <thead>
+              <tr>
+                <th style="background-color:grey;">Company</th>
+                <th style="background-color:grey;">Main Number</th>
+                <th style="background-color:grey;">Titan ID</th>
+                <th style="background-color:grey;">Center ID</th>
+                <th style="background-color:grey;">Center Number</th>
+                <th style="background-color:grey;">Center Email</th>
+                <th style="background-color:grey;">View</th>
+              </tr>
+            </thead>
+            <tbody id="dashboard-contents">
+            </tbody>
+          </table>
+      </div>
     </div>
   <!-- this section is shown when a call comes in ,and a queue exists,the data within this is built by buildCompany and buildContacts  -->
   <div id="main-content" style="display:none;">
