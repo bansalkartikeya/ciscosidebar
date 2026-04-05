@@ -446,9 +446,6 @@ function renderDashboardRows(data) {
     });
 }
 
-
-
-
 //------------------------------------------------------------------------------------------------------------------------------------------------
 function fillSettings(data, editable = false) {
 
@@ -520,20 +517,6 @@ function fillSettings(data, editable = false) {
 
 }
 
-// function openSettings(entry){
-//     fillSettings(entry);
-//     currentEntry = entry;
-//     if(entry){
-//         $('#modal-settings-delete').show();
-//         // modal-settings-delete is a button in the footer of the modal that exists in the html
-//     } else {
-//         $('#modal-settings-delete').hide();
-//     }
-//     openModal('#modal-settings');
-//     // #modal-settings is a modal div whose skeleton is defined in the html header,section,footer
-//     $('#settings-menu').hide();
-// }
-
 function openSettings(entry, isViewMode = false){
     fillSettings(entry);
     currentEntry = entry;
@@ -551,7 +534,9 @@ function openSettings(entry, isViewMode = false){
 
     if (isViewMode) {
         // disable all inputs
-        $('#modal-settings input, #modal-settings textarea, #modal-settings select')
+        // $('#modal-settings input, #modal-settings textarea, #modal-settings select')
+        //     .prop('disabled', true);
+        $('#modal-settings input:not(#contact-search):not(#calllog-search-admin), #modal-settings textarea, #modal-settings select')
             .prop('disabled', true);
 
         // hide buttons
@@ -1308,7 +1293,7 @@ function initializeDOMListeners(){
     });
 
 //-----------------------------------call log table----------------------------------------------------------------------------------------------------------------------------------------------------
-    
+
     //agent call log
     $('#open-call-log-modal').on('click', function(e){
     console.log('#open-call-log-modal was clicked');
@@ -1515,7 +1500,6 @@ function initializeDOMListeners(){
     $(document).on("click", ".close-center-info", function () {
         closeModal("#modal-center-info");
     });
-
 
 }
 

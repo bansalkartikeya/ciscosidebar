@@ -28,9 +28,9 @@ const mercuryMode = Cookies.get("mercury_mode") === "true";
 customLog(`mercuryMode: ${mercuryMode}`);
 const isAdmin = Cookies.get("is_admin");
 customLog("isAdmin", isAdmin);
-if(isAdmin === "true"){
-    $("#settings-button").show();
-}
+// if(isAdmin === "true"){
+//     $("#settings-button").show();
+// }
 
 let backgroundColor = "white";
 let iconColor = "black";
