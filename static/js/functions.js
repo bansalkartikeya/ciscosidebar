@@ -560,6 +560,10 @@ function openSettings(entry, isViewMode = false){
         $('#action-add').hide();
         $('#edit-profile-button').hide();
 
+        $('#open-subform').hide(); // Add Call Log
+        $('#contacts-settings .action-edit').hide();
+        $('#contacts-settings .action-delete').hide();
+
     } else {
         // enable all inputs
         $('#modal-settings input, #modal-settings textarea, #modal-settings select')
@@ -575,6 +579,11 @@ function openSettings(entry, isViewMode = false){
 
         $('#action-add').show();
         $('#edit-profile-button').show();
+
+        // (restore)
+        $('#open-subform').show();
+        $('#contacts-settings .action-edit').show();
+        $('#contacts-settings .action-delete').show();
     }
 }
 
