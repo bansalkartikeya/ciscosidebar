@@ -380,13 +380,41 @@ function renderDashboardRows(data) {
                 <td class="custom-cell"><span class="dashboard-company">${item.center}</span></td>
                 <td class="custom-cell"><span class="dashboard-company">${item.center_number}</span></td>
                 <td class="custom-cell"><span class="dashboard-company">${item.email}</span></td>
-                <td class="custom-cell">
-                    <button class="button is-small action-view"><i class="fas fa-eye"></i></button>
+                <td class="custom-cell">            
+                    <button class="button is-small action-view mr-2">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="button is-small action-edit is-info">
+                        <i class="fas fa-edit"></i>
+                    </button>
                 </td>
             </tr>
         `);
 
         row.data('dashboard-data', item);
+
+        // VIEW (optional if already exists elsewhere)
+        row.find('.action-view').on('click', function () {
+            openSettings(item); // same as dropdown
+        });
+
+        // EDIT (NEW)
+        row.find('.action-edit').on('click', async function () {
+
+            // 🔥 IMPORTANT: fetch call logs like dropdown does
+            let logsResponse = await fetch(`/call_logs?queue_id=${item._id}`, {
+                method: "GET",
+                headers: customHeaders
+            });
+
+            let callLogs = await logsResponse.json();
+
+            // attach logs
+            item.call_logs = callLogs;
+
+            // open same modal
+            openSettings(item);
+        });
 
         tbody.append(row);
     });
