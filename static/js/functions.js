@@ -393,28 +393,54 @@ function renderDashboardRows(data) {
 
         row.data('dashboard-data', item);
 
-        // VIEW (optional if already exists elsewhere)
-        row.find('.action-view').on('click', function () {
-            openSettings(item); // same as dropdown
-        });
+        // // VIEW (optional if already exists elsewhere)
+        // row.find('.action-view').on('click', function () {
+        //     openSettings(item); // same as dropdown
+        // });
 
-        // EDIT (NEW)
-        row.find('.action-edit').on('click', async function () {
-
-            // 🔥 IMPORTANT: fetch call logs like dropdown does
+        // VIEW--(New)
+        row.find('.action-view').on('click', async function () {
             let logsResponse = await fetch(`/call_logs?queue_id=${item._id}`, {
                 method: "GET",
                 headers: customHeaders
             });
 
             let callLogs = await logsResponse.json();
-
-            // attach logs
             item.call_logs = callLogs;
 
-            // open same modal
-            openSettings(item);
+            openSettings(item, true); // ✅ VIEW MODE
         });
+
+        // EDIT--(New)
+        row.find('.action-edit').on('click', async function () {
+            let logsResponse = await fetch(`/call_logs?queue_id=${item._id}`, {
+                method: "GET",
+                headers: customHeaders
+            });
+
+            let callLogs = await logsResponse.json();
+            item.call_logs = callLogs;
+
+            openSettings(item, false); // ✅ EDIT MODE
+        });
+
+        // // EDIT (NEW)
+        // row.find('.action-edit').on('click', async function () {
+
+        //     // 🔥 IMPORTANT: fetch call logs like dropdown does
+        //     let logsResponse = await fetch(`/call_logs?queue_id=${item._id}`, {
+        //         method: "GET",
+        //         headers: customHeaders
+        //     });
+
+        //     let callLogs = await logsResponse.json();
+
+        //     // attach logs
+        //     item.call_logs = callLogs;
+
+        //     // open same modal
+        //     openSettings(item);
+        // });
 
         tbody.append(row);
     });
@@ -494,18 +520,62 @@ function fillSettings(data, editable = false) {
 
 }
 
-function openSettings(entry){
+// function openSettings(entry){
+//     fillSettings(entry);
+//     currentEntry = entry;
+//     if(entry){
+//         $('#modal-settings-delete').show();
+//         // modal-settings-delete is a button in the footer of the modal that exists in the html
+//     } else {
+//         $('#modal-settings-delete').hide();
+//     }
+//     openModal('#modal-settings');
+//     // #modal-settings is a modal div whose skeleton is defined in the html header,section,footer
+//     $('#settings-menu').hide();
+// }
+
+function openSettings(entry, isViewMode = false){
     fillSettings(entry);
     currentEntry = entry;
+
     if(entry){
         $('#modal-settings-delete').show();
-        // modal-settings-delete is a button in the footer of the modal that exists in the html
     } else {
         $('#modal-settings-delete').hide();
     }
+
     openModal('#modal-settings');
-    // #modal-settings is a modal div whose skeleton is defined in the html header,section,footer
     $('#settings-menu').hide();
+
+    //(VIEW vs EDIT MODE)
+
+    if (isViewMode) {
+        // disable all inputs
+        $('#modal-settings input, #modal-settings textarea, #modal-settings select')
+            .prop('disabled', true);
+
+        // hide buttons
+        $('#modal-settings-save').hide();
+        $('#modal-settings-delete').hide();
+        $('#action-add').hide();
+        $('#edit-profile-button').hide();
+
+    } else {
+        // enable all inputs
+        $('#modal-settings input, #modal-settings textarea, #modal-settings select')
+            .prop('disabled', false);
+
+        // show buttons
+        $('#modal-settings-save').show();
+
+        // only show delete if entry exists
+        if(entry){
+            $('#modal-settings-delete').show();
+        }
+
+        $('#action-add').show();
+        $('#edit-profile-button').show();
+    }
 }
 
 function clearCallLogModal(){
