@@ -1457,6 +1457,10 @@ function initializeDOMListeners(){
     $(document).ready(function () {
         loadDashboard();
     });
+
+    $('#dashboard-add-new').on('click', function () {
+        openSettings(); // same as dropdown "Add New"
+    });
     //----------------------------------------------------------------------------------------------------------------------------
 
     // //Update code
