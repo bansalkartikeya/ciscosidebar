@@ -1,3 +1,6 @@
+//interacting with webex Calling through the WEBEX REST API
+
+//webex calling requires E.164 format, this function ensures that any number starts with a "+"
 function updateDestination(destination){
     customLog("updateDestination (initial):", destination);
     if(destination[0] !== "+"){
@@ -7,6 +10,7 @@ function updateDestination(destination){
     return destination;
 }
 
+//this returns all active calls for the agent(inbound,outbound,held...)
 async function getCalls(){
     let callsResponse = await fetch(`${webexUrl}/telephony/calls`, {
         method: 'GET',
@@ -15,6 +19,8 @@ async function getCalls(){
     return callsResponse;
 }
 
+//fetches all calls for agent using above function and loops through
+//finds call by matching caller Id or caller name to the remote party number and returns call ID
 async function getCall(callerId, callerName){
     customLog("getCall callerId", callerId);
     let callsResponse = await getCalls();
@@ -46,6 +52,7 @@ async function getCall(callerId, callerName){
     return matchedId;
 }
 
+//places a new outbound call
 async function dial(destination){
     let dialResponse = await fetch(`${webexUrl}/telephony/calls/dial`, {
         method: 'POST',
@@ -56,6 +63,7 @@ async function dial(destination){
     return dialResponse;
 }
 
+// depending on the payload a call can be diverted(i.e transfered, forwarded..)
 async function divert(payload){
     let divertResponse = await fetch(`${webexUrl}/telephony/calls/divert`, {
         method: 'POST',
@@ -67,7 +75,7 @@ async function divert(payload){
     return divertResponse;
 }
 
-
+//fetches all details for the current agent/person logged in 
 async function getCurrentUser(){
     try {
         const response = await fetch('https://webexapis.com/v1/people/me', {
