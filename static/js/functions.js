@@ -352,7 +352,8 @@ function searchDashboard(inputSelector, tableSelector) {
 }
 async function loadDashboard() {
     try{
-        let response = await fetch('/admin',{
+        //let response = await fetch('/admin',{                             //work for admin only
+        let response = await fetch('/dashboard',{                           //work for agent and admin also
             method: "GET",
             headers:customHeaders
         });
@@ -384,9 +385,11 @@ function renderDashboardRows(data) {
                     <button class="button is-small action-view mr-2">
                         <i class="fas fa-eye"></i>
                     </button>
+                    ${isAdmin === "true" ? `
                     <button class="button is-small action-edit is-info">
                         <i class="fas fa-edit"></i>
                     </button>
+                    ` : ''}
                 </td>
             </tr>
         `);
@@ -1446,6 +1449,10 @@ function initializeDOMListeners(){
     $('#dashboard-add-new').on('click', function () {
         openSettings(); // same as dropdown "Add New"
     });
+
+    if (isAdmin !== "true") {
+    $('#dashboard-add-new').hide();
+    }
     //----------------------------------------------------------------------------------------------------------------------------
 
     // //Update code

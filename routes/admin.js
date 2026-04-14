@@ -86,4 +86,15 @@ router.post('/admin', cors(), requireAdmin, async (req, res) => {
   res.json(response);
 });
 
+// Get all queue data (for agent and admin)
+router.get('/dashboard', requireAuth, async (req, res) => {
+  try {
+    const data = await getAllQueues(); // same function
+    res.json(data);
+  } catch (error) {
+    console.error('Dashboard error:', error);
+    res.status(500).json({ error: "Failed to load dashboard" });
+  }
+});
+
 export default router;
