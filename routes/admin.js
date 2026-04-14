@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { getAllQueues, insertQueue, updateQueue, deleteQueue, ObjectId } from '../lib/database.js';
-import { requireAdmin } from '../lib/auth.js';
+import { requireAdmin, requireAuth } from '../lib/auth.js';
 
 const router = express.Router();
 
