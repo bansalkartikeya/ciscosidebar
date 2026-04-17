@@ -96,3 +96,51 @@ async function getCurrentUser(){
         throw error;
     }
 }
+
+//puts the ongoing call on hold
+async function hold(callId){
+    let holdResponse = await fetch(`${webexUrl}/telephony/calls/hold`, {
+        method: 'POST',
+        headers: webexHeaders,
+        body: JSON.stringify({callId:callId})
+    });
+    customLog(holdResponse);
+    customLog(`hold holdResponse.status:${holdResponse.status}`);
+    return holdResponse;
+}
+
+//resumes a call on hold
+async function resume(callId){
+    let resumeResponse = await fetch(`${webexUrl}/telephony/calls/resume`, {
+        method: 'POST',
+        headers: webexHeaders,
+        body: JSON.stringify({callId:callId})
+    });
+    customLog(resumeResponse);
+    customLog(`resume resumeResponse.status:${resumeResponse.status}`);
+    return resumeResponse;
+}
+
+//brings calls into a conference
+async function startConference(callId1,callId2){
+    let startConferenceResponse = await fetch(`${webexUrl}/telephony/conference`, {
+        method: 'POST',
+        headers: webexHeaders,
+        body: JSON.stringify({callIds:[callId1,callId2]})
+    });
+    customLog(startConferenceResponse);
+    customLog(`startConference startConferenceResponse.status:${startConferenceResponse.status}`);
+    return startConferenceResponse;
+}
+
+//hangs up a call
+async function disconnect(callId){
+    let disconnectResponse = await fetch(`${webexUrl}/telephony/calls/hangup`, {
+        method: 'POST',
+        headers: webexHeaders,
+        body: JSON.stringify({callId:callId})
+    });
+    customLog(disconnectResponse);
+    customLog(`disconnect disconnectResponse.status:${disconnectResponse.status}`);
+    return disconnectResponse;
+}
