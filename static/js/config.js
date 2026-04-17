@@ -21,6 +21,7 @@ let logoSize = urlParams.get('logoSize');
 var embedded_app;
 var callingClient;
 var currentEntry;
+var expertCallId;
 const webexUrl = "https://webexapis.com/v1"
 const accessToken = Cookies.get("access_token");
 customLog('accessToken:', accessToken);
