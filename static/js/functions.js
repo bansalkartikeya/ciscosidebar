@@ -822,7 +822,7 @@ function buildCompany(callerId, callerName, data){
     }
 }
 
-function buildContacts(callerId, callerName, actionData){
+function buildContacts(callId,callerId, callerName, actionData){
     try{
         $('#contacts').empty();
         for(let data of actionData){
@@ -863,7 +863,7 @@ function buildContacts(callerId, callerName, actionData){
             //button for warm tranfer
             else if (data.answering_mode === "Warm Transfer") {
                 row.find('.action-cell').append(
-                    buildButton("Consulted Transfer", transferNumber, callerId, callerName, false, true)
+                    buildButton("Consulted Transfer", transferNumber,callId,callerId, callerName, false, true)
                 );
             }
             //button for cold tranfer
@@ -963,7 +963,7 @@ function buildCallLogs(callLogs){
     }
 }
 
-function buildButton(text, key, callerId, callerName, voicemail, warm){
+function buildButton(text, key,callId,callerId, callerName, voicemail, warm){
     let button;
     if(warm){
         button = $('<button class="button is-warm ml-3">').text(text);
@@ -980,7 +980,7 @@ function buildButton(text, key, callerId, callerName, voicemail, warm){
     }
     if(warm){
         button.on('click', async function(){
-            await warmXferButton(key);
+            await warmXferButton(key,callId);
         });
     } else {
         button.on('click', async function(){
@@ -1020,7 +1020,7 @@ async function blindXferButton(number, callerId, callerName, voicemail){
     }
 }
 
-async function warmXferButton(number){
+async function warmXferButton(number,callId){
     try{
         customLog("warmXferButton button pressed");
         let dialResponse = await dial(updateDestination(number));
