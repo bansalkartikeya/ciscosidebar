@@ -66,6 +66,7 @@ if(mercuryMode){
                             }
                             let remoteNumber = event.data.remoteParty.number;
                             let remoteName = event.data.remoteParty.name;
+                            let customerCallId = event.data.callId   //gets callID of imcoming customer call
                             let url = `/db?queueNumber=${encodeURIComponent(queueNumber)}&remoteNumber=${encodeURIComponent(remoteNumber)}`
                             console.log(`url:${url}`);
                             let response = await fetch(url);
@@ -87,7 +88,7 @@ if(mercuryMode){
                                     $('#caller-info').hide();
                                     window.currentAgentEntry = json.queue;
                                     buildCompany(remoteNumber, remoteName, json.queue);
-                                    buildContacts(remoteNumber, remoteName, json.queue?.actions);
+                                    buildContacts(customerCallId,remoteNumber, remoteName, json.queue?.actions);
                                     buildCallLogs(callLogs);
                                     $('#main-content').show();
                                 } else {
