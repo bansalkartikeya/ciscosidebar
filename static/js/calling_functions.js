@@ -133,6 +133,18 @@ async function startConference(callId1,callId2){
     return startConferenceResponse;
 }
 
+// transfers the customer call to the expert call
+async function transfer(callId, destination) {
+    let transferResponse = await fetch(`${webexUrl}/telephony/calls/transfer`, {
+        method: 'POST',
+        headers: webexHeaders,
+        body: JSON.stringify({ callId1: callId, destination: updateDestination(destination) })
+    });
+    customLog(transferResponse);
+    customLog(`transfer transferResponse.status:${transferResponse.status}`);
+    return transferResponse;
+}
+
 //hangs up a call
 async function disconnect(callId){
     let disconnectResponse = await fetch(`${webexUrl}/telephony/calls/hangup`, {
