@@ -879,31 +879,6 @@ function buildContacts(callId,callerId, callerName, actionData){
                 viewContact(row.data('action-data'));
             });
             $('#contacts').append(row)
-           
-            // let row = $('<tr>')
-            // row.append(
-            //     $('<th class="custom-cell" style="vertical-align: middle;">').append(
-            //         $('<span class="panel-icon">').append(
-            //             $('<i class="fas fa-hashtag" aria-hidden="true">')
-            //         )
-            //     ),
-            //     $('<td class="custom-cell">').text(data.name),
-            //     $('<td class="custom-cell">'),
-            //     $('<td class="custom-cell">').text(data.number),
-            //     $('<td class="custom-cell">').append(
-            //         buildButton("Warm Xfer", data.number, callerId, callerName, false, true)
-            //     ),
-            //     $('<td class="custom-cell">').append(
-            //         buildButton("Blind Xfer", data.number, callerId, callerName)
-            //     )
-            // );
-            // let voiceMailButton = $('<td class="custom-cell">')
-            // if(data.voicemail){
-            //     voiceMailButton.append(
-            //         buildButton("Voicemail", data.number, callerId, callerName, true)
-            //     );
-            // }
-            // row.append(voiceMailButton);
         }
     } catch(e){
         customLog("buildContacts Error:");
@@ -980,7 +955,7 @@ function buildButton(text, key,callId,callerId, callerName, voicemail, warm){
     }
     if(warm){
         button.on('click', async function(){
-            await warmXferButton(key,callId);
+            await warmXferButton(key,callId,button);
         });
     } else {
         button.on('click', async function(){
@@ -1020,22 +995,104 @@ async function blindXferButton(number, callerId, callerName, voicemail){
     }
 }
 
-async function warmXferButton(number,callId){
+//section that builds additional buttons for merge etc
+// Expert agrees — transfer customer to expert, agent auto-dropped
+function buildTransferButton(customerCallId, destination, $actionCell) {
+    let $btn = $('<button class="button is-success is-small ml-2">').text('Transfer');
+    $btn.on('click', async function() {
+        try {
+            $btn.prop('disabled', true).text('Transferring...');
+            await transfer(customerCallId, destination);
+            // agent is auto-dropped by Webex, just clear the UI
+            $actionCell.empty();
+            customLog("Transfer complete");
+        } catch(e) {
+            customLog("Transfer error:", e);
+            $btn.prop('disabled', false).text('Transfer');
+        }
+    });
+    return $btn;
+}
+
+// Expert disagrees — drop expert, show Resume
+function buildDropExpertButton(customerCallId, $actionCell, $originalButton) {
+    let $btn = $('<button class="button is-danger is-small ml-2">').text('Drop Expert');
+    $btn.on('click', async function() {
+        try {
+            $btn.prop('disabled', true).text('Dropping...');
+            await disconnect(expertCallId);
+            expertCallId = null;
+            customLog("Expert dropped");
+
+            // Swap to Resume button
+            $actionCell.empty();
+            $actionCell.append(buildResumeButton(customerCallId, $actionCell, $originalButton));
+        } catch(e) {
+            customLog("Drop Expert error:", e);
+            $btn.prop('disabled', false).text('Drop Expert');
+        }
+    });
+    return $btn;
+}
+
+// Resume — get back to customer, restore original button
+function buildResumeButton(customerCallId, $actionCell, $originalButton) {
+    let $btn = $('<button class="button is-warning is-small ml-2">').text('Resume');
+    $btn.on('click', async function() {
+        try {
+            $btn.prop('disabled', true).text('Resuming...');
+            await resume(customerCallId);
+            customLog("Customer resumed");
+
+            // Restore original Consulted Transfer button
+            $actionCell.empty();
+            $originalButton.prop('disabled', false).text('Consulted Transfer');
+            $actionCell.append($originalButton);
+        } catch(e) {
+            customLog("Resume error:", e);
+            $btn.prop('disabled', false).text('Resume');
+        }
+    });
+    return $btn;
+}
+
+//-----------------------------------------------------------------------------------------------------------
+
+async function warmXferButton(number,callId,$triggerButton){
     try{
         customLog("warmXferButton button pressed");
-        let dialResponse = await dial(updateDestination(number));
-        if(dialResponse.status >= 200 && dialResponse.status < 300){
-            //this.updateResultSpan(`Transferred ${remoteNumber} to ${meetingName}.`, "green");
+        // Disable original button while working
+        $triggerButton.prop('disabled', true).text('Calling...');
+        //put customer on hold
+        let holdResponse=await hold(callId)
+        if(holdResponse.status >= 200 && holdResponse.status < 300){
+            customLog("customer call on hold");
         } else {
-            await handleXferError(dialResponse);
+            await handleXferError(holdResponse);
+            $triggerButton.prop('disabled', false).text('Consulted Transfer');
+            return;
         }
+        //dial the expert
+        const dialResponse = await dial(updateDestination(number));
+        const dialData = await dialResponse.json();
+        expertCallId = dialData.callId;
+        customLog("expert dialed, expertCallId:", expertCallId);
+
+        //swap buttons
+        const $actionCell = $triggerButton.closest('tr').find('.action-cell');
+        $actionCell.empty();
+        $actionCell.append(buildTransferButton(callId, number, $actionCell));
+        $actionCell.append(buildDropExpertButton(callId, $actionCell, $triggerButton));
+  
     }catch(e){
         customLog("warmXferButton Error:");
         customLog(e);
         $('#modal-error-text').text(e);
         openModal('#modal-error');
+        $triggerButton.prop('disabled', false).text('Consulted Transfer');
     }
 }
+
 
 function formatErrorJson(errorText){
     return `<br><pre class="py-1 my-2">${JSON.stringify(errorText, null, 2)}</pre>`;
